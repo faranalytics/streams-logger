@@ -1,4 +1,3 @@
-import * as stream from "node:stream";
 import { Connector, Levels, Message, Transform } from ".";
 
 export class BufferToString extends Transform<Buffer, string> {

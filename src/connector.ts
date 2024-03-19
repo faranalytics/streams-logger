@@ -21,8 +21,10 @@ export class Connector<WriteT, ReadT> {
         }
     }
 
-    public connect<T extends Connector<ReadT, unknown>>(connection: T): T {
-        this.stream.pipe(connection.stream);
-        return connection;
+    public connect<T extends Connector<ReadT, unknown>>(connector: T): T {
+        this.stream.pipe(connector.stream);
+        this.stream.once('error', connector.stream.destroy)
+        connector.stream.once('error', this.stream.destroy);
+        return connector;
     }
 }
