@@ -1,5 +1,5 @@
 {
-  "name": "stream-logger",
+  "name": "streams-logger",
   "version": "0.0.1",
   "description": "",
   "main": "./dist/index.js",
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/faranalytics/stream-logger.git"
+    "url": "git+https://github.com/faranalytics/streams-logger.git"
   },
   "author": "FAR",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/faranalytics/stream-logger/issues"
+    "url": "https://github.com/faranalytics/streams-logger/issues"
   },
-  "homepage": "https://github.com/faranalytics/stream-logger#readme",
+  "homepage": "https://github.com/faranalytics/streams-logger#readme",
   "engines": {
     "npm": ">=10.2.3",
     "node": ">=18.19.0"

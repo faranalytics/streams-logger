@@ -1,4 +1,4 @@
-# Stream Logger
+# Streams Logger
 
 Streams is a type safe logger built on native Node streams.
 
@@ -11,7 +11,7 @@ Streams is a type safe logger built on native Node streams.
 ## Installation
 
 ```bash
-npm install stream-logger
+npm install streams-logger
 ```
 
 ## Usage
