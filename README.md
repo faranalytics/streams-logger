@@ -9,7 +9,7 @@ Streams offers a type-safe logging facility built on native Node streams that ca
 ### Features
 
 - Type-safe pipelines.
-- Consume native Node Writable streams.
+- Consume any native Node Writable stream as a component of your logger.
 - Error propagation.
 
 ## Table of Contents
@@ -67,7 +67,7 @@ const bufferToString = new BufferToString();
 const stringToConsole = new StringToConsole();
 ```
 
-### Connect the components of the Logger into a stream.
+### Connect the Transforms and Connections that comprise the Logger into a stream.
 
 ```ts
 log.connect(messageFormatter).connect(stringToBuffer).connect(echoServer).connect(bufferToString).connect(stringToConsole);
