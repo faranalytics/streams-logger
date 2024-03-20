@@ -113,3 +113,9 @@ export class StringToConsole extends Connection<string, never> {
     }
 }
 ```
+
+Similarly a `Connection` can be constructed in-place using the `Connection` constructor.  In this example a `Connection` is made from a `net.Socket` `stream.Duplex`.
+
+```ts
+const echoServer = new Connection<Buffer, Buffer>(net.createConnection(3000, '127.0.0.1'));
+```
