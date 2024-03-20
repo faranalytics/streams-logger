@@ -7,6 +7,7 @@ Streams is a type-safe logger for TypeScript *and* Node projects.
 Streams offers a type-safe logging facility built on native Node streams that can be used in both TypeScript and Node projects. 
 
 ### Features
+
 - Type-safe pipelines.
 - Consume native Node Writable streams.
 - Error propagation.
@@ -34,22 +35,26 @@ In this hypothetical example we will log "Hello, World!" to the console the hard
 - Log the `string` to the console.
 
 ### Import the required dependencies.
+
 ```ts
 import * as net from 'node:net';
 import { BufferToString, Connector, MessageFormatter, Levels, LevelLogger, Message, StringToBuffer, StringToConsole } from "pipes-logger";
 ```
 
 ### Create the Echo Server.
+
 ```ts
 net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000, '127.0.0.1');
 ```
 
 ### Create a formatter function for handling the `Message<Levels>` message.
+
 ```ts
 const formatter = ({ message, name, level, error, func, url, line, col }: Message<Levels>) => `${name}:${Levels[level]}:${func}:${line}:${col}:${message}`;
 ```
 
 ### Create the stream Connections.
+
 ```ts
 const log = new LevelLogger({name: 'Greetings', level: Levels.DEBUG});
 const messageFormatter = new MessageFormatter(formatter);
@@ -60,16 +65,19 @@ const stringToConsole = new StringToConsole();
 ```
 
 ### Connect the components of the Logger into a stream.
+
 ```ts
 log.connect(messageFormatter).connect(stringToBuffer).connect(echoServer).connect(bufferToString).connect(stringToConsole);
 ```
 
 ### Say "Hello, World!".
+
 ```ts
 (function sayHello() {
     log.debug('Hello, World!');
 })();
 ```
+
 ## How to Implement a Transform
 
 A `Transform` is a `Connection` that transforms a message from one form or type to another.  You can see examples of simple transformations in `./src/connections.ts`.
@@ -89,6 +97,7 @@ export class StringToBuffer extends Transform<string, Buffer> {
 A `Connection` is wrapper for native `stream.Writable` streams.
 
 In this simple example a `Connection` is implemented using the `stream.Writable` stream `process.stdout`.
+
 ```ts
 export class StringToConsole extends Connection<string, never> {
     constructor() {
