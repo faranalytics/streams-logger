@@ -81,6 +81,11 @@ log.connect(messageFormatter).connect(stringToBuffer).connect(echoServer).connec
 })();
 ```
 
+### Output
+```bash
+Greetings:DEBUG:sayHello:13:9:Hello, World!
+```
+
 ## How to Implement a Transform
 
 A `Transform` is a `Connection` that transforms a message from one form or type to another.  You can see examples of simple transformations in `./src/connections.ts`.
