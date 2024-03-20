@@ -1,5 +1,5 @@
 import * as net from 'node:net';
-import { BufferToString, Connector, MessageFormatter, Levels, LevelLogger, Message, StringToBuffer, StringToConsole } from "pipes-logger";
+import { BufferToString, Connector, MessageFormatter, Levels, LevelLogger, Message, StringToBuffer, StringToConsole } from "streams-logger";
 
 net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000, '127.0.0.1');
 
