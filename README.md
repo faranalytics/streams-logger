@@ -73,7 +73,7 @@ const stringToConsole = new StringToConsole();
 log.connect(messageFormatter).connect(stringToBuffer).connect(echoServer).connect(bufferToString).connect(stringToConsole);
 ```
 
-### Say "Hello, World!".
+### Log "Hello, World!" to the console.
 
 ```ts
 (function sayHello() {
@@ -81,7 +81,7 @@ log.connect(messageFormatter).connect(stringToBuffer).connect(echoServer).connec
 })();
 ```
 
-### Output
+#### Output
 ```bash
 Greetings:DEBUG:sayHello:13:9:Hello, World!
 ```
