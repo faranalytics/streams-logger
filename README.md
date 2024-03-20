@@ -118,7 +118,7 @@ export class StringToConsole extends Connector<string, never> {
 }
 ```
 
-Similarly a `Connector` can be constructed in-place using the `Connector` constructor.  In this example a `Connector` is made from a `stream.Duplex` `net.Socket`.
+Similarly a `Connector` can be constructed in-place using the `Connector` constructor.  In this example a `Connector` is made from a `net.Socket`, which is a `stream.Duplex` stream.
 
 ```ts
 const echoServer = new Connector<Buffer, Buffer>(net.createConnector(3000, '127.0.0.1'));
