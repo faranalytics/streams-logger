@@ -1,17 +1,19 @@
 import * as stream from "node:stream";
-import { Connector, Levels, Message } from ".";
+import { Transform, Levels, Message } from ".";
 
-export class LevelLogger extends Connector<string, Message<Levels>> {
+export interface LevelLoggerOptions {
+    name:string;
+    level: Levels;
+}
+
+export class LevelLogger extends Transform<string, Message<Levels>> {
     public level: Levels;
 
-    constructor(level: Levels = Levels.BASE) {
-        super(new stream.Transform({
+    constructor({name = '', level = Levels.BASE}: LevelLoggerOptions) {
+        super((message: string) => new Message({ message, name, level }), {
             writableObjectMode: false,
-            readableObjectMode: true,
-            transform: async (message: string, encoding: BufferEncoding, callback: stream.TransformCallback) => {
-                callback(null, new Message({ message, name: 'Test', level }));
-            }
-        }));
+            readableObjectMode: true
+        });
 
         this.level = level;
     }
