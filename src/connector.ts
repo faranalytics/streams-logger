@@ -39,10 +39,10 @@ export class Connector<WriteT, ReadT> {
         }
 
         this.stream.once('error', (error) => connector.stream.destroy(error));
-        this.stream.once('close', () => this.stream.destroy(new Error('Pipeline closed.')));
+        this.stream.once('close', () => this.stream.destroy(new Error(`${this.constructor.name}, ${this.stream.constructor.name}`)));
 
         connector.stream.once('error', (error) => this.stream.destroy(error));
-        connector.stream.once('close', () => this.stream.destroy(new Error('Pipeline closed.')));
+        connector.stream.once('close', () => this.stream.destroy(new Error(`${this.constructor.name}, ${this.stream.constructor.name}`)));
 
         return connector;
     }

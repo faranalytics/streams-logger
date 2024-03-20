@@ -6,6 +6,9 @@ import { BufferToString, Connector, MessageFormatter, Levels, LevelLogger, Messa
 net.createServer((socket: net.Socket) => {
     socket.on('error', console.error);
     socket.pipe(socket);
+    // setTimeout(()=>{
+    //     socket.destroy(new Error('TEST'));
+    // }, 1000)
 }).listen(3000, '127.0.0.1');
 
 const formatter = ({ message, name, level, error, func, url, line, col }: Message<Levels>) => `${name}:${Levels[level]}:${func}:${line}:${col}:${message}`;
