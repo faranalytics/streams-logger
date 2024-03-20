@@ -102,7 +102,7 @@ export class StringToBuffer extends Transform<string, Buffer> {
 
 ## How to Implement a Connection
 
-A `Connection` is wrapper for native `stream.Writable` streams.
+A `Connection` wraps a native `stream.Writable` stream.
 
 In this simple example a `Connection` is implemented using the `stream.Writable` stream `process.stdout`.
 
