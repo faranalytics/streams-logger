@@ -70,3 +70,29 @@ log.connect(messageFormatter).connect(stringToBuffer).connect(echoServer).connec
     log.debug('Hello, World!');
 })();
 ```
+## How to Implement a Transform
+
+A `Transform` is a `Connection` that transforms a message from one form or type to another.  You can see examples of simple transformations in `./src/connections.ts`.
+
+In this example the `StringToBuffer` `Transform` tranforms a string into a `Buffer` using the given encoding. 
+
+```ts
+export class StringToBuffer extends Transform<string, Buffer> {
+    constructor() {
+        super((chunk: string, encoding?: BufferEncoding) => Buffer.from(chunk, encoding));
+    }
+}
+```
+
+## How to Implement a Connection
+
+A `Connection` is wrapper for native `stream.Writable` streams.
+
+In this simple example a `Connection` is implemented using the `stream.Writable` stream `process.stdout`.
+```ts
+export class StringToConsole extends Connection<string, never> {
+    constructor() {
+        super(process.stdout);
+    }
+}
+```
