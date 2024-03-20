@@ -32,5 +32,13 @@
     "nodemon": "^3.0.1",
     "typescript": "^5.2.2"
   },
-  "keywords": []
+  "keywords": [
+    "logger",
+    "logging",
+    "logs",
+    "pino",
+    "stream",
+    "streams-logger",
+    "winston"
+  ]
 }
