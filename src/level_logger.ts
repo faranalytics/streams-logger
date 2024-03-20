@@ -1,4 +1,3 @@
-import * as stream from "node:stream";
 import { Transform, Levels, Message } from ".";
 
 export interface LevelLoggerOptions {

@@ -4,7 +4,7 @@ import * as stream from "node:stream";
  * @typeParam WriteT - The type of the Writable side of the stream.
  * @typeParam ReadT - The type of the Readable side of the stream.
  */
-export class Connector<WriteT, ReadT> {
+export class Connection<WriteT, ReadT> {
 
     public stream: stream.Writable;
     protected queue: Array<WriteT>;
@@ -29,10 +29,10 @@ export class Connector<WriteT, ReadT> {
     }
 
     /**
-    * @typeParam T - A Connector of type <ReadT, WriteT>.
-    * @param connector - A Connected or type `<T>`.
+    * @typeParam T - A Connection of type <ReadT, WriteT>.
+    * @param connector - A Connection or type `<T>`.
     */
-    public connect<T extends Connector<ReadT, unknown>>(connector: T): T {
+    public connect<T extends Connection<ReadT, unknown>>(connector: T): T {
         this.stream.pipe(connector.stream);
         this.stream.once('error', connector.stream.destroy)
         connector.stream.once('error', this.stream.destroy);

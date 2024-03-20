@@ -49,17 +49,17 @@ net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000, '127.
 const formatter = ({ message, name, level, error, func, url, line, col }: Message<Levels>) => `${name}:${Levels[level]}:${func}:${line}:${col}:${message}`;
 ```
 
-### Create the stream components.
+### Create the stream Connections.
 ```ts
 const log = new LevelLogger({name: 'Greetings', level: Levels.DEBUG});
 const messageFormatter = new MessageFormatter(formatter);
 const stringToBuffer = new StringToBuffer();
-const echoServer = new Connector<Buffer, Buffer>(net.createConnection(3000, '127.0.0.1'));
+const echoServer = new Connection<Buffer, Buffer>(net.createConnection(3000, '127.0.0.1'));
 const bufferToString = new BufferToString();
 const stringToConsole = new StringToConsole();
 ```
 
-### Connect them into a stream.
+### Connect the components of the Logger into a stream.
 ```ts
 log.connect(messageFormatter).connect(stringToBuffer).connect(echoServer).connect(bufferToString).connect(stringToConsole);
 ```

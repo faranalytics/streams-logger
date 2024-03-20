@@ -1,5 +1,5 @@
 import * as stream from "node:stream";
-import { Connector } from ".";
+import { Connection } from ".";
 
 /**
  * @typeParam WriteT
@@ -8,7 +8,7 @@ import { Connector } from ".";
  * @param transformer - `<(chunk: WriteT, encoding?: BufferEncoding) => ReadT | undefined | Promise<ReadT | undefined>>`.
  * @param transformOptions - `<stream.TransformOptions>`
  */
-export class Transform<WriteT, ReadT> extends Connector<WriteT, ReadT> {
+export class Transform<WriteT, ReadT> extends Connection<WriteT, ReadT> {
 
     constructor(transformer: (chunk: WriteT, encoding?: BufferEncoding) => ReadT | undefined | Promise<ReadT | undefined>, transformOptions?: stream.TransformOptions) {
         super(new stream.Transform({

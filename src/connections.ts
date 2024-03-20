@@ -1,4 +1,4 @@
-import { Connector, Levels, Message, Transform } from ".";
+import { Connection, Levels, Message, Transform } from ".";
 
 /**
  * - Input: `<Buffer>`
@@ -26,7 +26,7 @@ export class StringToBuffer extends Transform<string, Buffer> {
  * - Input: `<string>`
  * - Output: `<never>` 
  */
-export class StringToConsole extends Connector<string, never> {
+export class StringToConsole extends Connection<string, never> {
     constructor() {
         super(process.stdout);
     }
