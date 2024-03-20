@@ -56,7 +56,7 @@ net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000, '127.
 const formatter = ({ message, name, level, error, func, url, line, col }: Message<Levels>) => `${name}:${Levels[level]}:${func}:${line}:${col}:${message}`;
 ```
 
-### Create the stream Connectors.
+### Create the stream Transforms and Connectors.
 
 ```ts
 const log = new LevelLogger({name: 'Greetings', level: Levels.DEBUG});
