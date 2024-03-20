@@ -32,12 +32,12 @@ In this hypothetical example you will log "Hello, World!" to the console the har
 2. Transform it into a `Message<Levels>` and capture its containing function, line number, and column number.
 3. Transform the `Message<Levels>` into a `string`.
 4. Transform the `string` into a `Buffer`.
-5. Send the `Buffer` over a TCP connection to an echo `net.Server`.
+5. Send the `Buffer` over a TCP connection to an echo server (i.e., a `net.Server`).
 6. Receive the `Buffer` returned from the `net.Server`.
 7. Transform the `Buffer` into a `string`.
 8. Log the `string` to the console.
 
-### Import the required dependencies.
+### Import the dependencies.
 
 ```ts
 import * as net from 'node:net';
@@ -81,14 +81,14 @@ log.connect(messageFormatter).connect(stringToBuffer).connect(echoServer).connec
 })();
 ```
 
-#### Output
+#### Output:
 ```bash
 Greetings:DEBUG:sayHello:13:9:Hello, World!
 ```
 
 ## How to Implement a Transform
 
-A `Transform` is a `Connector` that transforms a message from one form or type to another.  You can see examples of simple helper transformations in `./src/connectors.ts`.
+A `Transform` is a `Connector` that transforms a value from one form or type to another.  You can see examples of simple helper transformations in `./src/connectors.ts`.
 
 In this example the `StringToBuffer` `Transform` tranforms a `string` into a `Buffer` using the given encoding. 
 
