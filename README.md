@@ -72,15 +72,15 @@ const stringToConsole = new StringToConsole();
 ```ts
 log.connect(
     messageFormatter
-    ).connect(
-        stringToBuffer
-        ).connect(
-            echoServer
-            ).connect(
-                bufferToString
-                ).connect(
-                    stringToConsole
-                    );
+).connect(
+    stringToBuffer
+).connect(
+    echoServer
+).connect(
+    bufferToString
+).connect(
+    stringToConsole
+);
 ```
 
 ### Log "Hello, World!" to the console.
