@@ -88,7 +88,7 @@ Greetings:DEBUG:sayHello:13:9:Hello, World!
 
 ## How to Implement a Transform
 
-A `Transform` is a `Connector` that transforms a value from one form or type to another.  You can see examples of simple helper transformations in `./src/connectors.ts`.
+A `Transform` is a `Connector` that transforms a value from one data model or type to another.  You can see examples of simple helper transformations in `./src/connectors.ts`.
 
 In this example the `StringToBuffer` `Transform` tranforms a `string` into a `Buffer` using the given encoding. 
 
