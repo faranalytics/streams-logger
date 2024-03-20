@@ -44,7 +44,7 @@ import * as net from 'node:net';
 import { BufferToString, Connector, MessageFormatter, Levels, LevelLogger, Message, StringToBuffer, StringToConsole } from "streams-logger";
 ```
 
-### Create the Echo Server.
+### Create the echo server.
 
 ```ts
 net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000, '127.0.0.1');
