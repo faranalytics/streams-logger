@@ -41,7 +41,7 @@ In this hypothetical example you will log "Hello, World!" to the console the har
 
 ```ts
 import * as net from 'node:net';
-import { BufferToString, Connector, MessageFormatter, Levels, LevelLogger, Message, StringToBuffer, StringToConsole } from "pipes-logger";
+import { BufferToString, Connector, MessageFormatter, Levels, LevelLogger, Message, StringToBuffer, StringToConsole } from "streams-logger";
 ```
 
 ### Create the Echo Server.
