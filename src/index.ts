@@ -1,6 +1,7 @@
 import { Connector } from "./connector";
 import { Transform } from "./transform";
-import { BufferToString, StringToBuffer, StringToConsole, MessageFormatter } from "./connectors";
+import { BufferToString, StringToBuffer, MessageFormatter } from "./transforms";
+import { StringToConsole } from "./connectors";
 import { Levels } from "./levels";
 import { Message } from "./message";
 import { LevelLogger } from "./level_logger";
