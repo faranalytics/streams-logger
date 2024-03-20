@@ -67,7 +67,7 @@ const bufferToString = new BufferToString();
 const stringToConsole = new StringToConsole();
 ```
 
-### Connect the Transforms and Connectors that comprise the Logger into a stream.
+### Connect the Transforms and Connectors that comprise the Logger into a pipeline.
 
 ```ts
 log.connect(messageFormatter).connect(stringToBuffer).connect(echoServer).connect(bufferToString).connect(stringToConsole);
