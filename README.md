@@ -25,11 +25,11 @@ npm install streams-logger
 ## Usage
 In this hypothetical example we will log "Hello, World!" to the console the hard way!  The "Hello, World!" message will undergo the following transformations:
 - Start with the `string` "Hello, World!". 
-- Transform into a `Message<Levels>` and capture it's containing function, line number, and column number.
+- Transform it into a `Message<Levels>` and capture its containing function, line number, and column number.
 - Transform the `Message<Levels>` into a `string`.
 - Transform the `string` into a `Buffer`.
 - Send the `Buffer` over a TCP connection to an echo `net.Server`.
-- Receive the `Buffer`.
+- Receive the `Buffer` returned from the `net.Server`.
 - Transform the `Buffer` into a `string`.
 - Log the `string` to the console.
 
