@@ -90,7 +90,7 @@ Greetings:DEBUG:sayHello:13:9:Hello, World!
 
 A `Transform` is a `Connector` that transforms a message from one form or type to another.  You can see examples of simple helper transformations in `./src/connections.ts`.
 
-In this example the `StringToBuffer` `Transform` tranforms a string into a `Buffer` using the given encoding. 
+In this example the `StringToBuffer` `Transform` tranforms a `string` into a `Buffer` using the given encoding. 
 
 ```ts
 export class StringToBuffer extends Transform<string, Buffer> {
