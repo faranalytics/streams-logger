@@ -1,7 +1,12 @@
 import * as net from 'node:net';
 import { BufferToString, Connector, MessageFormatter, Levels, LevelLogger, Message, StringToBuffer, StringToConsole } from "streams-logger";
 
-net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000, '127.0.0.1');
+// net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000, '127.0.0.1');
+
+net.createServer((socket: net.Socket) => {
+    socket.on('error', console.error);
+    socket.pipe(socket);
+}).listen(3000, '127.0.0.1');
 
 const formatter = ({ message, name, level, error, func, url, line, col }: Message<Levels>) => `${name}:${Levels[level]}:${func}:${line}:${col}:${message}`;
 

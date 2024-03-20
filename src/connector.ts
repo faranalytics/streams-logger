@@ -34,11 +34,16 @@ export class Connector<WriteT, ReadT> {
     */
     public connect<T extends Connector<ReadT, unknown>>(connector: T): T {
         this.stream.pipe(connector.stream);
-        if(!this.stream.eventNames().includes('error')){
+        if (!this.stream.eventNames().includes('error')) {
             this.stream.once('error', console.error);
         }
-        this.stream.once('error', connector.stream.destroy)
-        connector.stream.once('error', this.stream.destroy);
+
+        this.stream.once('error', (error) => connector.stream.destroy(error));
+        this.stream.once('close', () => this.stream.destroy(new Error('Pipeline closed.')));
+
+        connector.stream.once('error', (error) => this.stream.destroy(error));
+        connector.stream.once('close', () => this.stream.destroy(new Error('Pipeline closed.')));
+
         return connector;
     }
 }
