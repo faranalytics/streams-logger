@@ -16,6 +16,8 @@ Streams offers a type-safe logging facility built on native Node streams that ca
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [How to Implement a Transform](#how-to-implement-a-transform)
+- [How to Implement a Connection](#how-to-implement-a-connection)
 
 ## Installation
 
@@ -24,6 +26,7 @@ npm install streams-logger
 ```
 
 ## Usage
+
 In this hypothetical example we will log "Hello, World!" to the console the hard way!  The "Hello, World!" message will undergo the following transformations:
 - Start with the `string` "Hello, World!". 
 - Transform it into a `Message<Levels>` and capture its containing function, line number, and column number.
