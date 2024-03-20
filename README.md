@@ -17,7 +17,7 @@ Streams offers a type-safe logging facility built on native Node streams that ca
 - [Installation](#installation)
 - [Usage](#usage)
 - [How to Implement a Transform](#how-to-implement-a-transform)
-- [How to Implement a Connection](#how-to-implement-a-connection)
+- [How to Implement a Connector](#how-to-implement-a-connection)
 
 ## Installation
 
@@ -56,18 +56,18 @@ net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000, '127.
 const formatter = ({ message, name, level, error, func, url, line, col }: Message<Levels>) => `${name}:${Levels[level]}:${func}:${line}:${col}:${message}`;
 ```
 
-### Create the stream Connections.
+### Create the stream Connectors.
 
 ```ts
 const log = new LevelLogger({name: 'Greetings', level: Levels.DEBUG});
 const messageFormatter = new MessageFormatter(formatter);
 const stringToBuffer = new StringToBuffer();
-const echoServer = new Connection<Buffer, Buffer>(net.createConnection(3000, '127.0.0.1'));
+const echoServer = new Connector<Buffer, Buffer>(net.createConnector(3000, '127.0.0.1'));
 const bufferToString = new BufferToString();
 const stringToConsole = new StringToConsole();
 ```
 
-### Connect the Transforms and Connections that comprise the Logger into a stream.
+### Connect the Transforms and Connectors that comprise the Logger into a stream.
 
 ```ts
 log.connect(messageFormatter).connect(stringToBuffer).connect(echoServer).connect(bufferToString).connect(stringToConsole);
@@ -88,7 +88,7 @@ Greetings:DEBUG:sayHello:13:9:Hello, World!
 
 ## How to Implement a Transform
 
-A `Transform` is a `Connection` that transforms a message from one form or type to another.  You can see examples of simple transformations in `./src/connections.ts`.
+A `Transform` is a `Connector` that transforms a message from one form or type to another.  You can see examples of simple transformations in `./src/connections.ts`.
 
 In this example the `StringToBuffer` `Transform` tranforms a string into a `Buffer` using the given encoding. 
 
@@ -100,22 +100,22 @@ export class StringToBuffer extends Transform<string, Buffer> {
 }
 ```
 
-## How to Implement a Connection
+## How to Implement a Connector
 
-A `Connection` wraps a native `stream.Writable` stream.
+A `Connector` wraps a native `stream.Writable` stream.
 
-In this simple example a `Connection` is implemented using the `stream.Writable` stream `process.stdout`.
+In this simple example a `Connector` is implemented using the `stream.Writable` stream `process.stdout`.
 
 ```ts
-export class StringToConsole extends Connection<string, never> {
+export class StringToConsole extends Connector<string, never> {
     constructor() {
         super(process.stdout);
     }
 }
 ```
 
-Similarly a `Connection` can be constructed in-place using the `Connection` constructor.  In this example a `Connection` is made from a `stream.Duplex` `net.Socket`.
+Similarly a `Connector` can be constructed in-place using the `Connector` constructor.  In this example a `Connector` is made from a `stream.Duplex` `net.Socket`.
 
 ```ts
-const echoServer = new Connection<Buffer, Buffer>(net.createConnection(3000, '127.0.0.1'));
+const echoServer = new Connector<Buffer, Buffer>(net.createConnector(3000, '127.0.0.1'));
 ```

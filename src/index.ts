@@ -1,8 +1,8 @@
-import { Connection } from "./connection";
+import { Connector } from "./connector";
 import { Transform } from "./transform";
-import { BufferToString, StringToBuffer, StringToConsole, MessageFormatter } from "./connections";
+import { BufferToString, StringToBuffer, StringToConsole, MessageFormatter } from "./connectors";
 import { Levels } from "./levels";
 import { Message } from "./message";
 import { LevelLogger } from "./level_logger";
 
-export { Connection, Transform, BufferToString, StringToBuffer, LevelLogger, StringToConsole, MessageFormatter, Levels, Message };
+export { Connector, Transform, BufferToString, StringToBuffer, LevelLogger, StringToConsole, MessageFormatter, Levels, Message };
