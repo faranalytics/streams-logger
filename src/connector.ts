@@ -29,8 +29,8 @@ export class Connector<WriteT, ReadT> {
     }
 
     /**
-    * @typeParam T - A Connection of type <ReadT, WriteT>.
-    * @param connector - A Connection or type `<T>`.
+    * @typeParam T - A Connector of type <ReadT, WriteT>.
+    * @param connector - A Connector or type `<T>`.
     */
     public connect<T extends Connector<ReadT, unknown>>(connector: T): T {
         this.stream.pipe(connector.stream);
