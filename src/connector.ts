@@ -34,6 +34,9 @@ export class Connector<WriteT, ReadT> {
     */
     public connect<T extends Connector<ReadT, unknown>>(connector: T): T {
         this.stream.pipe(connector.stream);
+        if(!this.stream.eventNames().includes('error')){
+            this.stream.once('error', console.error);
+        }
         this.stream.once('error', connector.stream.destroy)
         connector.stream.once('error', this.stream.destroy);
         return connector;
