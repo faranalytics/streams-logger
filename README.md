@@ -88,7 +88,7 @@ Greetings:DEBUG:sayHello:13:9:Hello, World!
 
 ## How to Implement a Transform
 
-A `Transform` is a `Connector` that transforms a message from one form or type to another.  You can see examples of simple transformations in `./src/connections.ts`.
+A `Transform` is a `Connector` that transforms a message from one form or type to another.  You can see examples of simple helper transformations in `./src/connections.ts`.
 
 In this example the `StringToBuffer` `Transform` tranforms a string into a `Buffer` using the given encoding. 
 
@@ -118,7 +118,7 @@ export class StringToConsole extends Connector<string, never> {
 }
 ```
 
-Similarly a `Connector` can be constructed in-place using the `Connector` constructor.  In this example a `Connector` is made from a `net.Socket`, which is a `stream.Duplex` stream.
+Similarly a `Connector` can be constructed using the `Connector` constructor.  In this example a `Connector` is made from a `net.Socket`, which is a `stream.Duplex` stream.
 
 ```ts
 const echoServer = new Connector<Buffer, Buffer>(net.createConnector(3000, '127.0.0.1'));
