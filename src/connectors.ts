@@ -18,7 +18,7 @@ export class BufferToString extends Transform<Buffer, string> {
  */
 export class StringToBuffer extends Transform<string, Buffer> {
     constructor() {
-        super((chunk: string, encoding?: BufferEncoding) => Buffer.from(chunk, encoding));
+        super((chunk: string, encoding?: BufferEncoding) => Buffer.from(chunk, encoding), { writableObjectMode: false, readableObjectMode: false });
     }
 }
 

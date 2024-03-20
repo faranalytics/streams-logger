@@ -95,9 +95,13 @@ In this example the `StringToBuffer` `Transform` tranforms a string into a `Buff
 ```ts
 export class StringToBuffer extends Transform<string, Buffer> {
     constructor() {
-        super((chunk: string, encoding?: BufferEncoding) => Buffer.from(chunk, encoding));
+        super(
+            (chunk: string, encoding?: BufferEncoding) => Buffer.from(chunk, encoding), 
+            { writableObjectMode: false, readableObjectMode: false }
+        );
     }
 }
+
 ```
 
 ## How to Implement a Connector
