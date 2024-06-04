@@ -1,0 +1,44 @@
+{
+  "name": "streams-logger",
+  "version": "0.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "cd ./tests/test && npm install && npm run clean:build && npm start",
+    "clean": "rm -rf ./dist/*",
+    "build": "tsc --build .",
+    "clean:build": "npm run clean && npm run build",
+    "watch": "tsc --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/faranalytics/streams-logger.git"
+  },
+  "author": "FAR",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/faranalytics/streams-logger/issues"
+  },
+  "homepage": "https://github.com/faranalytics/streams-logger#readme",
+  "engines": {
+    "npm": ">=10.2.3",
+    "node": ">=18.19.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.28",
+    "@typescript-eslint/eslint-plugin": "^6.7.5",
+    "@typescript-eslint/parser": "^6.7.5",
+    "eslint": "^8.51.0",
+    "nodemon": "^3.0.1",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "logger",
+    "logging",
+    "logs",
+    "pino",
+    "stream",
+    "streams-logger",
+    "winston"
+  ]
+}
