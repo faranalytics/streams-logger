@@ -1,23 +1,23 @@
 # Streams Logger
 
-Streams is a type-safe logger for TypeScript and Node projects.
+Streams is a type-safe logger for TypeScript and Node.
 
 ## Introduction
 
-Streams offers a type-safe logging facility built on native Node streams that can be used in both TypeScript and Node projects. 
+Streams offers a type-safe logging facility built on native Node streams that can be used in both TypeScript and Node projects.
 
 ### Features
 
-- Type-safe pipelines.
-- Consume any native Node Writable stream as a component of your logger.
-- Error propagation.
+- Type-safe logging pipelines.
+- Consume any native Node Writable stream.
+- A graph API pattern for constucting sophisticated logging pipelines.
+- Error propagation and selective termination of inoperable graph components.
 
 ## Table of Contents
 
 - [Installation](#installation)
 - [Usage](#usage)
 - [How to Implement a Transform](#how-to-implement-a-transform)
-- [How to Implement a Connector](#how-to-implement-a-connector)
 
 ## Installation
 
@@ -27,21 +27,13 @@ npm install streams-logger
 
 ## Usage
 
-In this hypothetical example you will log "Hello, World!" to the console the hard way!  The "Hello, World!" message will undergo the following transformations:
-1. Start with the `string` "Hello, World!". 
-2. Transform it into a `Message<Levels>` and capture its containing function, line number, and column number.
-3. Transform the `Message<Levels>` into a `string`.
-4. Transform the `string` into a `Buffer`.
-5. Send the `Buffer` over a TCP connection to an echo server (i.e., a `net.Server`).
-6. Receive the `Buffer` returned from the `net.Server`.
-7. Transform the `Buffer` into a `string`.
-8. Log the `string` to the console.
+In this hypothetical example you will log "Hello, World!" to the console and to a remote TCP server.
 
 ### Import the dependencies.
 
 ```ts
 import * as net from 'node:net';
-import { BufferToString, Connector, MessageFormatter, Levels, LevelLogger, Message, StringToBuffer, StringToConsole } from "streams-logger";
+import { Logger } from "streams-logger";
 ```
 
 ### Create the echo server.
