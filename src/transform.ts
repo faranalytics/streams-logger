@@ -1,28 +1,32 @@
-import * as strm from 'node:stream';
+import * as s from 'node:stream';
 
-interface TransformOptions<IntT, OutT> {
-    stream?: strm.Transform;
-    transform?: (data: IntT) => Promise<OutT>;
+
+interface TransformOptions<InT, OutT> {
+    stream: s.Writable;
+    transform?: (data: InT) => Promise<OutT>;
 }
 
-export abstract class Transform<InT, OutT> {
+export class Transform<InT, OutT> {
 
-    protected stream?: strm.Transform;
+    protected stream: s.Writable;
 
     constructor({ stream, transform }: TransformOptions<InT, OutT>) {
         this.stream = stream;
 
-        if (stream instanceof strm.Transform) {
-            stream._transform = async (chunk: InT, encoding: BufferEncoding, callback: strm.TransformCallback) => {
-                const result = await this.transform(chunk);
+        if (transform && stream instanceof s.Transform) {
+            stream._transform = async (chunk: InT, encoding: BufferEncoding, callback: s.TransformCallback) => {
+                const result = await transform?.(chunk);
                 callback(null, result);
             }
         }
     }
 
     public connect<T extends Transform<OutT, unknown>>(transform: T): T {
+        this.stream?.pipe(transform.stream);
         return transform;
     }
 
-    protected abstract transform(data: InT): Promise<OutT>;
+    protected write(data: InT) {
+        this.stream.write(data);
+    }
 }

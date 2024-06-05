@@ -1,17 +1,18 @@
 
-import * as strm from 'node:stream';
-import { LogRecord, Transform } from 'streams-logger';
+import { ConsoleHandler, Formatter, LogRecord, Logger, SyslogLevelT } from 'streams-logger';
+
+const serializer = async ({ message, name, level, error, func, url, line, col }: LogRecord<string, SyslogLevelT>) => `${new Date().toISOString()}:${level}:${func}:${line}:${col}:${message}\n`;
 
 
-class Logger extends Transform<string, LogRecord> {
+const logger = new Logger();
+const formatter = new Formatter(serializer)
+const handler = new ConsoleHandler();
 
-    constructor() {
-        super({ stream: new strm.Transform() });
-    }
+logger.connect(formatter).connect(handler);
+
+function test() {
+    logger.error('TEST');
 }
 
-const t1 = new Transform<string, string>({});
-const t2 = new Transform<string, string>({});
-const t3 = new Transform<string, string>({});
+test();
 
-t1.connect(t2).connect(t3);

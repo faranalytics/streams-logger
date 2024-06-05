@@ -1,14 +1,16 @@
-export interface LogRecordOptions {
-    message: string;
+import { KeysUppercase } from "./types";
+
+export interface LogRecordOptions<MessageT, LevelT> {
+    message: MessageT;
     name: string;
-    level: unknown;
+    level: KeysUppercase<LevelT>;
     depth: number;
 }
 
-export class LogRecord {
-    public message: string;
+export class LogRecord<MessageT, LevelT> {
+    public message: MessageT;
     public name: string;
-    public level: unknown;
+    public level: KeysUppercase<LevelT>;
     public error?: Error;
     public func?: string;
     public url?: string;
@@ -18,7 +20,7 @@ export class LogRecord {
     private depth: number;
     private regex: RegExp;
     
-    constructor({ message, name, level, depth }: LogRecordOptions) {
+    constructor({ message, name, level, depth }: LogRecordOptions<MessageT, LevelT>) {
         this.message = message;
         this.name = name;
         this.level = level;
