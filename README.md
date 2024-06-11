@@ -1,5 +1,7 @@
 # Streams Logger
 
+> This package is an ongoing experimental work.
+
 Streams is a type-safe logger for TypeScript and Node projects.
 
 ## Introduction

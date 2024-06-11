@@ -8,7 +8,10 @@ const logger = new Logger();
 const formatter = new Formatter(serializer)
 const handler = new ConsoleHandler();
 
-logger.connect(formatter).connect(handler);
+logger.connect(
+    formatter.connect(handler)
+
+).connect(handler)
 
 function test() {
     logger.error('TEST');

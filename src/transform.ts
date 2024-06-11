@@ -21,10 +21,10 @@ export class Transform<InT, OutT> {
         }
     }
 
-    public connect<T extends Transform<OutT, unknown>>(transform: T): T {
-        this.stream?.pipe(transform.stream);
-        return transform;
-    }
+    // public connect<T extends Transform<OutT, unknown>>(transform: T): T {
+    //     this.stream?.pipe(transform.stream);
+    //     return transform;
+    // }
 
     protected write(data: InT) {
         this.stream.write(data);
