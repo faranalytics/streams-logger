@@ -12,7 +12,7 @@ export interface LogData {
 }
 
 export async function transform(data: LogData): Promise<LogRecord<string, SyslogLevelT>> {
-    const record = new LogRecord<string, SyslogLevelT>({...{ depth:11}, ...data});
+    const record = new LogRecord<string, SyslogLevelT>({...{ depth:10}, ...data});
     return record;
 }
 
@@ -32,55 +32,51 @@ export class Logger extends Transform<LogData, LogRecord<string, SyslogLevelT>> 
         this.name = options?.name ?? '';
     }
 
-    private log (message:string, level: KeysUppercase<SyslogLevelT>) {
-        this.write({message, name: this.name, level});
-    }
-
     public debug(message: string): void {
         if (this.level && this.level >= SyslogLevel.DEBUG) {
-            this.log(message, 'DEBUG');
+            this.write({message, name: this.name, level: 'DEBUG'});
         }
     }
 
     public info(message: string): void {
         if (this.level && this.level >= SyslogLevel.INFO) {
-            this.log(message, 'INFO');
+            this.write({message, name: this.name, level: 'INFO'});
         }
     }
 
     public notice(message: string): void {
         if (this.level && this.level >= SyslogLevel.NOTICE) {
-            this.log(message, 'NOTICE');
+            this.write({message, name: this.name, level: 'NOTICE'});
         }
     }
 
     public warn(message: string): void {
         if (this.level && this.level >= SyslogLevel.WARN) {
-            this.log(message, 'WARN');
+            this.write({message, name: this.name, level: 'WARN'});
         }
     }
 
     public error(message: string): void {
         if (this.level && this.level >= SyslogLevel.ERROR) {
-            this.log(message, 'ERROR');
+            this.write({message, name: this.name, level: 'ERROR'});
         }
     }
 
     public crit(message: string): void {
         if (this.level && this.level >= SyslogLevel.CRIT) {
-            this.log(message, 'CRIT');
+            this.write({message, name: this.name, level: 'CRIT'});
         }
     }
 
     public alert(message: string): void {
         if (this.level && this.level >= SyslogLevel.ALERT) {
-            this.log(message, 'ALERT');
+            this.write({message, name: this.name, level: 'ALERT'});
         }
     }
 
     public emerg(message: string): void {
         if (this.level && this.level >= SyslogLevel.EMERG) {
-            this.log(message, 'EMERG');
+            this.write({message, name: this.name, level: 'EMERG'});
         }
     }
 }

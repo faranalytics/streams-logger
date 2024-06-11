@@ -5,17 +5,22 @@ const serializer = async ({ message, name, level, error, func, url, line, col }:
 
 
 const logger = new Logger();
-const formatter = new Formatter(serializer)
+const formatter1 = new Formatter(serializer);
+const formatter2 = new Formatter(serializer);
 const handler = new ConsoleHandler();
 
 logger.connect(
-    formatter.connect(handler)
-
-).connect(handler)
+    formatter1.connect(handler),
+    formatter2.connect(handler)
+)
 
 function test() {
     logger.error('TEST');
 }
 
-test();
+function main() {
+    test();
+}
+
+main();
 
