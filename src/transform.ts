@@ -39,17 +39,22 @@ export class Transform<InT, OutT> {
     }
 
     protected async write(data: InT) {
-        if (!this.stream.writableNeedDrain) {
-            this.queue.push(data);
-            while(this.queue.length) {
-                const data = this.queue.shift();
-                if (!this.stream.write(data)) {
-                    await new Promise((r,j)=>this.stream.once('drain', r));
+        try {
+            if (!this.stream.writableNeedDrain) {
+                this.queue.push(data);
+                while (this.queue.length) {
+                    const data = this.queue.shift();
+                    if (!this.stream.write(data)) {
+                        await new Promise((r, e) => this.stream.once('drain', r).once('error', e));
+                    }
                 }
             }
+            else {
+                this.queue.push(data);
+            }
         }
-        else {
-            this.queue.push(data);
+        catch (err) {
+            console.error(err);
         }
     }
 }
