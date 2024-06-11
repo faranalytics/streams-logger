@@ -1,6 +1,6 @@
 # Streams Logger
 
-> This package is an experimental effort at developing a logging API that works on Node streams.
+> This package is an experimental effort at developing a type-safe logging API that works on Node streams.
 
 Streams is a type-safe logger for TypeScript and Node projects.
 
