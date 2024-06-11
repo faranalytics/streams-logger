@@ -23,7 +23,7 @@ export class Transform<InT, OutT> {
         }
     }
 
-    public connect<T extends Transform<OutT, unknown>>(...transforms: Array<T>): Transform<InT, OutT> {
+    public connect<T extends Transform<OutT, unknown>>(...transforms: Array<T>): typeof this {
         for (const transform of transforms) {
             if (this.stream instanceof s.Readable) {
                 this.stream?.pipe(transform.stream);
