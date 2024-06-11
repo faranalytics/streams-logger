@@ -1,6 +1,5 @@
 import * as s from 'node:stream';
 
-
 interface TransformOptions<InT, OutT> {
     stream: s.Writable;
     transform?: (data: InT) => Promise<OutT>;
@@ -38,7 +37,7 @@ export class Transform<InT, OutT> {
         return this;
     }
 
-    protected async write(data: InT) {
+    protected async write(data: InT): Promise<void> {
         try {
             if (!this.stream.writableNeedDrain) {
                 this.queue.push(data);
