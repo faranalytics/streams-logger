@@ -13,7 +13,7 @@ export {
     SyslogLevel,
     SyslogLevelT,
     Formatter,
-    ConsoleHandler
+    ConsoleHandler,
 }
 
 Error.stackTraceLimit = Infinity;
