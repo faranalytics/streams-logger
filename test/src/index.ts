@@ -1,8 +1,9 @@
 
 import { ConsoleHandler, Formatter, LogRecord, Logger, SyslogLevelT } from 'streams-logger';
 
-const serializer = async ({ message, name, level, error, func, url, line, col }: LogRecord<string, SyslogLevelT>) => `${new Date().toISOString()}:${level}:${func}:${line}:${col}:${message}\n`;
-
+const serializer = async ({ message, name, level, error, func, url, line, col }: LogRecord<string, SyslogLevelT>) => {
+    return `${new Date().toISOString()}:${level}:${func}:${line}:${col}:${message}\n`;
+}
 
 const logger = new Logger();
 const formatter1 = new Formatter(serializer);
