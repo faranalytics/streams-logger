@@ -6,6 +6,13 @@ import { SyslogLevelT } from "./syslog";
 export class Formatter extends Transform<LogRecord<string, SyslogLevelT>, string> {
 
     constructor(transform: (record: LogRecord<string, SyslogLevelT>) => Promise<string>) {
-        super({ stream: new s.Transform({writableObjectMode:true, readableObjectMode:false}), transform });
+        super(new s.Transform({
+            writableObjectMode: true, 
+            readableObjectMode: false,
+            transform: async (chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: s.TransformCallback)=>{
+                const result = await transform(chunk);
+                callback(null, result);
+            }
+        }));
     }
 }
