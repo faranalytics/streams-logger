@@ -85,7 +85,7 @@ sayHello();
 Please see the [Usage](#usage) section above or the ["Hello, World!"](https://github.com/faranalytics/streams-logger/tree/main/examples/hello_world) example for a working implementation.
 
 ## API
-### `new streams-logger.Transform<InT, OutT>(options)`
+### new streams-logger.Transform\<InT, OutT\>(options)
 - options
     - `stream` `<stream.Writable>` An instance of a `stream.Writable`.
     - `transform` `<(data: InT) => Promise<OutT>>` A function that will transform data of type `InT` to `outT`.
