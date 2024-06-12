@@ -101,7 +101,12 @@ Returns: `<Transform<InT, OutT>>`
 Returns: `<Promise<void>>`
 
 ## How to Implement a Transform
-In order to implement a `Transform` first define an asynchronous transform function and extend the Transform class.  For example, the following implementation will convert numeric strings to numbers.
+
+In order to implement a `Transform`:
+1. Define an asynchronous transform function.
+2. Extend the Transform class.  
+
+For example, the following implementation will convert numeric strings to numbers.  In this example `writableObjectMode` and `readableObjectMode` are both set to true; hence, the object mode should be set with respect to the inputs and outputs of your `Transform`.
 
 ```ts
 async function transform(data: string): Promise<number> {
@@ -112,10 +117,6 @@ class StringToNumber extends Transform<string, number> {
 
     constructor() {
         super({ stream: new stream.Transform({ writableObjectMode: true, readableObjectMode: true }), transform });
-    }
-
-    public convert(num: string): void {
-        this.write(num);
     }
 }
 ```
