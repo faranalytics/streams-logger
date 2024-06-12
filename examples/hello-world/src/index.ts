@@ -1,12 +1,8 @@
-import * as net from "node:net";
-import { ConsoleHandler, Formatter, LogRecord, Logger, SyslogLevel, SyslogLevelT, Transform } from 'streams-logger';
+import { Logger, Formatter, ConsoleHandler, SyslogLevel } from 'streams-logger';
 
-const serializer = async ({ message, name, level, error, func, url, line, col }: LogRecord<string, SyslogLevelT>) => {
-    return `${new Date().toISOString()}:${level}:${func}:${line}:${col}:${message}\n`;
-}
 
 const logger = new Logger({ level: SyslogLevel.DEBUG });
-const formatter = new Formatter(serializer);
+const formatter = new Formatter(async ($) => `${new Date().toISOString()}:${$.level}:${$.func}:${$.line}:${$.col}:${$.message}\n`);
 const consoleHandler = new ConsoleHandler();
 
 const log = logger.connect(
@@ -15,14 +11,8 @@ const log = logger.connect(
     )
 );
 
-function test() {
-    log.debug('Hello, world!');
-    log.debug('Hello, world!');
+function sayHello() {
+    log.info('Hello, World!');
 }
 
-function main() {
-    test();
-}
-
-main();
-
+sayHello();
