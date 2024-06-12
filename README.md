@@ -34,10 +34,11 @@ npm install streams-logger
 
 The Streams framework is based on the idea that logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, etc.) is added to the log message prior to it being printed.  
 
-You can use the built-in Transforms supplied with the package for common logging tasks or [build you own type-safe Transforms](#how-to-implement-a-transform) for logging anything that can move through a Node.js Buffer or Object [stream](https://nodejs.org/api/stream.html); that's just about everything.
+You can use the built-in Transforms (e.g., Logger, Formatter, ConsoleHandler) supplied with the package for common logging tasks or [build you own type-safe Transforms](#how-to-implement-a-transform) for logging anything that can pass through a Node.js Buffer or Object [stream](https://nodejs.org/api/stream.html).
+
 ### Graph API Pattern
 
-Streams uses a [graph API pattern](#connect-the-logger-to-the-formatter-and-connect-the-formatter-to-the-consolehandler) for constructing logging operations.  Hence, a network of Transforms comprise a Stream logging configuration.
+Streams uses a [graph API pattern](#connect-the-logger-to-the-formatter-and-connect-the-formatter-to-the-consolehandler) for constructing a logger. Each graph consists of a network of Transforms that together comprise the logging pipeline.
 
 ## Usage
 
