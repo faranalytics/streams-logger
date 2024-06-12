@@ -112,7 +112,7 @@ In order to implement a `Transform`:
 1. Define an asynchronous transform function.
 2. Extend the Transform class and pass the transform function to the `Transform` constructor.  
 
-For example, the following implementation will convert numeric strings to numbers.  In this example `writableObjectMode` and `readableObjectMode` are both set to true; hence, the object mode should be set with respect to the inputs and outputs of your `Transform`.
+For example, the following implementation will convert numeric strings to numbers.  In this example `writableObjectMode` and `readableObjectMode` are both set to true; hence, the object mode should reflect the inputs and outputs of your `Transform`.
 
 ```ts
 async function transform(data: string): Promise<number> {
