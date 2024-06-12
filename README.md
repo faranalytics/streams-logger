@@ -90,12 +90,12 @@ Please see the [Usage](#usage) section above or the ["Hello, World!"](https://gi
     - `stream` `<stream.Writable>` An instance of a `stream.Writable`.
     - `transform` `<(data: InT) => Promise<OutT>>` A function that will transform data of type `InT` to `outT`.
 
-### `transform.connect<T extends Transform<OutT, unknown>>(...transforms: Array<T>)`
+### transform.connect\<T extends Transform\<OutT, unknown\>\>(...transforms: Array\<T\>)
 - transforms `<Array<T>>` An array of `Transforms<OutT, unknown>`.
 
 Returns: `<Transform<InT, OutT>>`
 
-### `transform.write(data: InT)`
+### transform.write(data: InT)
 - data `<InT>` Data to write to the `stream.Writable`.
 
 Returns: `<Promise<void>>`
