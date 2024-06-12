@@ -4,7 +4,7 @@ Streams is a type-safe logger for TypeScript and Node.
 
 ## Introduction
 
-Streams offers an intuitive type-safe logging facility built on native Node streams.  You can use the built-in logging components for [common logging tasks](#usage) or implement your own [Transforms](#how-to-implement-a-transform) in order to wide range of logging scenarios.
+Streams offers an intuitive type-safe logging facility built on native Node streams.  You can use the built-in logging components for [common logging tasks](#usage) or implement your own [Transforms](#how-to-implement-a-transform) in order to handle a wide range of logging scenarios.
 
 ### Features
 
