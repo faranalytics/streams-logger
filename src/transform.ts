@@ -1,6 +1,5 @@
 import * as s from 'node:stream';
 
-
 interface TransformOptions<InT, OutT> {
     stream: s.Writable;
     transform?: (data: InT) => Promise<OutT>;
