@@ -18,6 +18,7 @@ Streams offers an intuitive type-safe logging facility built on native Node stre
 - [Installation](#installation)
 - [Concepts](#concepts)
 - [Usage](#usage)
+- [Examples](#examples)
 - [How to Implement a Transform](#how-to-implement-a-transform)
 
 ## Installation
@@ -30,7 +31,7 @@ npm install streams-logger
 
 ### Transform
 
-The Streams framework is based on the idea that logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, etc.) is added to the log message prior to being printed to the console.  A Streams logging task involves data flowing through a network of Transforms.  You can use the built-in Transforms supplied with the package for common logging tasks or [build you own type-safe Transforms](#how-to-implement-a-transform) for logging anything that can move through a Buffer or Object stream; that's just about anything.
+The Streams framework is based on the idea that logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, etc.) is added to the log message prior to being printed.  A Streams logging task involves data flowing through a network of Transforms.  You can use the built-in Transforms supplied with the package for common logging tasks or [build you own type-safe Transforms](#how-to-implement-a-transform) for logging anything that can move through a Node.js Buffer or Object [stream](https://nodejs.org/api/stream.html); that's just about anything.
 
 ## Usage
 
@@ -77,6 +78,7 @@ sayHello();
 ```bash
 2024-06-12T00:10:15.894Z:INFO:sayHello:7:9:Hello, World!
 ```
+## Examples
 
 ## How to Implement a Transform
 
