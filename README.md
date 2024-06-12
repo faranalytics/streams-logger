@@ -80,5 +80,8 @@ sayHello();
 ```
 ## Examples
 
+### *An instance of "Hello, World!"* <sup><sup>(example)</sup></sup>
+Please see the [Usage](#usage) section above or the ["Hello, World!"](https://github.com/faranalytics/streams-logger/tree/main/examples/hello_world) example for a working implementation.
+
 ## How to Implement a Transform
 
