@@ -37,7 +37,7 @@ export class Transform<InT, OutT> {
         return this;
     }
 
-    protected async write(data: InT) {
+    protected async write(data: InT): Promise<void> {
         try {
             if (!this.stream.writableNeedDrain) {
                 this.queue.push(data);

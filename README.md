@@ -4,7 +4,7 @@ Streams is a type-safe logger for TypeScript and Node.
 
 ## Introduction
 
-Streams offers an intuitive type-safe logging facility built on native Node streams.  You can use the built-in logging components for [common logging tasks](#usage) or implement your own [Transform](#how-to-implement-a-transform).
+Streams offers an intuitive type-safe logging facility built on native Node streams.  You can use the built-in logging components for [common logging tasks](#usage) or implement your own [Transforms](#how-to-implement-a-transform).
 
 ### Features
 
@@ -19,6 +19,7 @@ Streams offers an intuitive type-safe logging facility built on native Node stre
 - [Concepts](#concepts)
 - [Usage](#usage)
 - [Examples](#examples)
+- [API](#api)
 - [How to Implement a Transform](#how-to-implement-a-transform)
 
 ## Installation
@@ -83,5 +84,38 @@ sayHello();
 ### *An instance of "Hello, World!"* <sup><sup>(example)</sup></sup>
 Please see the [Usage](#usage) section above or the ["Hello, World!"](https://github.com/faranalytics/streams-logger/tree/main/examples/hello_world) example for a working implementation.
 
-## How to Implement a Transform
+## API
+### `new streams-logger.Transform<InT, OutT>(options)`
+- options
+    - `stream` `<stream.Writable>` An instance of a `stream.Writable`.
+    - `transform` `<(data: InT) => Promise<OutT>>` A function that will transform data of type `InT` to `outT`.
 
+### `transform.connect<T extends Transform<OutT, unknown>>(...transforms: Array<T>)`
+- transforms `<Array<T>>` An array of `Transforms<OutT, unknown>`.
+
+Returns: `<Transform<InT, OutT>>`
+
+### `transform.write(data: InT)`
+- data `<InT>` Data to write to the `stream.Writable`.
+
+Returns: `<Promise<void>>`
+
+## How to Implement a Transform
+In order to implement a `Transform` first define an asynchronous transform function and extend the Transform class.  For example, the following implementation will convert numeric strings to numbers.
+
+```ts
+async function transform(data: string): Promise<number> {
+    return parseInt(data);
+}
+
+class StringToNumber extends Transform<string, number> {
+
+    constructor() {
+        super({ stream: new stream.Transform({ writableObjectMode: true, readableObjectMode: true }), transform });
+    }
+
+    public convert(num: string): void {
+        this.write(num);
+    }
+}
+```
