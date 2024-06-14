@@ -1,17 +1,23 @@
-import * as s from "node:stream";
-import { LogRecord } from "./log_record";
-import { Transform } from "./transform";
-import { SyslogLevelT } from "./syslog";
+import * as s from 'node:stream';
+import { LogRecord } from './log_record.js';
+import { Transform } from 'graph-transform';
+import { SyslogLevelT } from './syslog.js';
 
-export class Formatter extends Transform<LogRecord<string, SyslogLevelT>, string> {
+export interface FormatterOptions {
+    (record: LogRecord<string, SyslogLevelT>): Promise<string>
+}
 
-    constructor(transform: (record: LogRecord<string, SyslogLevelT>) => Promise<string>) {
+export class Formatter extends Transform<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>> {
+
+    constructor(transform: FormatterOptions, options?: s.TransformOptions) {
         super(new s.Transform({
-            writableObjectMode: true, 
-            readableObjectMode: false,
-            transform: async (chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: s.TransformCallback)=>{
-                const result = await transform(chunk);
-                callback(null, result);
+            ...options, ...{
+                writableObjectMode: true,
+                readableObjectMode: true,
+                transform: async (chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: s.TransformCallback) => {
+                    chunk.message = await transform(chunk);
+                    callback(null, chunk);
+                }
             }
         }));
     }

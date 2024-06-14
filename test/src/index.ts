@@ -1,45 +1,76 @@
-import * as net from "node:net";
-import * as stream from "node:stream";
-import { ConsoleHandler, Formatter, LogRecord, Logger, StringToBuffer, SyslogLevel, SyslogLevelT, Transform, BufferToString } from 'streams-logger';
-import { TemporalTransform } from "./temporal_transform.js";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import * as net from 'node:net';
 
-const serializer = async ({ message, name, level, func, url, line, col }: LogRecord<string, SyslogLevelT>) => {
-    return `${new Date().toISOString()}:${level}:${func}:${line}:${col}:${message}\n`;
-}
+import {
+    ConsoleHandler,
+    Formatter,
+    LogRecord,
+    Logger,
+    SyslogLevel,
+    SyslogLevelT,
+    Transform,
+    BufferToString,
+    JSONToObject,
+    StringToBuffer,
+    ObjectToJSON,
+    RotatingFileHandler
+} from 'streams-logger';
 
 const logger = new Logger({ name: 'main', level: SyslogLevel.DEBUG });
-const formatter = new Formatter(serializer);
-const consoleHandler = new ConsoleHandler();
-const temporalTransform1 = new TemporalTransform({ time: 5000 });
-const temporalTransform2 = new TemporalTransform({ time: 1000 });
+const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 const stringToBuffer = new StringToBuffer();
 const bufferToString = new BufferToString();
+const objectToJSON = new ObjectToJSON();
+const jsonToObject = new JSONToObject<LogRecord<string, SyslogLevelT>>();
+const rotatingFileHandler = new RotatingFileHandler({ path: './message.log' });
 
-net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000);
+const server = net.createServer((socket: net.Socket) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const serializer = async ({ message, name, level, func, url, line, col }: LogRecord<string, SyslogLevelT>) => {
+        return `${new Date().toISOString()}:${level}:${func}:${line}:${col}:${message}\n`;
+    };
+    const formatter = new Formatter(serializer);
+    const bufferToString = new BufferToString();
+    const objectToJSON = new ObjectToJSON();
+    const jsonToObject = new JSONToObject<LogRecord<string, SyslogLevelT>>();
+    const stringToBuffer = new StringToBuffer();
+    const socketTransform = new Transform<Buffer, Buffer>(socket);
+    socketTransform.connect(
+        bufferToString.connect(
+            jsonToObject.connect(
+                formatter.connect(
+                    objectToJSON.connect(
+                        stringToBuffer.connect(
+                            socketTransform
+                        )
+                    )
+                )
+            )
+        )
+    );
+}).listen(3000);
 const socket = net.createConnection({ port: 3000 });
 await new Promise((r, e) => socket.once('connect', r).once('error', e));
-const socketHandler = new Transform<Buffer, Buffer>(socket);
+const socketTransform = new Transform<Buffer, Buffer>(socket);
 
 const log = logger.connect(
-    formatter.connect(
-        temporalTransform1.connect(
-            consoleHandler
-        ),
-        temporalTransform2.connect(
-            consoleHandler
-        ),
+    objectToJSON.connect(
         stringToBuffer.connect(
-            socketHandler.connect(
+            socketTransform.connect(
                 bufferToString.connect(
-                    consoleHandler
+                    jsonToObject.connect(
+                        consoleHandler,
+                        rotatingFileHandler
+                    )
                 )
             )
         )
     )
-)
+);
 
 function test() {
-    log.debug('TEST');
+    log.warn('TEST');
+    // setTimeout(() => { server.close(); socket.destroy(); }, 1000);
 }
 
 function main() {
