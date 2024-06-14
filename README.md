@@ -21,6 +21,7 @@ Streams offers an intuitive type-safe logging facility built on native Node stre
 - [Examples](#examples)
 - [API](#api)
 - [How to Implement a Transform](#how-to-implement-a-transform)
+- [How to Consume a stream.Duplex](#how-to-consume-a-streamduplex)
 
 ## Installation
 
