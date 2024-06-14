@@ -114,7 +114,7 @@ In order to implement a `Transform`, extend the `streams-logger.Transform` class
 
 For example, the following `StringToNumber` implementation will convert a numeric string to a number.  
 
-> NB: `writableObjectMode` and `readableObjectMode` are both set to true; hence, the object modes should reflect the inputs and outputs of your `Transform`.
+> NB: `writableObjectMode` and `readableObjectMode` are both set to true; hence, it's important that the object modes reflect the inputs and outputs of your `Transform`.
 
 ```ts
 class StringToNumber extends Transform<Buffer, number> {
