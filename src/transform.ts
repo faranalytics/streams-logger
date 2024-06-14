@@ -1,10 +1,5 @@
 import * as s from 'node:stream';
 
-interface TransformOptions<InT, OutT> {
-    stream: s.Writable;
-    transform?: (data: InT, encoding?: BufferEncoding) => Promise<OutT>;
-}
-
 export class Transform<InT, OutT> {
 
     protected stream: s.Writable | s.Readable;
@@ -25,6 +20,15 @@ export class Transform<InT, OutT> {
                         this.stream.unpipe(transform.stream);
                     }
                 });
+            }
+        }
+        return this;
+    }
+
+    public disconnect<T extends Transform<OutT, unknown>>(...transforms: Array<T>): typeof this {
+        for (const transform of transforms) {
+            if (this.stream instanceof s.Readable && transform.stream instanceof s.Writable) {
+                this.stream.unpipe(transform.stream);
             }
         }
         return this;
