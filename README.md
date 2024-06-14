@@ -113,7 +113,7 @@ Returns: `<Promise<void>>`
 
 In order to implement a `Transform`, extend the `streams-logger.Transform` class and pass a `stream.Transform` implementation to the super's constructor.  
 
-For example, the following implementation will convert a numeric string to a number.  
+For example, the following `StringToNumber` implementation will convert a numeric string to a number.  
 
 > NB: `writableObjectMode` and `readableObjectMode` are both set to true; hence, the object modes should reflect the inputs and outputs of your `Transform`.
 
@@ -136,7 +136,7 @@ class StringToNumber extends Transform<Buffer, number> {
 ## How to Consume a stream.Duplex
 
 In this hypothetical example a type-safe `Transform` is constructed from a `net.Socket`.
- 
+
 ```ts
 net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000);
 const socket = net.createConnection({ port: 3000 });
