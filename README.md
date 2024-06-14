@@ -4,7 +4,7 @@ Streams is a type-safe logger for TypeScript and Node.
 
 ## Introduction
 
-Streams offers an intuitive type-safe logging facility built on native Node streams.  You can use the built-in logging components for [common logging tasks](#usage) or implement your own [Transforms](#how-to-implement-a-transform) in order to handle a wide range of logging scenarios.
+Streams offers an intuitive type-safe logging facility built on native Node streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler) for [common logging tasks](#usage) or implement your own [Transforms](#how-to-implement-a-transform) in order to handle a wide range of logging scenarios.
 
 ### Features
 
@@ -32,13 +32,11 @@ npm install streams-logger
 
 ### Transform
 
-The Streams framework is based on the idea that logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, etc.) is added to the log message prior to it being printed.  
-
-You can use the built-in Transforms (e.g., Logger, Formatter, ConsoleHandler) supplied with the package for common logging tasks or [build you own type-safe Transforms](#how-to-implement-a-transform) for logging anything that can pass through a Node.js Buffer or Object [stream](https://nodejs.org/api/stream.html).
+The Streams framework is based on the idea that logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, etc.) is added to the log message prior to it being printed.  These transformation steps are realized through a type-safe `Transform` implementation. 
 
 ### Graph API Pattern
 
-Streams uses a [graph API pattern](#connect-the-logger-to-the-formatter-and-connect-the-formatter-to-the-consolehandler) for constructing a logger. Each graph consists of a network of Transforms that together comprise the logging pipeline.
+Streams uses a [graph API pattern](#connect-the-logger-to-the-formatter-and-connect-the-formatter-to-the-consolehandler) for constructing a logger. Each graph consists of a network of `Transforms` that together comprise the logging pipeline.
 
 ## Usage
 
@@ -51,9 +49,9 @@ import { Logger, Formatter, ConsoleHandler, SyslogLevel } from 'streams-logger';
 ```
 
 ### Create an instance of a Logger, Formatter, and ConsoleHandler.
-- The Logger will be set to log at level `SyslogLevel.INFO`.  
-- The Formatter will be passed a serialization function that will output a string containing the ISO time, the log level, the function name, the line number, the column number, and the log message.
-- The ConsoleHandler will log the message to `process.stdout`.
+- The `Logger` will be set to log at level `SyslogLevel.INFO`.  
+- The `Formatter` will be passed a serialization function that will output a string containing the ISO time, the log level, the function name, the line number, the column number, and the log message.
+- The `ConsoleHandler` will log the message to `process.stdout`.
 
 ```ts
 const logger = new Logger({ level: SyslogLevel.INFO });
@@ -62,7 +60,7 @@ const consoleHandler = new ConsoleHandler();
 ```
 
 ### Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler.
-Streams uses a graph-style API in order to construct a network of log Transforms.  Each component in the network, the Logger, the Formatter, and the ConsoleHandler, is a [Transform](#transform).
+Streams uses a graph-style API in order to construct a network of log Transforms.  Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler`, is a [Transform](#transform).
 ```ts
 const log = logger.connect(
     formatter.connect(
