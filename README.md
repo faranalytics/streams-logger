@@ -95,10 +95,14 @@ Please see the [Usage](#usage) section above or the ["Hello, World!"](https://gi
 
 **new streams-logger.Transform\<InT, OutT\>(options)**
 - options
-    - `stream` `<stream.Writable>` An instance of a `stream.Writable`.
-    - `transform` `<(data: InT) => Promise<OutT>>` A function that will transform data of type `InT` to `outT`.
+    - `stream` `<stream.Writable | stream.Readable>` An instance of a writable or readable stream.
 
 **transform.connect\<T extends Transform\<OutT, unknown\>\>(...transforms: Array\<T\>)**
+- transforms `<Array<T>>` An array of `Transforms<OutT, unknown>`.
+
+Returns: `<Transform<InT, OutT>>`
+
+**transform.disconnect\<T extends Transform\<OutT, unknown\>\>(...transforms: Array\<T\>)**
 - transforms `<Array<T>>` An array of `Transforms<OutT, unknown>`.
 
 Returns: `<Transform<InT, OutT>>`
