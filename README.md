@@ -134,3 +134,12 @@ class StringToNumber extends Transform<Buffer, number> {
 ```
 
 ## How to Consume a stream.Duplex
+
+In this hypothetical example a type-safe `Transform` is constructed from a `net.Socket`.
+ 
+```ts
+net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000);
+const socket = net.createConnection({ port: 3000 });
+await new Promise((r, e) => socket.once('connect', r).once('error', e));
+const socketHandler = new Transform<Buffer, Buffer>(socket);
+```
