@@ -28,7 +28,14 @@ export class Logger extends Transform<LogData, LogRecord<string, SyslogLevelT>> 
     public name: string;
 
     constructor(options?: LoggerOptions) {
-        super({ stream: new s.Transform({ writableObjectMode: true, readableObjectMode: true }), transform });
+        super(new s.Transform({
+            writableObjectMode: true,
+            readableObjectMode: true,
+            transform: (chunk: LogData, encoding: BufferEncoding, callback: s.TransformCallback) => {
+                const record = new LogRecord<string, SyslogLevelT>({ ...{ depth: 2 }, ...chunk });
+                callback(null, record);
+            }
+        }));
         this.level = options?.level ?? SyslogLevel.WARN;
         this.name = options?.name ?? '';
     }

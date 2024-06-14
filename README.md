@@ -91,38 +91,46 @@ sayHello();
 Please see the [Usage](#usage) section above or the ["Hello, World!"](https://github.com/faranalytics/streams-logger/tree/main/examples/hello_world) example for a working implementation.
 
 ## API
-### new streams-logger.Transform\<InT, OutT\>(options)
+
+### The `Transform` class.
+
+**new streams-logger.Transform\<InT, OutT\>(options)**
 - options
     - `stream` `<stream.Writable>` An instance of a `stream.Writable`.
     - `transform` `<(data: InT) => Promise<OutT>>` A function that will transform data of type `InT` to `outT`.
 
-### transform.connect\<T extends Transform\<OutT, unknown\>\>(...transforms: Array\<T\>)
+**transform.connect\<T extends Transform\<OutT, unknown\>\>(...transforms: Array\<T\>)**
 - transforms `<Array<T>>` An array of `Transforms<OutT, unknown>`.
 
 Returns: `<Transform<InT, OutT>>`
 
-### transform.write(data: InT)
+**transform.write(data: InT)**
 - data `<InT>` Data to write to the `stream.Writable`.
 
 Returns: `<Promise<void>>`
 
-## How to Implement a Transform
+## How to Implement a streams-logger.Transform
 
-In order to implement a `Transform`:
-1. Define an asynchronous transform function.
-2. Extend the Transform class and pass the transform function to the `Transform` constructor.  
+In order to implement a `Transform`, extend the `streams-logger.Transform` class and pass a `stream.Transform` implementation to the super's constructor.  
 
-For example, the following implementation will convert numeric strings to numbers.  In this example `writableObjectMode` and `readableObjectMode` are both set to true; hence, the object mode should reflect the inputs and outputs of your `Transform`.
+For example, the following implementation will convert a numeric string to a number.  
+
+> NB: `writableObjectMode` and `readableObjectMode` are both set to true; hence, the object modes should reflect the inputs and outputs of your `Transform`.
 
 ```ts
-async function transform(data: string): Promise<number> {
-    return parseInt(data);
-}
-
-class StringToNumber extends Transform<string, number> {
+class StringToNumber extends Transform<Buffer, number> {
 
     constructor() {
-        super({ stream: new stream.Transform({ writableObjectMode: true, readableObjectMode: true }), transform });
+        super(new stream.Transform({
+            writableObjectMode: true,
+            readableObjectMode: true,
+            transform: (chunk: Buffer, encoding: BufferEncoding, callback: stream.TransformCallback) => {
+                const result = parseFloat(chunk.toString());
+                callback(null, result);
+            }
+        }));
     }
 }
 ```
+
+## How to Consume a stream.Duplex
