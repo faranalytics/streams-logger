@@ -1,5 +1,5 @@
 
-import { Transform } from "./transform";
+import { Transform } from "transformative";
 
 export class ConsoleHandler extends Transform<string, never> {
 

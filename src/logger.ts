@@ -1,6 +1,6 @@
 import * as s from "node:stream";
 import { LogRecord } from "./log_record";
-import { Transform } from "./transform";
+import { Transform } from "transformative";
 import { SyslogLevel, SyslogLevelT } from "./syslog";
 import { KeysUppercase } from "./types";
 

@@ -24,6 +24,9 @@
     "npm": ">=10.2.3",
     "node": ">=18.19.0"
   },
+  "dependencies": {
+    "transformative": "^0.0.1"
+  },
   "devDependencies": {
     "@types/node": "^20.11.28",
     "@typescript-eslint/eslint-plugin": "^6.7.5",
