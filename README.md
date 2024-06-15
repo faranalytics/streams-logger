@@ -198,10 +198,20 @@ The column of the logging event.
 
 The `Logger` creates and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the LogRecord *may* be serialized into a string.  This can be accomplished by creating an instance of a `Formatter` and passing in a custom **serialization** function.
 
+### Log Record Properties
 A `LogRecord<string, SyslogLevelT>` object is passed to the serializer that contains the following properties.
 
+- message `<string>` The logged message.
+- name `<string>` The name of the `Logger`.
+- level `<DEBUG | INFO | NOTICE | WARN | ERROR | CRIT | ALERT | EMERG>` An upper case string representation of the level.
+- func `<string>` The name of the function.
+- url `<string>`  The stacktrace URL.
+- line `<string>` The line number of the logging event.
+- col `<string>` The column number of the logging event.
 
-For example, in the following code excerpt, a serialize is implemented that logs:
+### Formatting Example
+
+In the following code excerpt, a serializer is implemented that logs:
 
 1. the current time
 2. the log level
