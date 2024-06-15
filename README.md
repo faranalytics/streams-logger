@@ -4,13 +4,13 @@ Streams is a type-safe logger for TypeScript and Node.
 
 ## Introduction
 
-Streams offers an intuitive type-safe logging facility built on native Node streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler) for [common logging tasks](#usage) or implement your own [Transforms](#how-to-implement-a-transform) in order to handle a wide range of logging scenarios.
+Streams offers an intuitive type-safe logging facility built on native Node streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/transformative) in order to handle a wide range of logging scenarios.
 
 ### Features
 
-- Type-safe logging pipelines.
-- Consume any native Node Writable stream and add it to your pipeline.
-- A graph API pattern for constucting sophisticated logging pipelines.
+- Type-safe logging graphs.
+- Consume any native Node Writable or Readable stream and add it to your graph.
+- A graph API pattern for constucting sophisticated logging graphs.
 - Error propagation and selective termination of inoperable graph components.
 
 ## Table of Contents
@@ -22,6 +22,7 @@ Streams offers an intuitive type-safe logging facility built on native Node stre
 - [API](#api)
 - [How to Implement a Transform](#how-to-implement-a-transform)
 - [How to Consume a stream.Duplex](#how-to-consume-a-streamduplex)
+- [Backpressure](#backpressure)
 
 ## Installation
 
@@ -91,54 +92,119 @@ Please see the [Usage](#usage) section above or the ["Hello, World!"](https://gi
 
 ## API
 
-### The `Transform` class.
+### The `Logger` Class
 
-**new streams-logger.Transform\<InT, OutT\>(options)**
-- options
-    - `stream` `<stream.Writable | stream.Readable>` An instance of a writable or readable stream.
+**new streams-logger.Logger(options)**
+- options `<LoggerOptions>`
+    - level `<SyslogLevel>` The syslog compliant logger level.
+    - name `<string>` An optional name for the `Logger`.
 
-**transform.connect\<T extends Transform\<OutT, unknown\>\>(...transforms: Array\<T\>)**
-- transforms `<Array<T>>` An array of `Transforms<OutT, unknown>`.
+Constuct a `<Logger<LogData, LogRecord<string, SyslogLevelT>>` that will propogate messages at the specified syslog level.
 
-Returns: `<Transform<InT, OutT>>`
+**logger.connect(...transforms)**
+- transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>`  Connect to `Transforms` in the array of `Transforms`.
 
-**transform.disconnect\<T extends Transform\<OutT, unknown\>\>(...transforms: Array\<T\>)**
-- transforms `<Array<T>>` An array of `Transforms<OutT, unknown>`.
+Returns: `<Logger<LogData, LogRecord<string, SyslogLevelT>>`
 
-Returns: `<Transform<InT, OutT>>`
+**logger.disconnect(...transforms)**
+- transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>` Disconnect `Transforms` in the array `Transforms`.
 
-**transform.write(data: InT)**
-- data `<InT>` Data to write to the `stream.Writable`.
+Returns: `<Logger<LogData, LogRecord<string, SyslogLevelT>>`
 
-Returns: `<Promise<void>>`
+**logger.debug(message: string)**
+- message `<string>` Write a DEBUG message to the `Logger`.
+
+Returns: `<void>`
+
+**logger.info(message: string)**
+- message `<string>` Write a INFO message to the `Logger`.
+
+Returns: `<void>`
+
+**logger.notice(message: string)**
+- message `<string>` Write a NOTICE message to the `Logger`.
+
+Returns: `<void>`
+
+**logger.warn(message: string)**
+- message `<string>` Write a WARN message to the `Logger`.
+
+Returns: `<void>`
+
+**logger.error(message: string)**
+- message `<string>` Write a ERROR message to the `Logger`.
+
+Returns: `<void>`
+
+**logger.crit(message: string)**
+- message `<string>` Write a CRIT message to the `Logger`.
+
+Returns: `<void>`
+
+**logger.alert(message: string)**
+- message `<string>` Write a ALERT message to the `Logger`.
+
+Returns: `<void>`
+
+**logger.emerg(message: string)**
+- message `<string>` Write a EMERG message to the `Logger`.
+
+Returns: `<void>`
+
+### The `Formatter` Class
+
+**new streams-logger.Formatter(transform)**
+- transform `(record: LogRecord<string, SyslogLevelT>): Promise<string>` A function that will serialize the `LogRecord<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a serializer.
+
+### The ConsoleHandler Class
+**new streams-logger.ConsoleHandler()**
+
+Use this class in order to stream your messages to console.
+
+### The LogRecord Class
+**new streams-logger.LogRecord(options)**
+- options `<LoggerOptions>`
+    - message `<string>` The logger message.
+    - name `<string>` The name of the `Logger`.
+    - level `<KeysUppercase<LevelT>` An uppercase string representing the log level.
+    - depth `<number>` Used to specify the which line of the stack trace to parse.
+    - error `<Error>` The `Error` that was generated for parsing.
+
+**logRecord.message**
+- `<string>`
+The logged message.
+
+**logRecord.name**
+- `<string>`
+The name of the `Logger`.
+
+**logRecord.level**
+- `<DEBUG | INFO | NOTICE | WARN | ERROR | CRIT | ALERT | EMERG>`
+An upper case string representation of the level.
+
+**logRecord.func**
+- `<string>`
+The name of the function where the logging event took place.
+
+**logRecord.line**
+- `<string>`
+The line number of the logging event.
+
+**logRecord.col**
+- `<string>`
+The column of the logging event.
+
+## Formatting
+
+The `Logger` creates and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the LogRecord *may* be serialized into a string.
 
 ## How to Implement a streams-logger.Transform
 
-In order to implement a `Transform`, extend the `streams-logger.Transform` class and pass a `stream.Transform` implementation to the super's constructor.  
-
-For example, the following `StringToNumber` implementation will convert a numeric string to a number.  
-
-> NB: `writableObjectMode` and `readableObjectMode` are both set to true; hence, it's important that the object modes reflect the inputs and outputs of your `Transform`.
-
-```ts
-class StringToNumber extends Transform<Buffer, number> {
-
-    constructor() {
-        super(new stream.Transform({
-            writableObjectMode: true,
-            readableObjectMode: true,
-            transform: (chunk: Buffer, encoding: BufferEncoding, callback: stream.TransformCallback) => {
-                const result = parseFloat(chunk.toString());
-                callback(null, result);
-            }
-        }));
-    }
-}
-```
+Each component in your logging graph may connect to costum `Transform` implementations.  Please see the [Transformative](https://github.com/faranalytics/transformative) documentation for how to implement a custom `Transform`.
 
 ## How to Consume a stream.Duplex
 
-In this hypothetical example a type-safe `Transform` is constructed from a `net.Socket`.
+You can incorporate Duplex streams into your logging graph by passing the `stream.Duplex` to the `Transform` constructor.  In this hypothetical example a type-safe `Transform` is constructed from a `net.Socket`.
 
 ```ts
 net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000);
@@ -146,3 +212,5 @@ const socket = net.createConnection({ port: 3000 });
 await new Promise((r, e) => socket.once('connect', r).once('error', e));
 const socketHandler = new Transform<Buffer, Buffer>(socket);
 ```
+
+# Backpressure

@@ -4,7 +4,6 @@ import { Transform } from "transformative";
 import { SyslogLevel, SyslogLevelT } from "./syslog";
 import { KeysUppercase } from "./types";
 
-
 export interface LogData {
     message: string;
     name: string;
