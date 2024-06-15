@@ -196,7 +196,46 @@ The column of the logging event.
 
 ## Formatting
 
-The `Logger` creates and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the LogRecord *may* be serialized into a string.
+The `Logger` creates and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the LogRecord *may* be serialized into a string.  This can be accomplished by creating an instance of a `Formatter` and passing in a custom **serialization** function.
+
+A `LogRecord<string, SyslogLevelT>` object is passed to the serializer that contains the following properties.
+- 
+
+For example, in the following code excerpt, a serialize is implemented that logs:
+
+1. the current time
+2. the log level
+3. the name of the function where log event originated
+4. the line number of the logging event
+5. the column number of the logging event
+6. the log message
+7. a newline
+
+The serializer function is passed to the constructor of a `Formatter` and the `Formatter` is incorporated into the logging graph.
+
+```ts
+const serializer = async ({ message, name, level, func, url, line, col }: LogRecord<string, SyslogLevelT>) => {
+    return `${new Date().toISOString()}:${level}:${func}:${line}:${col}:${message}\n`;
+}
+
+const logger = new Logger({ name: 'main', level: SyslogLevel.DEBUG });
+const formatter = new Formatter(serializer);
+const consoleHandler = new ConsoleHandler();
+
+const log = logger.connect(
+    formatter.connect(
+        consoleHandler
+    )
+)
+```
+
+This is an example of what a logged message will look like using the serilizer defined above.
+
+```bash
+# ⮶time         function name⮷   column⮷ ⮶message
+2024-06-12T00:10:15.894Z:INFO:sayHello:7:9:Hello, World!
+#                        ⮴level       ⮴line number
+```
 
 ## How to Implement a streams-logger.Transform
 

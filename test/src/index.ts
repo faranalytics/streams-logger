@@ -16,6 +16,7 @@ const socket = net.createConnection({ port: 3000 });
 await new Promise((r, e) => socket.once('connect', r).once('error', e));
 const socketHandler = new Transform<Buffer, Buffer>(socket);
 
+
 const log = logger.connect(
     formatter.connect(
         stringToBuffer.connect(
