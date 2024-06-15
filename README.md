@@ -199,7 +199,7 @@ The column of the logging event.
 The `Logger` creates and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the LogRecord *may* be serialized into a string.  This can be accomplished by creating an instance of a `Formatter` and passing in a custom **serialization** function.
 
 A `LogRecord<string, SyslogLevelT>` object is passed to the serializer that contains the following properties.
-- 
+
 
 For example, in the following code excerpt, a serialize is implemented that logs:
 
