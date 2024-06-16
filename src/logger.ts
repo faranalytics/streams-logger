@@ -42,9 +42,19 @@ export class Logger extends Transform<LogData, LogRecord<string, SyslogLevelT>> 
     }
 
     private log(data: LogData) {
-        this.write(data);
-        if (this.queueSizeLimit && this.queueSize > this.queueSizeLimit) {
-            throw new QueueSizeLimitExceededError(`The queue size limit, ${this.queueSizeLimit}, is exceeded.`);
+        try{
+            this.write(data);
+            if (this.queueSizeLimit && this.queueSize > this.queueSizeLimit) {
+                throw new QueueSizeLimitExceededError(`The queue size limit, ${this.queueSizeLimit}, is exceeded.`);
+            }
+        }
+        catch(err) {
+            if (err instanceof QueueSizeLimitExceededError) {
+                throw err;
+            }
+            else {
+                console.error(err);
+            }
         }
     }
 
