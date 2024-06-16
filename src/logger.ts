@@ -25,13 +25,15 @@ export class Logger extends Transform<LogData, LogRecord<string, SyslogLevelT>> 
 
     private queueSizeLimit?: number;
 
-    constructor({ name, level, queueSizeLimit }: LoggerOptions = {}) {
+    constructor({ name, level, queueSizeLimit }: LoggerOptions = {}, options?: s.TransformOptions) {
         super(new s.Transform({
-            writableObjectMode: true,
-            readableObjectMode: true,
-            transform: (chunk: LogData, encoding: BufferEncoding, callback: s.TransformCallback) => {
-                const record = new LogRecord<string, SyslogLevelT>({ ...{ depth: 2 }, ...chunk });
-                callback(null, record);
+            ...options, ...{
+                writableObjectMode: true,
+                readableObjectMode: true,
+                transform: (chunk: LogData, encoding: BufferEncoding, callback: s.TransformCallback) => {
+                    const record = new LogRecord<string, SyslogLevelT>({ ...{ depth: 2 }, ...chunk });
+                    callback(null, record);
+                }
             }
         }));
         this.level = level ?? SyslogLevel.WARN;

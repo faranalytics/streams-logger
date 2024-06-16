@@ -9,13 +9,15 @@ export interface FormatterOptions {
 
 export class Formatter extends Transform<LogRecord<string, SyslogLevelT>, string> {
 
-    constructor(transform: FormatterOptions) {
+    constructor(transform: FormatterOptions, options?: s.TransformOptions) {
         super(new s.Transform({
-            writableObjectMode: true,
-            readableObjectMode: false,
-            transform: async (chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: s.TransformCallback) => {
-                const result = await transform(chunk);
-                callback(null, result);
+            ...options, ...{
+                writableObjectMode: true,
+                readableObjectMode: false,
+                transform: async (chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: s.TransformCallback) => {
+                    const result = await transform(chunk);
+                    callback(null, result);
+                }
             }
         }));
     }

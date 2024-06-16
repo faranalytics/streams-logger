@@ -197,7 +197,7 @@ The column of the logging event.
 
 ## Formatting
 
-The `Logger` constructs and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the LogRecord *may* be serialized into a string.  This can be accomplished by creating an instance of a `Formatter` and passing in a custom [serialization function](#example-serializer) that accepts a `LogRecord` as its single argument.  The serialization function can formulate a log message by constructing a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) from the `LogRecord` properties.  
+The `Logger` constructs and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the LogRecord *may* be serialized into a string.  This can be accomplished by creating an instance of a `Formatter` and passing in a custom [serialization function](#example-serializer) that accepts a `LogRecord` as its single argument.  The serialization function can construct a log message from the `LogRecord` properties.  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
 
 ### Log Record Properties
 A `LogRecord<string, SyslogLevelT>` object is passed to the serializer that contains the following properties.
@@ -214,13 +214,13 @@ A `LogRecord<string, SyslogLevelT>` object is passed to the serializer that cont
 
 In the following code excerpt, a serializer is implemented that logs:
 
-1. the current time
-2. the log level
-3. the name of the function where the log event originated
-4. the line number of the logging event
-5. the column number of the logging event
-6. the log message
-7. a newline
+1. The current time
+2. The log level
+3. The name of the function where the log event originated
+4. The line number of the logging event
+5. The column number of the logging event
+6. The log message
+7. A newline
 
 The serializer function is passed to the constructor of a `Formatter` and the `Formatter` is incorporated into the logging graph.
 
