@@ -4,7 +4,7 @@ Streams is a type-safe logger for TypeScript and Node.
 
 ## Introduction
 
-Streams offers an intuitive type-safe logging facility built on native Node streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/transformative) in order to handle a wide range of logging scenarios.
+Streams offers an intuitive type-safe logging facility built on native Node streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) in order to handle a wide range of logging scenarios.
 
 ### Features
 
@@ -92,7 +92,7 @@ Please see the [Usage](#usage) section above or the ["Hello, World!"](https://gi
 
 ## API
 
-### The `Logger` Class
+### The Logger Class
 
 **new streams-logger.Logger(options)**
 - options `<LoggerOptions>`
@@ -151,7 +151,7 @@ Returns: `<void>`
 
 Returns: `<void>`
 
-### The `Formatter` Class
+### The Formatter Class
 
 **new streams-logger.Formatter(transform)**
 - transform `(record: LogRecord<string, SyslogLevelT>): Promise<string>` A function that will serialize the `LogRecord<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a serializer.
@@ -196,7 +196,7 @@ The column of the logging event.
 
 ## Formatting
 
-The `Logger` creates and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the LogRecord *may* be serialized into a string.  This can be accomplished by creating an instance of a `Formatter` and passing in a custom **serialization** function.
+The `Logger` constructs and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the LogRecord *may* be serialized into a string.  This can be accomplished by creating an instance of a `Formatter` and passing in a custom [serialization function](#example-serializer) that accepts a `LogRecord` as its single argument.  The serialization function can formulate a log message by constructing a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) from the `LogRecord` properties.  
 
 ### Log Record Properties
 A `LogRecord<string, SyslogLevelT>` object is passed to the serializer that contains the following properties.
@@ -209,13 +209,13 @@ A `LogRecord<string, SyslogLevelT>` object is passed to the serializer that cont
 - line `<string>` The line number of the logging event.
 - col `<string>` The column number of the logging event.
 
-### Formatting Example
+### Example Serializer
 
 In the following code excerpt, a serializer is implemented that logs:
 
 1. the current time
 2. the log level
-3. the name of the function where log event originated
+3. the name of the function where the log event originated
 4. the line number of the logging event
 5. the column number of the logging event
 6. the log message
@@ -242,14 +242,14 @@ const log = logger.connect(
 This is an example of what a logged message will look like using the serilizer defined above.
 
 ```bash
-# ⮶time         function name⮷   column⮷ ⮶message
+# ⮶date-time         function name⮷   column⮷ ⮶message
 2024-06-12T00:10:15.894Z:INFO:sayHello:7:9:Hello, World!
 #                        ⮴level       ⮴line number
 ```
 
 ## How to Implement a streams-logger.Transform
 
-Each component in your logging graph may connect to costum `Transform` implementations.  Please see the [Transformative](https://github.com/faranalytics/transformative) documentation for how to implement a custom `Transform`.
+Each component in your logging graph may connect to costum `Transform` implementations.  Please see the [Graph-Transform](https://github.com/faranalytics/graph-transform) documentation for how to implement a custom `Transform`.
 
 ## How to Consume a stream.Duplex
 

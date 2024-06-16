@@ -1,6 +1,6 @@
 import * as s from "node:stream";
 import { LogRecord } from "./log_record";
-import { Transform } from "transformative";
+import { Transform } from "graph-transform";
 import { SyslogLevelT } from "./syslog";
 
 export interface FormatterOptions {
