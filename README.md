@@ -249,11 +249,11 @@ This is an example of what a logged message will look like using the serilizer d
 
 ## How to Implement a streams-logger.Transform
 
-Each component in your logging graph may connect to costum `Transform` implementations.  Please see the [Graph-Transform](https://github.com/faranalytics/graph-transform) documentation for how to implement a custom `Transform`.
+Streams is built on the type-safe Graph-Transform graph API framework.  This means that any Graph-Transform `Transform` may be incorporated into your logging graph given that it meets the contextual type requirements.  Please see the [Graph-Transform](https://github.com/faranalytics/graph-transform) documentation for how to implement a custom `Transform`.
 
-## How to Consume a stream.Duplex
+## How to Consume a Readable, Writable, Duplex, or Transform Stream
 
-You can incorporate Duplex streams into your logging graph by passing the `stream.Duplex` to the `Transform` constructor.  In this hypothetical example a type-safe `Transform` is constructed from a `net.Socket`.
+You can incorporate any Readable, Writable, Duplex or Transform streams into your logging graph by passing the stream to the `Transform` constructor.  In this hypothetical example a type-safe `Transform` is constructed from a `net.Socket`.  The type variables are specified as `<Buffer, Buffer>`; the writable side of the stream consumes a `Buffer` and the readable side of the stream produces a `Buffer`. 
 
 ```ts
 net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000);
