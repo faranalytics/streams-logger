@@ -9,7 +9,7 @@ Streams offers an intuitive type-safe logging facility built on native Node stre
 ### Features
 
 - Type-safe logging graphs.
-- Consume any native Node Writable or Readable stream and add it to your graph.
+- Consume any native Node Readable, Writable, Duplex, or Transform stream and add it to your graph.
 - A graph API pattern for constucting sophisticated logging graphs.
 - Error propagation and selective termination of inoperable graph components.
 
@@ -20,8 +20,8 @@ Streams offers an intuitive type-safe logging facility built on native Node stre
 - [Usage](#usage)
 - [Examples](#examples)
 - [API](#api)
-- [How to Implement a Transform](#how-to-implement-a-transform)
-- [How to Consume a stream.Duplex](#how-to-consume-a-streamduplex)
+- [How to Implement a Custom Streams Transform](#how-to-implement-a-custom-streams-transform)
+- [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-stream)
 - [Backpressure](#backpressure)
 
 ## Installation
@@ -98,6 +98,7 @@ Please see the [Usage](#usage) section above or the ["Hello, World!"](https://gi
 - options `<LoggerOptions>`
     - level `<SyslogLevel>` The syslog compliant logger level.
     - name `<string>` An optional name for the `Logger`.
+    - queueSizeLimit `<number>` Optionally specify a limit on how large the message queue may grow while waiting for a stream to drain.
 
 Constuct a `<Logger<LogData, LogRecord<string, SyslogLevelT>>` that will propogate messages at the specified syslog level.
 
@@ -247,7 +248,7 @@ This is an example of what a logged message will look like using the serilizer d
 #                        ⮴level       ⮴line number
 ```
 
-## How to Implement a streams-logger.Transform
+## How to Implement a Custom Streams Transform
 
 Streams is built on the type-safe Graph-Transform graph API framework.  This means that any Graph-Transform `Transform` may be incorporated into your logging graph given that it meets the contextual type requirements.  Please see the [Graph-Transform](https://github.com/faranalytics/graph-transform) documentation for how to implement a custom `Transform`.
 
@@ -263,3 +264,4 @@ const socketHandler = new Transform<Buffer, Buffer>(socket);
 ```
 
 # Backpressure
+Streams respects backpressure by queueing messages while the stream is draining.  You can set a hard limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.
