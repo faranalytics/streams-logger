@@ -105,12 +105,12 @@ Please see the [Usage](#usage) section above or the ["Hello, World!"](https://gi
 Constuct a `<Logger<LogData, LogRecord<string, SyslogLevelT>>` that will propogate messages at the specified syslog level.
 
 **logger.connect(...transforms)**
-- transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>`  Connect to `Transforms` in the array of `Transforms`.
+- transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>`  Connect to `Transforms`.
 
 Returns: `<Logger<LogData, LogRecord<string, SyslogLevelT>>`
 
 **logger.disconnect(...transforms)**
-- transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>` Disconnect `Transforms` in the array `Transforms`.
+- transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>` Disconnect `Transforms`.
 
 Returns: `<Logger<LogData, LogRecord<string, SyslogLevelT>>`
 
