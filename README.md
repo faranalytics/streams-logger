@@ -62,7 +62,7 @@ const consoleHandler = new ConsoleHandler();
 ```
 
 ### Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler.
-Streams uses a graph-style API in order to construct a network of log Transforms.  Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler`, is a [Transform](#transform).
+Streams uses a graph-style API in order to construct a network of log Transforms.  Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler`, is a [Transform](https://github.com/faranalytics/graph-transform).
 ```ts
 const log = logger.connect(
     formatter.connect(
