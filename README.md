@@ -1,15 +1,15 @@
 # Streams Logger
 
-Streams is a type-safe logger for TypeScript and Node.
+Streams is a type-safe logger for TypeScript and Node.js.
 
 ## Introduction
 
-Streams offers an intuitive type-safe logging facility built on native Node streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) in order to handle a wide range of logging scenarios.
+Streams offers an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) in order to handle a wide range of logging scenarios.
 
 ### Features
 
 - Type-safe logging graphs.
-- Consume any native Node Readable, Writable, Duplex, or Transform stream and add it to your graph.
+- Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
 - A graph API pattern for constucting sophisticated logging graphs.
 - Error propagation and selective termination of inoperable graph components.
 
@@ -252,7 +252,7 @@ This is an example of what a logged message will look like using the serilizer d
 
 Streams is built on the type-safe Graph-Transform graph API framework.  This means that any Graph-Transform `Transform` may be incorporated into your logging graph given that it meets the contextual type requirements.  Please see the [Graph-Transform](https://github.com/faranalytics/graph-transform) documentation for how to implement a custom `Transform`.
 
-## How to Consume a Readable, Writable, Duplex, or Transform Stream
+## How to Consume a Readable, Writable, Duplex, or Transform Native Node.js Stream
 
 You can incorporate any Readable, Writable, Duplex, or Transform stream into your logging graph by passing the stream to the `Transform` constructor.  In this hypothetical example a type-safe `Transform` is constructed from a `net.Socket`.  The type variables are specified as `<Buffer, Buffer>`; the writable side of the stream consumes a `Buffer` and the readable side of the stream produces a `Buffer`. 
 
