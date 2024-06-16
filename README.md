@@ -253,7 +253,7 @@ Streams is built on the type-safe Graph-Transform graph API framework.  This mea
 
 ## How to Consume a Readable, Writable, Duplex, or Transform Stream
 
-You can incorporate any Readable, Writable, Duplex or Transform streams into your logging graph by passing the stream to the `Transform` constructor.  In this hypothetical example a type-safe `Transform` is constructed from a `net.Socket`.  The type variables are specified as `<Buffer, Buffer>`; the writable side of the stream consumes a `Buffer` and the readable side of the stream produces a `Buffer`. 
+You can incorporate any Readable, Writable, Duplex, or Transform stream into your logging graph by passing the stream to the `Transform` constructor.  In this hypothetical example a type-safe `Transform` is constructed from a `net.Socket`.  The type variables are specified as `<Buffer, Buffer>`; the writable side of the stream consumes a `Buffer` and the readable side of the stream produces a `Buffer`. 
 
 ```ts
 net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000);
