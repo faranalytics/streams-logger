@@ -14,7 +14,7 @@
   "license": "MIT",
   "engines": {
     "npm": ">=10.2.3",
-    "node": ">=18.19.0"
+    "node": ">=18.18.0"
   },
   "dependencies": {
     "streams-logger": "file:.."
@@ -22,6 +22,7 @@
   "type": "module",
   "devDependencies": {
     "@types/node": "^20.6.2",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "nodemon": "^3.0.1"
   }
 }

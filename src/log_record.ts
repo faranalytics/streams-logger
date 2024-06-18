@@ -1,4 +1,4 @@
-import { KeysUppercase } from "./types";
+import { KeysUppercase } from './types.js';
 
 export interface LogRecordOptions<MessageT, LevelT> {
     message: MessageT;

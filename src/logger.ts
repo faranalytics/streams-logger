@@ -1,9 +1,9 @@
-import * as s from "node:stream";
-import { LogRecord } from "./log_record";
-import { Transform } from "graph-transform";
-import { SyslogLevel, SyslogLevelT } from "./syslog";
-import { KeysUppercase } from "./types";
-import { QueueSizeLimitExceededError } from "./errors";
+import * as s from 'node:stream';
+import { LogRecord } from './log_record.js';
+import { Transform } from 'graph-transform';
+import { SyslogLevel, SyslogLevelT } from './syslog.js';
+import { KeysUppercase } from './types.js';
+import { QueueSizeLimitExceededError } from './errors.js';
 
 export interface LogData {
     message: string;
