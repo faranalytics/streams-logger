@@ -172,6 +172,19 @@ Returns: `<void>`
 
 Use this class in order to stream your messages to console.
 
+### The RotatingFileHandler Class
+**new streams-logger.RotatingFileHandler(options)**
+- options `<RotatingFileHandlerOptions>`
+    - path `<string>` 
+    - rotations `<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10>` An optional number of log rotations.
+    - bytes `<number>` The size of the log file in MB. **Default**: `1e6`
+    - encoding `<BufferEncoding>` An optional encoding. **Default**: `utf8`
+    - mode `<number>` An optional mode. **Deafult**:`0o666`
+    - level `<SyslogLevel>` An optional level to log at.  **Default**: `SyslogLevel.WARN`
+
+**rotatingFileHandler.setLevel(level: SyslogLevel)**
+- Set the log level.  Must be one of `SyslogLevel`.
+
 ### The LogRecord Class
 **new streams-logger.LogRecord(options)**
 - options `<LoggerOptions>`

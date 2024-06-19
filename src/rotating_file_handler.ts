@@ -3,7 +3,7 @@ import * as fsp from 'node:fs/promises';
 import * as fs from 'node:fs';
 import * as s from 'node:stream';
 import { LogRecord } from './log_record.js';
-import { Transform } from 'graph-transform';
+import { $stream, Transform } from 'graph-transform';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
 
 export class RotatingFileHandlerWritable extends s.Writable {
@@ -14,7 +14,7 @@ export class RotatingFileHandlerWritable extends s.Writable {
     public bytes: number;
     public encoding: BufferEncoding;
     public mode: number;
-    public mutex: Promise<void>;
+    private mutex: Promise<void>;
 
     constructor({ level, path, rotations = 0, bytes = 1e6, encoding = 'utf8', mode = 0o666 }: RotatingFileHandlerOptions) {
         super();
@@ -25,7 +25,6 @@ export class RotatingFileHandlerWritable extends s.Writable {
         this.mode = mode;
         this.mutex = Promise.resolve();
         this.level = level;
-
 
         if (!fs.existsSync(this.path)) {
             fs.closeSync(fs.openSync(this.path, 'w'));
@@ -84,8 +83,13 @@ export interface RotatingFileHandlerOptions {
 
 export class RotatingFileHandler extends Transform<LogRecord<string, SyslogLevelT>, never> {
 
-
     constructor(options: RotatingFileHandlerOptions) {
         super(new RotatingFileHandlerWritable(options));
+    }
+
+    public setLevel(level: SyslogLevel) {
+        if (this[$stream] instanceof RotatingFileHandlerWritable) {
+            this[$stream].level = level;
+        }
     }
 }
