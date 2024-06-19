@@ -33,7 +33,7 @@ export class RotatingFileHandlerWritable extends s.Writable {
     }
 
     async _write(chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): Promise<void> {
-        if (this.level <= SyslogLevel[chunk.level]) {
+        if (SyslogLevel[chunk.level] <= this.level) {
             await (this.mutex = (async () => {
                 await this.mutex.catch((err) => console.error(err));
                 const stats = await fsp.stat(this.path);
@@ -43,7 +43,8 @@ export class RotatingFileHandlerWritable extends s.Writable {
                     }
                     await fsp.appendFile(this.path, chunk.message, { encoding: this.encoding, mode: this.mode, flag: 'a' });
                 }
-            })());        }
+            })());
+        }
         callback();
     }
 
