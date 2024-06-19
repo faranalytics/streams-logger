@@ -104,13 +104,18 @@ Please see the [Usage](#usage) section above or the ["Hello, World!"](https://gi
 
 Constuct a `<Logger<LogData, LogRecord<string, SyslogLevelT>>` that will propogate messages at the specified syslog level.
 
+**logger.level**
+- `<SyslogLevel>`
+
+The level the Logger is configured to lot at (e.g., `SyslogLevel.DEBUG` ).
+
 **logger.connect(...transforms)**
-- transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>`  Connect to `Transforms`.
+- transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>`  Connect to an Array of `Transforms`.
 
 Returns: `<Logger<LogData, LogRecord<string, SyslogLevelT>>`
 
 **logger.disconnect(...transforms)**
-- transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>` Disconnect `Transforms`.
+- transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>` Disconnect from an Array of `Transforms`.
 
 Returns: `<Logger<LogData, LogRecord<string, SyslogLevelT>>`
 
@@ -153,6 +158,9 @@ Returns: `<void>`
 - message `<string>` Write a EMERG message to the `Logger`.
 
 Returns: `<void>`
+
+**logger.setLevel(level: SyslogLevel)**
+- Set the log level.  Must be one of `SyslogLevel`.
 
 ### The Formatter Class
 

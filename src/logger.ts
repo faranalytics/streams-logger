@@ -105,4 +105,8 @@ export class Logger extends Transform<LogData, LogRecord<string, SyslogLevelT>> 
             this.log({ message, name: this.name, level: 'EMERG', error: new Error });
         }
     }
+
+    public setLevel(level: SyslogLevel) {
+        this.level = level;
+    }
 }
