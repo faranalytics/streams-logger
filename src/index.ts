@@ -4,6 +4,7 @@ import { Logger, LogData } from './logger.js';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
 import { Formatter } from './formatter.js';
 import { ConsoleHandler } from './console_handler.js';
+import { RotatingFileHandler } from './rotating_file_handler.js';
 
 export {
     Transform,
@@ -17,5 +18,6 @@ export {
     StringToBuffer,
     BufferToString,
     ObjectToJSON,
-    JSONToObject
+    JSONToObject,
+    RotatingFileHandler
 };

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as net from 'node:net';
+
 import {
     ConsoleHandler,
     Formatter,
@@ -11,7 +12,8 @@ import {
     BufferToString,
     JSONToObject,
     StringToBuffer,
-    ObjectToJSON
+    ObjectToJSON,
+    RotatingFileHandler
 } from 'streams-logger';
 
 const logger = new Logger({ name: 'main', level: SyslogLevel.DEBUG });
@@ -20,6 +22,7 @@ const stringToBuffer = new StringToBuffer();
 const bufferToString = new BufferToString();
 const objectToJSON = new ObjectToJSON();
 const jsonToObject = new JSONToObject<LogRecord<string, SyslogLevelT>>();
+const rotatingFileHandler = new RotatingFileHandler({ path: './message.log' });
 
 const server = net.createServer((socket: net.Socket) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -56,7 +59,8 @@ const log = logger.connect(
             socketTransform.connect(
                 bufferToString.connect(
                     jsonToObject.connect(
-                        consoleHandler
+                        consoleHandler,
+                        rotatingFileHandler
                     )
                 )
             )
@@ -65,8 +69,8 @@ const log = logger.connect(
 );
 
 function test() {
-    log.error('TEST');
-    setTimeout(() => { server.close(); socket.destroy(); }, 1000);
+    log.warn('TEST');
+    // setTimeout(() => { server.close(); socket.destroy(); }, 1000);
 }
 
 function main() {

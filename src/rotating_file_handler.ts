@@ -16,8 +16,8 @@ export class RotatingFileHandlerWritable extends s.Writable {
     public mode: number;
     private mutex: Promise<void>;
 
-    constructor({ level, path, rotations = 0, bytes = 1e6, encoding = 'utf8', mode = 0o666 }: RotatingFileHandlerOptions) {
-        super();
+    constructor({ level = SyslogLevel.WARN, path, rotations = 0, bytes = 1e6, encoding = 'utf8', mode = 0o666 }: RotatingFileHandlerOptions) {
+        super({ objectMode: true });
         this.path = pth.resolve(pth.normalize(path));
         this.rotations = rotations;
         this.bytes = bytes;
@@ -78,7 +78,7 @@ export interface RotatingFileHandlerOptions {
     bytes?: number;
     encoding?: BufferEncoding;
     mode?: number;
-    level: SyslogLevel;
+    level?: SyslogLevel;
 }
 
 export class RotatingFileHandler extends Transform<LogRecord<string, SyslogLevelT>, never> {
