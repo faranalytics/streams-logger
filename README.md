@@ -51,8 +51,8 @@ import { Logger, Formatter, ConsoleHandler, SyslogLevel } from 'streams-logger';
 ```
 
 ### Create an instance of a Logger, Formatter, ConsoleHandler and RotatingFileHandler.
-- The `Logger` will be set to log at level `SyslogLevel.INFO`.  
-- The `Formatter` will be passed a serialization function that will output a string containing the ISO time, the log level, the function name, the line number, the column number, and the log message.
+- The `Logger` is set to log at level `SyslogLevel.INFO`.  
+- The `Formatter` constructor is passed a serialization function that will output a string containing the ISO time, the log level, the function name, the line number, the column number, and the log message.
 - The `ConsoleHandler` will log the message to `process.stdout`.
 - The `RotatingFileHandler` will log to file `./message.log`.
 
