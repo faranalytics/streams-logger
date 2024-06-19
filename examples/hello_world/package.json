@@ -14,7 +14,7 @@
   "license": "MIT",
   "engines": {
     "npm": ">=10.2.3",
-    "node": ">=18.19.0"
+    "node": ">=18.18.0"
   },
   "dependencies": {
     "streams-logger": "~0.0.0"
