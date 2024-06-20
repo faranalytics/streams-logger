@@ -205,7 +205,7 @@ Set the log level.  Must be one of `SyslogLevel`.
     - message `<string>` The logger message.
     - name `<string>` The name of the `Logger`.
     - level `<KeysUppercase<LevelT>` An uppercase string representing the log level.
-    - depth `<number>` Used to specify the which line of the stack trace to parse.
+    - depth `<number>` Used to specify which line of the stack trace to parse.
     - error `<Error>` The `Error` that was generated for parsing.
 
 **logRecord.message**
