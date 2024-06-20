@@ -110,7 +110,7 @@ Constuct a `<Logger<LogData, LogRecord<string, SyslogLevelT>>` that will propoga
 **logger.level**
 - `<SyslogLevel>`
 
-The level the Logger is configured to lot at (e.g., `SyslogLevel.DEBUG` ).
+The configured log level (e.g., `SyslogLevel.DEBUG` ).
 
 **logger.connect(...transforms)**
 - transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>`  Connect to an Array of `Transforms`.
