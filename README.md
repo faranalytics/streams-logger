@@ -4,7 +4,7 @@ Streams is a type-safe logger for TypeScript and Node.js.
 
 ## Introduction
 
-Streams offers an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler, RotatingFileHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) in order to handle a wide range of logging scenarios.
+Streams offers an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler, RotatingFileHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios.
 
 ### Features
 
@@ -38,7 +38,7 @@ The Streams framework is based on the idea that logging is essentially a data tr
 
 ### Graph API Pattern
 
-Streams uses a [graph API pattern](#connect-the-logger-to-the-formatter-and-connect-the-formatter-to-the-consolehandler) for constructing a logger. Each graph consists of a network of `Transforms` that together comprise the logging pipeline.
+Streams uses a [graph API pattern](#connect-the-logger-to-the-formatter-and-connect-the-formatter-to-the-consolehandler-and-rotatingfilehandler) for constructing a logger. Each graph consists of a network of `Transforms` that together comprise the logging pipeline.
 
 ## Usage
 
