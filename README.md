@@ -9,7 +9,7 @@ Streams offers an intuitive type-safe logging facility built on native Node.js s
 ### Features
 
 - Type-safe logging graphs.
-- Streams is based on the native Node.js stream API; hence, it may already be ready to log to your resource.
+- Streams is based on the native Node.js stream API; hence, it's ready for your Node.js stream-based resource.
 - Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
 - A graph API pattern for constucting sophisticated graph-like logging pipelines.
 - Error propagation and selective termination of inoperable graph components.
