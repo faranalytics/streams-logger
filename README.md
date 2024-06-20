@@ -171,7 +171,7 @@ Set the log level.  Must be one of `SyslogLevel`.
 ### The Formatter Class
 
 **new streams-logger.Formatter(transform)**
-- transform `(record: LogRecord<string, SyslogLevelT>): Promise<string>` A function that will serialize the `LogRecord<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a serializer.
+- transform `(record: LogRecord<string, SyslogLevelT>): Promise<string>` A function that will serialize or transform the `LogRecord<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a serializer.
 
 ### The ConsoleHandler Class
 
