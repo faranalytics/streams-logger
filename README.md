@@ -21,7 +21,7 @@ Streams offers an intuitive type-safe logging facility built on native Node.js s
 - [Examples](#examples)
 - [API](#api)
 - [How to Implement a Custom Streams Transform](#how-to-implement-a-custom-streams-transform)
-- [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-stream)
+- [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-native-nodejs-stream)
 - [Backpressure](#backpressure)
 
 ## Installation
