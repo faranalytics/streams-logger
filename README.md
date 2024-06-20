@@ -42,19 +42,19 @@ Streams uses a [graph API pattern](#connect-the-logger-to-the-formatter-and-conn
 
 ## Usage
 
-In this hypothetical example you will log "Hello, World!" to the console.
+In this hypothetical example you will log "Hello, World!" to the console and to a file.
 
 ### Import the Logger, Formatter, ConsoleHandler, and SyslogLevel enum.
 
 ```ts
-import { Logger, Formatter, ConsoleHandler, SyslogLevel } from 'streams-logger';
+import { Logger, Formatter, ConsoleHandler, RotatingFileHandler, SyslogLevel } from 'streams-logger';
 ```
 
 ### Create an instance of a Logger, Formatter, ConsoleHandler and RotatingFileHandler.
 - The `Logger` is set to log at level `SyslogLevel.INFO`.  
 - The `Formatter` constructor is passed a serialization function that will output a string containing the ISO time, the log level, the function name, the line number, the column number, and the log message.
 - The `ConsoleHandler` will log the message to `process.stdout`.
-- The `RotatingFileHandler` will log to file `./message.log`.
+- The `RotatingFileHandler` will log the message to the file `./message.log`.
 
 ```ts
 const logger = new Logger({ level: SyslogLevel.INFO });
