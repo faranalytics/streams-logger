@@ -173,11 +173,12 @@ Returns: `<void>`
 ### The ConsoleHandler Class
 **new streams-logger.ConsoleHandler()**
 
-Use an instance of this class in order to stream your messages to console.
+- options `<ConsoleHandlerTransformOtions>`
+    - level `<SyslogLevel>` An optional log level.  **Default**: `SyslogLevel.WARN`
+
+Use a ConsoleHandler in order to stream your messages to the console.
 
 ### The RotatingFileHandler Class
-
-Use an instance of this class to write your log messages to a file.
 
 **new streams-logger.RotatingFileHandler(options)**
 - options `<RotatingFileHandlerOptions>`
@@ -186,7 +187,9 @@ Use an instance of this class to write your log messages to a file.
     - bytes `<number>` The size of the log file in MB. **Default**: `1e6`
     - encoding `<BufferEncoding>` An optional encoding. **Default**: `utf8`
     - mode `<number>` An optional mode. **Deafult**:`0o666`
-    - level `<SyslogLevel>` An optional level to log at.  **Default**: `SyslogLevel.WARN`
+    - level `<SyslogLevel>` An optional log level.  **Default**: `SyslogLevel.WARN`
+
+Use a RotatingFileHandler in order to write your log messages to a file.
 
 **rotatingFileHandler.setLevel(level: SyslogLevel)**
 - Set the log level.  Must be one of `SyslogLevel`.
