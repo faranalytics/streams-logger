@@ -122,48 +122,50 @@ Returns: `<Logger<LogData, LogRecord<string, SyslogLevelT>>`
 
 Returns: `<Logger<LogData, LogRecord<string, SyslogLevelT>>`
 
-**logger.debug(message: string)**
+**logger.debug(message)**
 - message `<string>` Write a DEBUG message to the `Logger`.
 
 Returns: `<void>`
 
-**logger.info(message: string)**
+**logger.info(message)**
 - message `<string>` Write a INFO message to the `Logger`.
 
 Returns: `<void>`
 
-**logger.notice(message: string)**
+**logger.notice(message)**
 - message `<string>` Write a NOTICE message to the `Logger`.
 
 Returns: `<void>`
 
-**logger.warn(message: string)**
+**logger.warn(message)**
 - message `<string>` Write a WARN message to the `Logger`.
 
 Returns: `<void>`
 
-**logger.error(message: string)**
+**logger.error(message)**
 - message `<string>` Write a ERROR message to the `Logger`.
 
 Returns: `<void>`
 
-**logger.crit(message: string)**
+**logger.crit(message)**
 - message `<string>` Write a CRIT message to the `Logger`.
 
 Returns: `<void>`
 
-**logger.alert(message: string)**
+**logger.alert(message)**
 - message `<string>` Write a ALERT message to the `Logger`.
 
 Returns: `<void>`
 
-**logger.emerg(message: string)**
+**logger.emerg(message)**
 - message `<string>` Write a EMERG message to the `Logger`.
 
 Returns: `<void>`
 
-**logger.setLevel(level: SyslogLevel)**
-- Set the log level.  Must be one of `SyslogLevel`.
+**logger.setLevel(level)**
+- level `<SyslogLevel>` A log level.
+
+Set the log level.  Must be one of `SyslogLevel`.
 
 ### The Formatter Class
 
@@ -191,8 +193,10 @@ Use a ConsoleHandler in order to stream your messages to the console.
 
 Use a RotatingFileHandler in order to write your log messages to a file.
 
-**rotatingFileHandler.setLevel(level: SyslogLevel)**
-- Set the log level.  Must be one of `SyslogLevel`.
+**rotatingFileHandler.setLevel(level)**
+- level `<SyslogLevel>` A log level.
+
+Set the log level.  Must be one of `SyslogLevel`.
 
 ### The LogRecord Class
 **new streams-logger.LogRecord(options)**
