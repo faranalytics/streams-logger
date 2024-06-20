@@ -110,7 +110,7 @@ Constuct a `<Logger<LogData, LogRecord<string, SyslogLevelT>>` that will propoga
 **logger.level**
 - `<SyslogLevel>`
 
-The configured log level (e.g., `SyslogLevel.DEBUG` ).
+The configured log level (e.g., `SyslogLevel.DEBUG`).
 
 **logger.connect(...transforms)**
 - transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>`  Connect to an Array of `Transforms`.
@@ -173,6 +173,7 @@ Set the log level.  Must be one of `SyslogLevel`.
 - transform `(record: LogRecord<string, SyslogLevelT>): Promise<string>` A function that will serialize the `LogRecord<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a serializer.
 
 ### The ConsoleHandler Class
+
 **new streams-logger.ConsoleHandler()**
 
 - options `<ConsoleHandlerTransformOtions>`
@@ -209,7 +210,7 @@ Set the log level.  Must be one of `SyslogLevel`.
 
 **logRecord.message**
 - `<string>`
-The logged message.
+The message.
 
 **logRecord.name**
 - `<string>`
@@ -233,10 +234,10 @@ The column of the logging event.
 
 ## Formatting
 
-The `Logger` constructs and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the LogRecord *may* be serialized into a string.  This can be accomplished by creating an instance of a `Formatter` and passing in a custom [serialization function](#example-serializer) that accepts a `LogRecord` as its single argument.  The serialization function can construct a log message from the `LogRecord` properties.  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
+The `Logger` constructs and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the properties of a LogRecord *may* undergo formatting and serialization.  This can be accomplished by creating an instance of a `Formatter` and passing in a custom [serialization function](#example-serializer) that accepts a `LogRecord` as its single argument.  The serialization function can construct a log message from the `LogRecord` properties.  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
 
 ### Log Record Properties
-A `LogRecord<string, SyslogLevelT>` object is passed to the serializer that contains the following properties.
+A `LogRecord<string, SyslogLevelT>` object is passed to the serializer, which contains the following properties.
 
 - message `<string>` The logged message.
 - name `<string>` The name of the `Logger`.
