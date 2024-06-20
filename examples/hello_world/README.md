@@ -39,7 +39,7 @@ sayHello();
 
 Follow the instructions to run the example.
 
-### Clone the Network-Services repo.
+### Clone the Streams repo.
 ```bash
 git clone https://github.com/faranalytics/streams-logger.git
 ```
