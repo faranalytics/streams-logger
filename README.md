@@ -103,7 +103,7 @@ Please see the [Usage](#usage) section above or the ["Hello, World!"](https://gi
 - options `<LoggerOptions>`
     - level `<SyslogLevel>` The syslog compliant logger level.
     - name `<string>` An optional name for the `Logger`.
-    - queueSizeLimit `<number>` Optionally specify a limit on how large the message queue may grow while waiting for a stream to drain.
+    - queueSizeLimit `<number>` Optionally specify a limit on how large (i.e., bytes) the message queue may grow while waiting for a stream to drain.
 
 Constuct a `<Logger<LogData, LogRecord<string, SyslogLevelT>>` that will propogate messages at the specified syslog level.
 
