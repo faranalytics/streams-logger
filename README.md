@@ -59,8 +59,8 @@ import { Logger, Formatter, ConsoleHandler, SyslogLevel } from 'streams-logger';
 ```ts
 const logger = new Logger({ level: SyslogLevel.INFO });
 const formatter = new Formatter(async ($) => `${new Date().toISOString()}:${$.level}:${$.func}:${$.line}:${$.col}:${$.message}\n`);
-const consoleHandler = new ConsoleHandler();
-const rotatingFileHandler = new RotatingFileHandler({ path: './message.log' });
+const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
+const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', level: SyslogLevel.DEBUG });
 ```
 
 ### Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
@@ -173,11 +173,11 @@ Returns: `<void>`
 ### The ConsoleHandler Class
 **new streams-logger.ConsoleHandler()**
 
-Use this class in order to stream your messages to console.
+Use an instance of this class in order to stream your messages to console.
 
 ### The RotatingFileHandler Class
 
-Use this class to write your log messages to a file.
+Use an instance of this class to write your log messages to a file.
 
 **new streams-logger.RotatingFileHandler(options)**
 - options `<RotatingFileHandlerOptions>`
