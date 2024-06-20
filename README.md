@@ -44,7 +44,7 @@ Streams uses a [graph API pattern](#connect-the-logger-to-the-formatter-and-conn
 
 In this hypothetical example you will log "Hello, World!" to the console and to a file.
 
-### Import the Logger, Formatter, ConsoleHandler, and SyslogLevel enum.
+### Import the Logger, Formatter, ConsoleHandler and RotatingFileHandler, and SyslogLevel enum.
 
 ```ts
 import { Logger, Formatter, ConsoleHandler, RotatingFileHandler, SyslogLevel } from 'streams-logger';
