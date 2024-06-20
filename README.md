@@ -301,5 +301,5 @@ await new Promise((r, e) => socket.once('connect', r).once('error', e));
 const socketHandler = new Transform<Buffer, Buffer>(socket);
 ```
 
-# Backpressure
+## Backpressure
 Streams respects backpressure by queueing messages while the stream is draining.  You can set a hard limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.
