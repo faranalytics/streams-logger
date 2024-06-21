@@ -217,7 +217,7 @@ Set the log level.  Must be one of `SyslogLevel`.
     - depth `<number>` Used to specify which line of the stack trace to parse.
     - error `<Error>` The `Error` that was generated for parsing.
 
-A `LogRecord` is instantiated each time a message is logged at an allowed level. It contains information about the process and environment at the time of the logging call.  A `LogRecord` is passed as the single argument to a `Formatter` serialization function.
+A `LogRecord` is instantiated each time a message is logged at an allowed level. It contains information about the process and environment at the time of the logging call.  A `LogRecord` is passed as the single argument to a `Formatter` [serialization function](#formatting).
 
 *public* **logRecord.message**
 - `<string>`
@@ -286,17 +286,6 @@ The thread identifier.
 ## Formatting
 
 The `Logger` constructs and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the properties of a LogRecord *may* undergo formatting and serialization.  This can be accomplished by creating an instance of a `Formatter` and passing in a custom [serialization function](#example-serializer) that accepts a `LogRecord` as its single argument.  The serialization function can construct a log message from the `LogRecord` properties.  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
-
-### Log Record Properties
-A `LogRecord<string, SyslogLevelT>` object is passed to the serializer, which contains the following properties.
-
-- message `<string>` The logged message.
-- name `<string>` The name of the `Logger`.
-- level `<DEBUG | INFO | NOTICE | WARN | ERROR | CRIT | ALERT | EMERG>` An upper case string representation of the level.
-- func `<string>` The name of the function.
-- url `<string>`  The stacktrace URL.
-- line `<string>` The line number of the logging event.
-- col `<string>` The column number of the logging event.
 
 ### Example Serializer
 
