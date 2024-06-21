@@ -20,7 +20,7 @@ Streams is an intuitive type-safe logging facility built on native Node.js strea
 - [Concepts](#concepts)
 - [Usage](#usage)
 - [Examples](#examples)
-    -[*An instance of "Hello, World!"*](#an-instance-of-hello-world-example)
+    - [*An instance of "Hello, World!"*](#an-instance-of-hello-world-example)
 - [API](#api)
     - [The Logger Class](#the-logger-class)
     - [The Formatter Class](#the-formatter-class)
