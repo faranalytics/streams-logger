@@ -299,7 +299,7 @@ In the following code excerpt, a serializer is implemented that logs:
 6. The log message
 7. A newline
 
-The serializer function is passed to the constructor of a `Formatter` and the `Formatter` is incorporated into the logging graph.
+The serializer function is passed to the constructor of a `Formatter`.  The `Logger` is connected to the `Formatter`.  The `Formatter` is connected to the `ConsoleHandler`.
 
 ```ts
 const serializer = async ({ message, name, level, func, url, line, col }: LogRecord<string, SyslogLevelT>) => {
