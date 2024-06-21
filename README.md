@@ -20,7 +20,7 @@ Streams is an intuitive type-safe logging facility built on native Node.js strea
 - [Concepts](#concepts)
 - [Usage](#usage)
 - [Examples](#examples)
-    - [*An instance of "Hello, World!"*](#an-instance-of-hello-world-example)
+    - [*An instance of logging "Hello, World!"*](#an-instance-of-logging-hello-world-example)
 - [API](#api)
     - [The Logger Class](#the-logger-class)
     - [The Formatter Class](#the-formatter-class)
@@ -103,7 +103,7 @@ sayHello();
 ```
 ## Examples
 
-### *An instance of "Hello, World!"* <sup><sup>(example)</sup></sup>
+### *An instance of logging "Hello, World!"* <sup><sup>(example)</sup></sup>
 Please see the [Usage](#usage) section above or the ["Hello, World!"](https://github.com/faranalytics/streams-logger/tree/main/examples/hello_world) example for a working implementation.
 
 ## API
