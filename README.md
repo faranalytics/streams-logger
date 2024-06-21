@@ -233,15 +233,15 @@ An uppercase string representation of the level.
 
 *public* **logRecord.func**
 - `<string>`
-The name of the function where the logging event took place.
+The name of the function where the logging call took place.
 
 *public* **logRecord.line**
 - `<string>`
-The line number of the logging event.
+The line number of the logging call.
 
 *public* **logRecord.col**
 - `<string>`
-The column of the logging event.
+The column of the logging call.
 
 *public* **logRecord.isotime**
 - `<string>`
