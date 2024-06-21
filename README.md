@@ -229,7 +229,7 @@ The name of the `Logger`.
 
 *public* **logRecord.level**
 - `<DEBUG | INFO | NOTICE | WARN | ERROR | CRIT | ALERT | EMERG>`
-An upper case string representation of the level.
+An uppercase string representation of the level.
 
 *public* **logRecord.func**
 - `<string>`
