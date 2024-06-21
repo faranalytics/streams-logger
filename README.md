@@ -344,6 +344,9 @@ This is an example of what a logged message will look like using the serilizer d
 You can incorporate any Readable, Writable, Duplex, or Transform stream into your logging graph by passing the stream to the `Transform` constructor.  In this hypothetical example a type-safe `Transform` is constructed from a `net.Socket`.  The type variables are specified as `<Buffer, Buffer>`; the writable side of the stream consumes a `Buffer` and the readable side of the stream produces a `Buffer`. 
 
 ```ts
+import * as net from 'node:net';
+import { Transform } from 'streams-logger';
+
 net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000);
 const socket = net.createConnection({ port: 3000 });
 await new Promise((r, e) => socket.once('connect', r).once('error', e));
