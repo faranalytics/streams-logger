@@ -35,7 +35,7 @@ npm install streams-logger
 
 ### Transform
 
-Streams is based on the idea that logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, etc.) is added to the log message prior to it being printed.  These transformation steps are realized through a type-safe `Transform` implementation. 
+Streams is based on the idea that logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, etc.) is added to the log message prior to it being printed.  Each transformation step is realized through a type-safe `Transform` implementation.
 
 ### Graph API Pattern
 
@@ -52,14 +52,16 @@ import { Logger, Formatter, ConsoleHandler, RotatingFileHandler, SyslogLevel } f
 ```
 
 ### Create an instance of a Logger, Formatter, ConsoleHandler and RotatingFileHandler.
-- The `Logger` is set to log at level `SyslogLevel.INFO`.  
+- The `Logger` is set to log at level `SyslogLevel.DEBUG`.  
 - The `Formatter` constructor is passed a serialization function that will output a string containing the ISO time, the log level, the function name, the line number, the column number, and the log message.
 - The `ConsoleHandler` will log the message to `process.stdout`.
 - The `RotatingFileHandler` will log the message to the file `./message.log`.
 
 ```ts
-const logger = new Logger({ level: SyslogLevel.INFO });
-const formatter = new Formatter(async ($) => `${new Date().toISOString()}:${$.level}:${$.func}:${$.line}:${$.col}:${$.message}\n`);
+const logger = new Logger({ level: SyslogLevel.DEBUG });
+const formatter = new Formatter(async ({ message, name, level, func, url, line, col }) => (
+    `${new Date().toISOString()}:${level}:${func}:${line}:${col}:${message}\n`
+));
 const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', level: SyslogLevel.DEBUG });
 ```

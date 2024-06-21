@@ -19,11 +19,9 @@ import {
 
 const server = net.createServer((socket: net.Socket) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const serializer = async ({ message, name, level, func, url, line, col }: LogRecord<string, SyslogLevelT>) => {
-        return `${new Date().toISOString()}:${level}:${func}:${line}:${col}:${message}\n`;
-    };
-    const formatter = new Formatter(serializer);
-    const bufferToString = new BufferToString();
+    const formatter = new Formatter(async ({ message, name, level, func, url, line, col }) => (
+        `${new Date().toISOString()}:${level}:${func}:${line}:${col}:${message}\n`
+    ));    const bufferToString = new BufferToString();
     const objectToJSON = new ObjectToJSON();
     const jsonToObject = new JSONToObject<LogRecord<string, SyslogLevelT>>();
     const stringToBuffer = new StringToBuffer();
