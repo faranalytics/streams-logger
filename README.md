@@ -217,7 +217,7 @@ Set the log level.  Must be one of `SyslogLevel`.
     - depth `<number>` Used to specify which line of the stack trace to parse.
     - error `<Error>` The `Error` that was generated for parsing.
 
-A LogRecord provides information about the process and environment at the time of the logging call.  A `LogRecord` is passed as the single argument to a `Formatter` serialization function.
+A `LogRecord` is instantiated each time a message is logged at an allowed level. It contains information about the process and environment at the time of the logging call.  A `LogRecord` is passed as the single argument to a `Formatter` serialization function.
 
 *public* **logRecord.message**
 - `<string>`
