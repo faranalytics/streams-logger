@@ -1,15 +1,15 @@
-# Streams Logger
+# *Streams* Logger
 
-Streams is a type-safe logger for TypeScript and Node.js.
+*Streams* is a type-safe logger for TypeScript and Node.js.
 
 ## Introduction
 
-Streams is an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler, RotatingFileHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios.
+*Streams* is an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler, RotatingFileHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios.
 
 ### Features
 
 - Type-safe logging graphs.
-- Streams is based on the Node.js stream API; hence, it's ready for your Node.js stream-based resource.
+- *Streams* is based on the Node.js stream API; hence, it's ready for your Node.js stream-based resource.
 - Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
 - A graph API pattern for constucting sophisticated graph-like logging pipelines.
 - Error propagation and selective termination of inoperable graph components.
@@ -29,7 +29,7 @@ Streams is an intuitive type-safe logging facility built on native Node.js strea
 - [Formatting](#formatting)
     - [Example Serializer](#example-serializer)
 - [How-Tos](#how-tos)
-    - [How to Implement a Custom Streams Transform](#how-to-implement-a-custom-streams-transform)
+    - [How to Implement a Custom *Streams* Transform](#how-to-implement-a-custom-streams-transform)
     - [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-native-nodejs-stream)
 - [Backpressure](#backpressure)
 
@@ -43,11 +43,11 @@ npm install streams-logger
 
 ### Transform
 
-Logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed.  Each data transformation step in a Streams logging graph is realized through a type-safe `Transform` implementation.  Each `Transform` in a data transformation graph consumes an input, transforms the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Handlers, etc.) in a Streams logging graph *is a* `Transform`.
+Logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed.  Each data transformation step in a *Streams* logging graph is realized through a type-safe `Transform` implementation.  Each `Transform` in a data transformation graph consumes an input, transforms the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Handlers, etc.) in a *Streams* logging graph *is a* `Transform`.
 
 ### Graph API Pattern
 
-Streams uses a [graph API pattern](#connect-the-logger-to-the-formatter-and-connect-the-formatter-to-the-consolehandler-and-rotatingfilehandler) for constructing a logging graph. Each graph consists of a network of `Transforms` that together comprise the graph-like logging pipeline.
+*Streams* uses a [graph API pattern](#connect-the-logger-to-the-formatter-and-connect-the-formatter-to-the-consolehandler-and-rotatingfilehandler) for constructing a logging graph. Each graph consists of a network of `Transforms` that together comprise the graph-like logging pipeline.
 
 ## Usage
 
@@ -75,7 +75,7 @@ const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', lev
 ```
 
 ### Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
-Streams uses a graph-style API in order to construct a network of log Transforms.  Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, is a [Transform](https://github.com/faranalytics/graph-transform).
+*Streams* uses a graph-style API in order to construct a network of log Transforms.  Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, is a [Transform](https://github.com/faranalytics/graph-transform).
 ```ts
 const log = logger.connect(
     formatter.connect(
@@ -335,9 +335,9 @@ This is an example of what a logged message will look like using the serilizer d
 
 ## How-Tos
 
-### How to Implement a Custom Streams Transform
+### How to Implement a Custom *Streams* Transform
 
-Streams is built on the type-safe Graph-Transform graph API framework.  This means that any Graph-Transform `Transform` may be incorporated into your logging graph given that it meets the contextual type requirements.  Please see the [Graph-Transform](https://github.com/faranalytics/graph-transform) documentation for how to implement a custom `Transform`.
+*Streams* is built on the type-safe Graph-Transform graph API framework.  This means that any Graph-Transform `Transform` may be incorporated into your logging graph given that it meets the contextual type requirements.  Please see the [Graph-Transform](https://github.com/faranalytics/graph-transform) documentation for how to implement a custom `Transform`.
 
 ### How to Consume a Readable, Writable, Duplex, or Transform Native Node.js Stream
 
@@ -351,4 +351,4 @@ const socketHandler = new Transform<Buffer, Buffer>(socket);
 ```
 
 ## Backpressure
-Streams respects backpressure by queueing messages while the stream is draining.  You can set a hard limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.
+*Streams* respects backpressure by queueing messages while the stream is draining.  You can set a hard limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.
