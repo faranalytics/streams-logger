@@ -1,5 +1,6 @@
-import * as stream from "node:stream";
-import { Transform } from "streams-logger";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import * as stream from 'node:stream';
+import { Transform } from 'streams-logger';
 
 class StringToNumber extends Transform<Buffer, number> {
 

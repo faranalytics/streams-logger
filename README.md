@@ -1,15 +1,15 @@
-# Streams Logger
+# *Streams* Logger
 
-Streams is a type-safe logger for TypeScript and Node.js.
+*Streams* is a type-safe logger for TypeScript and Node.js.
 
 ## Introduction
 
-Streams is an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler, RotatingFileHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios.
+*Streams* is an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler, RotatingFileHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios.
 
 ### Features
 
 - Type-safe logging graphs.
-- Streams is based on the Node.js stream API; hence, it's ready for your Node.js stream-based resource.
+- *Streams* is based on the Node.js stream API; hence, it's ready for your Node.js stream-based resource.
 - Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
 - A graph API pattern for constucting sophisticated graph-like logging pipelines.
 - Error propagation and selective termination of inoperable graph components.
@@ -19,10 +19,19 @@ Streams is an intuitive type-safe logging facility built on native Node.js strea
 - [Installation](#installation)
 - [Concepts](#concepts)
 - [Usage](#usage)
+    - [Log to the Console and to a File](#log-to-the-console-and-to-a-file)
 - [Examples](#examples)
+    - [*An instance of logging "Hello, World!"*](#an-instance-of-logging-hello-world-example)
 - [API](#api)
-- [How to Implement a Custom Streams Transform](#how-to-implement-a-custom-streams-transform)
-- [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-native-nodejs-stream)
+    - [The Logger Class](#the-logger-class)
+    - [The Formatter Class](#the-formatter-class)
+    - [The ConsoleHandler Class](#the-consolehandler-class)
+    - [The RotatingFileHandler Class](#the-rotatingfilehandler-class)
+- [Formatting](#formatting)
+    - [Example Serializer](#example-serializer)
+- [How-Tos](#how-tos)
+    - [How to Implement a Custom *Streams* Transform](#how-to-implement-a-custom-streams-transform)
+    - [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-native-nodejs-stream)
 - [Backpressure](#backpressure)
 
 ## Installation
@@ -35,23 +44,25 @@ npm install streams-logger
 
 ### Transform
 
-Streams is based on the idea that logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, etc.) is added to the log message prior to it being printed.  Each transformation step is realized through a type-safe `Transform` implementation.
+Logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed.  Each data transformation step in a *Streams* logging graph is realized through a type-safe `Transform` implementation.  Each `Transform` in a data transformation graph consumes an input, transforms the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Handlers, etc.) in a *Streams* logging graph *is a* `Transform`.
 
 ### Graph API Pattern
 
-Streams uses a [graph API pattern](#connect-the-logger-to-the-formatter-and-connect-the-formatter-to-the-consolehandler-and-rotatingfilehandler) for constructing a logger. Each graph consists of a network of `Transforms` that together comprise the graph-like logging pipeline.
+*Streams* uses a [graph API pattern](#connect-the-logger-to-the-formatter-and-connect-the-formatter-to-the-consolehandler-and-rotatingfilehandler) for constructing a logging graph. Each graph consists of a network of `Transforms` that together comprise the graph-like logging pipeline.
 
 ## Usage
 
 In this hypothetical example you will log "Hello, World!" to the console and to a file.
 
-### Import the Logger, Formatter, ConsoleHandler and RotatingFileHandler, and SyslogLevel enum.
+### Log to the Console and to a File
+
+#### Import the Logger, Formatter, ConsoleHandler and RotatingFileHandler, and SyslogLevel enum.
 
 ```ts
 import { Logger, Formatter, ConsoleHandler, RotatingFileHandler, SyslogLevel } from 'streams-logger';
 ```
 
-### Create an instance of a Logger, Formatter, ConsoleHandler and RotatingFileHandler.
+#### Create an instance of a Logger, Formatter, ConsoleHandler and RotatingFileHandler.
 - The `Logger` is set to log at level `SyslogLevel.DEBUG`.  
 - The `Formatter` constructor is passed a serialization function that will output a string containing the ISO time, the log level, the function name, the line number, the column number, and the log message.
 - The `ConsoleHandler` will log the message to `process.stdout`.
@@ -66,8 +77,8 @@ const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', level: SyslogLevel.DEBUG });
 ```
 
-### Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
-Streams uses a graph-style API in order to construct a network of log Transforms.  Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, is a [Transform](https://github.com/faranalytics/graph-transform).
+#### Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
+*Streams* uses a graph-style API in order to construct a network of log Transforms.  Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, is a [Transform](https://github.com/faranalytics/graph-transform).
 ```ts
 const log = logger.connect(
     formatter.connect(
@@ -77,7 +88,7 @@ const log = logger.connect(
 );
 ```
 
-### Log "Hello, World!" to the console and to the file `./message.log`.
+#### Log "Hello, World!" to the console and to the file `./message.log`.
 
 ```ts
 function sayHello() {
@@ -87,7 +98,7 @@ function sayHello() {
 sayHello();
 ```
 
-#### Output:
+##### Output:
 ```bash
 # ⮶date-time    function name⮷   column⮷ ⮶message
 2024-06-12T00:10:15.894Z:INFO:sayHello:7:9:Hello, World!
@@ -95,7 +106,7 @@ sayHello();
 ```
 ## Examples
 
-### *An instance of "Hello, World!"* <sup><sup>(example)</sup></sup>
+### *An instance of logging "Hello, World!"* <sup><sup>(example)</sup></sup>
 Please see the [Usage](#usage) section above or the ["Hello, World!"](https://github.com/faranalytics/streams-logger/tree/main/examples/hello_world) example for a working implementation.
 
 ## API
@@ -217,7 +228,7 @@ Set the log level.  Must be one of `SyslogLevel`.
     - depth `<number>` Used to specify which line of the stack trace to parse.
     - error `<Error>` The `Error` that was generated for parsing.
 
-A `LogRecord` is instantiated each time a message is logged at an allowed level. It contains information about the process and environment at the time of the logging call.  A `LogRecord` is passed as the single argument to a `Formatter` serialization function.
+A `LogRecord` is instantiated each time a message is logged at an allowed level. It contains information about the process and environment at the time of the logging call.  A `LogRecord` is passed as the single argument to a `Formatter` [serialization function](#formatting).
 
 *public* **logRecord.message**
 - `<string>`
@@ -287,17 +298,6 @@ The thread identifier.
 
 The `Logger` constructs and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the properties of a LogRecord *may* undergo formatting and serialization.  This can be accomplished by creating an instance of a `Formatter` and passing in a custom [serialization function](#example-serializer) that accepts a `LogRecord` as its single argument.  The serialization function can construct a log message from the `LogRecord` properties.  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
 
-### Log Record Properties
-A `LogRecord<string, SyslogLevelT>` object is passed to the serializer, which contains the following properties.
-
-- message `<string>` The logged message.
-- name `<string>` The name of the `Logger`.
-- level `<DEBUG | INFO | NOTICE | WARN | ERROR | CRIT | ALERT | EMERG>` An upper case string representation of the level.
-- func `<string>` The name of the function.
-- url `<string>`  The stacktrace URL.
-- line `<string>` The line number of the logging event.
-- col `<string>` The column number of the logging event.
-
 ### Example Serializer
 
 In the following code excerpt, a serializer is implemented that logs:
@@ -310,7 +310,7 @@ In the following code excerpt, a serializer is implemented that logs:
 6. The log message
 7. A newline
 
-The serializer function is passed to the constructor of a `Formatter` and the `Formatter` is incorporated into the logging graph.
+The serializer function is passed to the constructor of a `Formatter`.  The `Logger` is connected to the `Formatter`.  The `Formatter` is connected to the `ConsoleHandler`.
 
 ```ts
 const serializer = async ({ message, name, level, func, url, line, col }: LogRecord<string, SyslogLevelT>) => {
@@ -336,15 +336,20 @@ This is an example of what a logged message will look like using the serilizer d
 #                        ⮴level       ⮴line number
 ```
 
-## How to Implement a Custom Streams Transform
+## How-Tos
 
-Streams is built on the type-safe Graph-Transform graph API framework.  This means that any Graph-Transform `Transform` may be incorporated into your logging graph given that it meets the contextual type requirements.  Please see the [Graph-Transform](https://github.com/faranalytics/graph-transform) documentation for how to implement a custom `Transform`.
+### How to Implement a Custom *Streams* Transform
 
-## How to Consume a Readable, Writable, Duplex, or Transform Native Node.js Stream
+*Streams* is built on the type-safe Graph-Transform graph API framework.  This means that any Graph-Transform `Transform` may be incorporated into your logging graph given that it meets the contextual type requirements.  Please see the [Graph-Transform](https://github.com/faranalytics/graph-transform) documentation for how to implement a custom `Transform`.
+
+### How to Consume a Readable, Writable, Duplex, or Transform Native Node.js Stream
 
 You can incorporate any Readable, Writable, Duplex, or Transform stream into your logging graph by passing the stream to the `Transform` constructor.  In this hypothetical example a type-safe `Transform` is constructed from a `net.Socket`.  The type variables are specified as `<Buffer, Buffer>`; the writable side of the stream consumes a `Buffer` and the readable side of the stream produces a `Buffer`. 
 
 ```ts
+import * as net from 'node:net';
+import { Transform } from 'streams-logger';
+
 net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000);
 const socket = net.createConnection({ port: 3000 });
 await new Promise((r, e) => socket.once('connect', r).once('error', e));
@@ -352,4 +357,4 @@ const socketHandler = new Transform<Buffer, Buffer>(socket);
 ```
 
 ## Backpressure
-Streams respects backpressure by queueing messages while the stream is draining.  You can set a hard limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.
+*Streams* respects backpressure by queueing messages while the stream is draining.  You can set a hard limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.
