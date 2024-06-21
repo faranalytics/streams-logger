@@ -208,6 +208,7 @@ Use a RotatingFileHandler in order to write your log messages to a file.
 Set the log level.  Must be one of `SyslogLevel`.
 
 ### The LogRecord Class
+
 **new streams-logger.LogRecord(options)**
 - options `<LoggerOptions>`
     - message `<string>` The logger message.
@@ -216,9 +217,11 @@ Set the log level.  Must be one of `SyslogLevel`.
     - depth `<number>` Used to specify which line of the stack trace to parse.
     - error `<Error>` The `Error` that was generated for parsing.
 
+A LogRecord provides information about the process and environment at the time of the logging call.  A `LogRecord` is passed as the single argument to a `Formatter` serialization function.
+
 *public* **logRecord.message**
 - `<string>`
-The message.
+The logged message.
 
 *public* **logRecord.name**
 - `<string>`
@@ -239,6 +242,46 @@ The line number of the logging event.
 *public* **logRecord.col**
 - `<string>`
 The column of the logging event.
+
+*public* **logRecord.isotime**
+- `<string>`
+The date and time in ISO format.
+
+*public* **logRecord.pathname**
+- `<string>`
+The name of the module.
+
+*public* **logRecord.path**
+- `<string>`
+The complete path of the module.
+
+*public* **logRecord.pathdir**
+- `<string>`
+The directory part of the path.
+
+*public* **logRecord.pathroot**
+- `<string>`
+The root of the path.
+
+*public* **logRecord.pathbase**
+- `<string>`
+The module filename.
+
+*public* **logRecord.pathext**
+- `<string>`
+The extension of the module.
+
+*public* **logRecord.pid**
+- `<string>`
+The process identifier.
+
+*public* **logRecord.env**
+- `<NodeJS.ProcessEnv>`
+The process environment.
+
+*public* **logRecord.threadid**
+- `<string>`
+The thread identifier.
 
 ## Formatting
 
