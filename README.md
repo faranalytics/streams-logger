@@ -35,7 +35,7 @@ npm install streams-logger
 
 ### Transform
 
-Logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed.  Each data transformation step in a Streams logging pipeline is realized through a type-safe `Transform` implementation.  Each `Transform` consumes an input, transforms the data in some way, and optionally produces and output. 
+Logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed.  Each data transformation step in a Streams logging pipeline is realized through a type-safe `Transform` implementation.  Each `Transform` consumes an input, transforms the data in some way, and optionally produces an output. 
 
 ### Graph API Pattern
 
