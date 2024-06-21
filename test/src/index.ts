@@ -16,13 +16,6 @@ import {
     RotatingFileHandler
 } from 'streams-logger';
 
-const logger = new Logger({ name: 'main', level: SyslogLevel.DEBUG });
-const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
-const stringToBuffer = new StringToBuffer();
-const bufferToString = new BufferToString();
-const objectToJSON = new ObjectToJSON();
-const jsonToObject = new JSONToObject<LogRecord<string, SyslogLevelT>>();
-const rotatingFileHandler = new RotatingFileHandler({ path: './message.log' });
 
 const server = net.createServer((socket: net.Socket) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -51,6 +44,14 @@ const server = net.createServer((socket: net.Socket) => {
 }).listen(3000);
 const socket = net.createConnection({ port: 3000 });
 await new Promise((r, e) => socket.once('connect', r).once('error', e));
+
+const logger = new Logger({ name: 'main', level: SyslogLevel.DEBUG });
+const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
+const stringToBuffer = new StringToBuffer();
+const bufferToString = new BufferToString();
+const objectToJSON = new ObjectToJSON();
+const jsonToObject = new JSONToObject<LogRecord<string, SyslogLevelT>>();
+const rotatingFileHandler = new RotatingFileHandler({ path: './message.log' });
 const socketTransform = new Transform<Buffer, Buffer>(socket);
 
 const log = logger.connect(

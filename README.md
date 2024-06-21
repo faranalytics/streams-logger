@@ -4,7 +4,7 @@ Streams is a type-safe logger for TypeScript and Node.js.
 
 ## Introduction
 
-Streams offers an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler, RotatingFileHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios.
+Streams is an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler, RotatingFileHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios.
 
 ### Features
 
@@ -108,62 +108,62 @@ Please see the [Usage](#usage) section above or the ["Hello, World!"](https://gi
 
 Constuct a `<Logger<LogData, LogRecord<string, SyslogLevelT>>` that will propogate messages at the specified syslog level.
 
-**logger.level**
+*public* **logger.level**
 - `<SyslogLevel>`
 
 The configured log level (e.g., `SyslogLevel.DEBUG`).
 
-**logger.connect(...transforms)**
+*public* **logger.connect(...transforms)**
 - transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>`  Connect to an Array of `Transforms`.
 
 Returns: `<Logger<LogData, LogRecord<string, SyslogLevelT>>`
 
-**logger.disconnect(...transforms)**
+*public* **logger.disconnect(...transforms)**
 - transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>` Disconnect from an Array of `Transforms`.
 
 Returns: `<Logger<LogData, LogRecord<string, SyslogLevelT>>`
 
-**logger.debug(message)**
+*public* **logger.debug(message)**
 - message `<string>` Write a DEBUG message to the `Logger`.
 
 Returns: `<void>`
 
-**logger.info(message)**
+*public* **logger.info(message)**
 - message `<string>` Write a INFO message to the `Logger`.
 
 Returns: `<void>`
 
-**logger.notice(message)**
+*public* **logger.notice(message)**
 - message `<string>` Write a NOTICE message to the `Logger`.
 
 Returns: `<void>`
 
-**logger.warn(message)**
+*public* **logger.warn(message)**
 - message `<string>` Write a WARN message to the `Logger`.
 
 Returns: `<void>`
 
-**logger.error(message)**
+*public* **logger.error(message)**
 - message `<string>` Write a ERROR message to the `Logger`.
 
 Returns: `<void>`
 
-**logger.crit(message)**
+*public* **logger.crit(message)**
 - message `<string>` Write a CRIT message to the `Logger`.
 
 Returns: `<void>`
 
-**logger.alert(message)**
+*public* **logger.alert(message)**
 - message `<string>` Write a ALERT message to the `Logger`.
 
 Returns: `<void>`
 
-**logger.emerg(message)**
+*public* **logger.emerg(message)**
 - message `<string>` Write a EMERG message to the `Logger`.
 
 Returns: `<void>`
 
-**logger.setLevel(level)**
+*public* **logger.setLevel(level)**
 - level `<SyslogLevel>` A log level.
 
 Set the log level.  Must be one of `SyslogLevel`.
@@ -182,6 +182,11 @@ Set the log level.  Must be one of `SyslogLevel`.
 
 Use a ConsoleHandler in order to stream your messages to the console.
 
+*public* **consoleHandler.setLevel(level)**
+- level `<SyslogLevel>` A log level.
+
+Set the log level.  Must be one of `SyslogLevel`.
+
 ### The RotatingFileHandler Class
 
 **new streams-logger.RotatingFileHandler(options)**
@@ -195,7 +200,7 @@ Use a ConsoleHandler in order to stream your messages to the console.
 
 Use a RotatingFileHandler in order to write your log messages to a file.
 
-**rotatingFileHandler.setLevel(level)**
+*public* **rotatingFileHandler.setLevel(level)**
 - level `<SyslogLevel>` A log level.
 
 Set the log level.  Must be one of `SyslogLevel`.
@@ -209,27 +214,27 @@ Set the log level.  Must be one of `SyslogLevel`.
     - depth `<number>` Used to specify which line of the stack trace to parse.
     - error `<Error>` The `Error` that was generated for parsing.
 
-**logRecord.message**
+*public* **logRecord.message**
 - `<string>`
 The message.
 
-**logRecord.name**
+*public* **logRecord.name**
 - `<string>`
 The name of the `Logger`.
 
-**logRecord.level**
+*public* **logRecord.level**
 - `<DEBUG | INFO | NOTICE | WARN | ERROR | CRIT | ALERT | EMERG>`
 An upper case string representation of the level.
 
-**logRecord.func**
+*public* **logRecord.func**
 - `<string>`
 The name of the function where the logging event took place.
 
-**logRecord.line**
+*public* **logRecord.line**
 - `<string>`
 The line number of the logging event.
 
-**logRecord.col**
+*public* **logRecord.col**
 - `<string>`
 The column of the logging event.
 
