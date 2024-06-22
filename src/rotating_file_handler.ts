@@ -41,7 +41,7 @@ export class RotatingFileHandlerWritable extends s.Writable {
                     if (stats.size + message.length > this.bytes) {
                         await this.rotate();
                     }
-                    await fsp.appendFile(this.path, message, { encoding: this.encoding, mode: this.mode, flag: 'a' });
+                    await fsp.appendFile(this.path, message, { mode: this.mode, flag: 'a' });
                 }
             })());
         }
