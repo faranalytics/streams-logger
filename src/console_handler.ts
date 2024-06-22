@@ -3,7 +3,7 @@ import * as s from 'node:stream';
 import { Transform, $stream } from 'graph-transform';
 import { LogRecord } from './log_record.js';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
-import { Streams } from './index.js';
+import { Config } from './index.js';
 
 export const $level = Symbol('level');
 
@@ -17,7 +17,7 @@ export class ConsoleHandlerTransform extends s.Transform {
 
     constructor({ level }: ConsoleHandlerTransformOtions, options?: s.TransformOptions) {
         super({
-            ...{ highWaterMark: Streams.defaultHighWaterMarkObjectMode },
+            ...{ highWaterMark: Config.defaultHighWaterMarkObjectMode },
             ...options, ...{ writableObjectMode: true, readableObjectMode: true }
         });
         this[$level] = level;

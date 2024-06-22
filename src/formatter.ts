@@ -2,7 +2,7 @@ import * as s from 'node:stream';
 import { LogRecord } from './log_record.js';
 import { Transform } from 'graph-transform';
 import { SyslogLevelT } from './syslog.js';
-import { Streams } from './index.js';
+import { Config } from './index.js';
 
 export interface FormatterOptions {
     (record: LogRecord<string, SyslogLevelT>): Promise<string> | string
@@ -12,7 +12,7 @@ export class Formatter extends Transform<LogRecord<string, SyslogLevelT>, LogRec
 
     constructor(transform: FormatterOptions, transformOptions?: s.TransformOptions) {
         super(new s.Transform({
-            ...{ highWaterMark: Streams.defaultHighWaterMarkObjectMode },
+            ...{ highWaterMark: Config.defaultHighWaterMarkObjectMode },
             ...transformOptions, ...{
                 writableObjectMode: true,
                 readableObjectMode: true,

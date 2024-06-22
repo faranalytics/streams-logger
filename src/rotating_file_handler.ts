@@ -5,7 +5,7 @@ import * as s from 'node:stream';
 import { LogRecord } from './log_record.js';
 import { $stream, Transform } from 'graph-transform';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
-import { Streams } from "./index.js";
+import { Config } from "./index.js";
 
 export class RotatingFileHandlerWritable extends s.Writable {
 
@@ -20,7 +20,7 @@ export class RotatingFileHandlerWritable extends s.Writable {
     constructor({ level = SyslogLevel.WARN, path, rotations = 0, bytes = 1e6, encoding = 'utf8', mode = 0o666 }: RotatingFileHandlerOptions,
         writableOptions?: s.WritableOptions) {
         super({
-            ...{ highWaterMark: Streams.defaultHighWaterMarkObjectMode },
+            ...{ highWaterMark: Config.defaultHighWaterMarkObjectMode },
             ...writableOptions, ...{ objectMode: true }
         });
         this.path = pth.resolve(pth.normalize(path));

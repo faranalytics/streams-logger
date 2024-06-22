@@ -34,7 +34,9 @@
 - [How-Tos](#how-tos)
     - [How to Implement a Custom *Streams* Transform](#how-to-implement-a-custom-streams-transform)
     - [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream)
-- [Backpressure](#backpressure)
+- [Tuning](#tuning)
+    - [High Water Mark](#high-water-mark)
+    - [Backpressure](#backpressure)
 
 ## Installation
 
@@ -298,6 +300,19 @@ The process environment.
 - `<string>`
 The thread identifier.
 
+### The Streams Config Settings
+
+**Config.setDefaultHighWaterMark(objectMode, value)**
+- objectMode `<boolean>` `true` if setting the ObjectMode `highWaterMark`.
+- value `number` `highWaterMark` value.
+
+Returns: `<void>`
+
+**Config.getDefaultHighWaterMark(objectMode)**
+- objectMode `<boolean>` `true` if setting the ObjectMode `highWaterMark`.
+
+Returns: `<number>` The default `highWaterMark`.
+
 ## Formatting
 
 The `Logger` constructs and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the properties of a LogRecord *may* undergo formatting and serialization.  This can be accomplished by creating an instance of a `Formatter` and passing in a custom [serialization function](#example-serializer) that accepts a `LogRecord` as its single argument.  The serialization function can construct a log message from the `LogRecord` properties.  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
@@ -360,5 +375,10 @@ await new Promise((r, e) => socket.once('connect', r).once('error', e));
 const socketHandler = new Transform<Buffer, Buffer>(socket);
 ```
 
-## Backpressure
+## Tuning
+
+### High Water Mark
+*Streams* operates on Node.js streams; hence, some applications may require additional tuning.  **For ordinary logging tasks, the default high water mark is fine.**  However, for extremely high throughput applications the high water mark should be adjusted accordingly.  You can set a default high water mark using `Config.setDefaultHighWaterMark(objectMode, value)`.  Alternatively, you can pass an optional stream configuration argument to each of the `Transforms` in the library. 
+
+### Backpressure
 *Streams* respects backpressure by queueing messages while the stream is draining.  You can set a hard limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.
