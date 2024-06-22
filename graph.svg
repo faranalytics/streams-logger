@@ -2,57 +2,41 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="84.285934mm"
-   height="69.28595mm"
-   viewBox="0 0 84.285934 69.28595"
+   width="63.214455mm"
+   height="51.964462mm"
+   viewBox="0 0 63.214454 51.964462"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
-   sodipodi:docname="graph_2.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
-     showguides="true"
-     inkscape:zoom="1.1253621"
-     inkscape:cx="263.91505"
-     inkscape:cy="277.6884"
-     inkscape:window-width="1888"
-     inkscape:window-height="1023"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1">
-    <sodipodi:guide
-       position="56.927816,322.3919"
-       orientation="0,-1"
-       id="guide5"
-       inkscape:locked="false" />
-  </sodipodi:namedview>
   <defs
      id="defs1">
+    <marker
+       style="overflow:visible"
+       id="Triangle"
+       refX="3"
+       refY="0"
+       orient="auto-start-reverse"
+       markerWidth="0.5"
+       markerHeight="0.5"
+       viewBox="0 0 1 1"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path135" />
+    </marker>
     <rect
-       x="-39.185006"
-       y="-32.58013"
-       width="360.40415"
-       height="60.930652"
+       x="-39.185005"
+       y="-32.580132"
+       width="360.40414"
+       height="60.930653"
        id="rect3" />
   </defs>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-34.999998,-74.999998)">
+     transform="translate(-45.53574,-83.66074)">
     <circle
        style="fill:#ececec;stroke-width:0.198437"
        id="path1"
@@ -65,7 +49,6 @@
        x="52.642567"
        y="110.26328"
        id="text1"><tspan
-         sodipodi:role="line"
          id="tspan1"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82222px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';text-align:center;text-anchor:middle;fill:#1a1a1a;stroke-width:0.198437"
          x="52.642567"
@@ -75,18 +58,13 @@
        id="path1-5"
        cx="83.30352"
        cy="109.91083"
-       inkscape:transform-center-y="-0.47315009"
-       inkscape:transform-center-x="-0.2420964"
        r="7.5" />
     <text
        xml:space="preserve"
        style="font-size:2.82222px;fill:#000080;stroke-width:0.198437"
        x="83.210503"
        y="110.9044"
-       id="text1-3"
-       inkscape:transform-center-x="-0.23344366"
-       inkscape:transform-center-y="9.5303849"><tspan
-         sodipodi:role="line"
+       id="text1-3"><tspan
          id="tspan1-5"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82222px;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';text-align:center;text-anchor:middle;fill:#1a1a1a;stroke-width:0.198437"
          x="83.210503"
@@ -103,12 +81,10 @@
        x="101.39256"
        y="127.68122"
        id="text1-3-2"><tspan
-         sodipodi:role="line"
          id="tspan1-5-7"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82222px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';text-align:center;text-anchor:middle;fill:#1a1a1a;stroke-width:0.198437"
          x="101.39256"
          y="127.68122">File</tspan><tspan
-         sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82222px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';text-align:center;text-anchor:middle;fill:#1a1a1a;stroke-width:0.198437"
          x="101.39256"
          y="131.209"
@@ -125,51 +101,36 @@
        x="101.45216"
        y="90.292419"
        id="text1-3-0"><tspan
-         sodipodi:role="line"
          id="tspan1-5-6"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82222px;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';text-align:center;text-anchor:middle;fill:#1a1a1a;stroke-width:0.198437"
          x="101.45216"
          y="90.292419">Console</tspan><tspan
-         sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82222px;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';text-align:center;text-anchor:middle;fill:#1a1a1a;stroke-width:0.198437"
          x="101.45216"
          y="93.823814"
          id="tspan5">Handler</tspan></text>
     <path
-       style="fill:#00ff00;fill-rule:evenodd;stroke:#00ff00;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#00ff00;fill-rule:evenodd;stroke:#517151;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
        d="m 88.567898,115.25258 7.873646,7.98936"
-       id="path3"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-end="#path1-5-1"
-       inkscape:connection-start="#path1-5" />
+       id="path3" />
     <path
-       style="fill:#00ff00;fill-rule:evenodd;stroke:#00ff00;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#517151;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
        d="m 88.491105,104.49443 8.02449,-8.378443"
-       id="path4"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-end="#path1-5-6"
-       inkscape:connection-start="#path1-5" />
+       id="path4" />
     <path
-       style="fill:#00ff00;fill-rule:evenodd;stroke:#00ff00;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#2b2b2b;fill-opacity:1;fill-rule:evenodd;stroke:#517151;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
        id="path5"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#path1"
-       inkscape:connection-end="#path1-5"
        d="m 59.999805,109.70641 15.804119,0.13863" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82223px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';fill:#1a1a1a;stroke-width:1.984;stroke-dasharray:none"
-       x="63.963371"
-       y="98.216446"
+       x="59.60965"
+       y="98.071526"
        id="text2"><tspan
-         sodipodi:role="line"
          id="tspan2"
-         style="fill:#00ffff;stroke-width:1.984"
-         x="63.963371"
-         y="98.216446">A Logging Graph</tspan></text>
+         style="fill:#1a1a1a;stroke-width:1.984"
+         x="59.60965"
+         y="98.071526">A Logging Graph</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,34.999998,74.999998)"
