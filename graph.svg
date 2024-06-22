@@ -182,25 +182,29 @@
        inkscape:connection-start="#path1"
        inkscape:connection-end="#path1-5"
        d="m 59.999805,109.70641 15.804119,0.13863" />
-    <rect
-       style="fill:#fffefe;fill-opacity:1;stroke:#ffffff;stroke-width:1.13189;stroke-opacity:1"
-       id="rect1"
-       width="40.868107"
-       height="2.3681109"
-       x="51.101692"
-       y="89.857437" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82223px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';fill:#1a1a1a;stroke-width:1.984;stroke-dasharray:none"
-       x="51.258545"
-       y="91.809059"
-       id="text2"><tspan
-         sodipodi:role="line"
-         id="tspan2"
-         style="fill:#1a1a1a;stroke-width:1.984"
+    <g
+       id="g1"
+       transform="translate(-0.91217841,6.6096799)">
+      <rect
+         style="fill:#fffefe;fill-opacity:1;stroke:#ffffff;stroke-width:1.13189;stroke-opacity:1"
+         id="rect1"
+         width="40.868107"
+         height="2.3681109"
+         x="51.101692"
+         y="89.857437" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82223px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';fill:#1a1a1a;stroke-width:1.984;stroke-dasharray:none"
          x="51.258545"
-         y="91.809059">A <tspan
+         y="91.809059"
+         id="text2"><tspan
+           sodipodi:role="line"
+           id="tspan2"
+           style="fill:#1a1a1a;stroke-width:1.984"
+           x="51.258545"
+           y="91.809059">A <tspan
    style="font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold Oblique'"
    id="tspan3">Streams</tspan> Logging Graph</tspan></text>
+    </g>
   </g>
 </svg>
