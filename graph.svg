@@ -55,13 +55,13 @@
     <text
        xml:space="preserve"
        style="font-size:3.175px;fill:#000080;stroke-width:0.264583"
-       x="39.014629"
+       x="44.33136"
        y="110.47005"
        id="text1"><tspan
          sodipodi:role="line"
          id="tspan1"
-         style="fill:#000080;stroke-width:0.264583"
-         x="39.014629"
+         style="text-align:center;text-anchor:middle;fill:#000080;stroke-width:0.264583"
+         x="44.33136"
          y="110.47005">Logger</tspan></text>
     <circle
        style="fill:#cccccc;stroke-width:0.264583"
@@ -74,15 +74,15 @@
     <text
        xml:space="preserve"
        style="font-size:3.175px;fill:#000080;stroke-width:0.264583"
-       x="76.998161"
+       x="84.688393"
        y="110.77778"
        id="text1-3"
        inkscape:transform-center-x="-0.31126313"
        inkscape:transform-center-y="12.707176"><tspan
          sodipodi:role="line"
          id="tspan1-5"
-         style="fill:#000080;stroke-width:0.264583"
-         x="76.998161"
+         style="text-align:center;text-anchor:middle;fill:#000080;stroke-width:0.264583"
+         x="84.688393"
          y="110.77778">Formatter</tspan></text>
     <circle
        style="fill:#cccccc;stroke-width:0.264583"
