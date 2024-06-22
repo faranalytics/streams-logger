@@ -53,7 +53,7 @@ Logging is essentially a data transformation task.  When a string is logged to t
 
 In this hypothetical example you will log "Hello, World!" to the console and to a file.
 
-### Implementation
+### Example Implementation
 
 #### Import the Logger, Formatter, ConsoleHandler and RotatingFileHandler, and SyslogLevel enum.
 
