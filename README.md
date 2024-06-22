@@ -48,7 +48,7 @@ Logging is essentially a data transformation task.  When a string is logged to t
 
 ### Graph API Pattern
 
-*Streams* uses a [graph API pattern](#connect-the-logger-to-the-formatter-and-connect-the-formatter-to-the-consolehandler-and-rotatingfilehandler) for constructing a logging graph. Each graph consists of a network of `Transforms` that together comprise the graph logging pipeline.
+*Streams* uses a [graph-like API pattern](#connect-the-logger-to-the-formatter-and-connect-the-formatter-to-the-consolehandler-and-rotatingfilehandler) for constructing a logging graph. Each graph consists of a network of `Transforms` that together comprise the graph logging pipeline.
 
 ## Usage
 
