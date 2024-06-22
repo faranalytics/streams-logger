@@ -19,7 +19,7 @@
 - [Installation](#installation)
 - [Concepts](#concepts)
 - [Usage](#usage)
-    - [Log to the Console and to a File](#log-to-the-console-and-to-a-file)
+    - [Log to the Console and a File](#log-to-the-console-and-to-a-file)
 - [Examples](#examples)
     - [*An instance of logging "Hello, World!"*](#an-instance-of-logging-hello-world-example)
 - [API](#api)
