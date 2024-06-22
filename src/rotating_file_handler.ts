@@ -49,7 +49,8 @@ export class RotatingFileHandlerWritable extends s.Writable {
 
     protected async rotate() {
         if (this.rotations === 0) {
-            await fsp.rm(this.path);
+            const fh = await fsp.open(this.path, 'w');
+            fh.close();
         }
         else {
             for (let i = this.rotations - 1; i >= 0; i--) {
