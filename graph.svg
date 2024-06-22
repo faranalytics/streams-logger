@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="84.285934mm"
+   height="69.28595mm"
+   viewBox="0 0 84.285934 69.28595"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   sodipodi:docname="graph.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showguides="true"
+     inkscape:zoom="1.1253621"
+     inkscape:cx="264.35935"
+     inkscape:cy="277.68839"
+     inkscape:window-width="1888"
+     inkscape:window-height="1023"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <sodipodi:guide
+       position="56.927816,322.3919"
+       orientation="0,-1"
+       id="guide5"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-34.999998,-74.999998)">
+    <circle
+       style="fill:#cccccc;stroke-width:0.264583"
+       id="path1"
+       cx="44.642967"
+       cy="109.64297"
+       r="9.6429691" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;fill:#000080;stroke-width:0.264583"
+       x="39.014629"
+       y="110.47005"
+       id="text1"><tspan
+         sodipodi:role="line"
+         id="tspan1"
+         style="fill:#000080;stroke-width:0.264583"
+         x="39.014629"
+         y="110.47005">Logger</tspan></text>
+    <circle
+       style="fill:#cccccc;stroke-width:0.264583"
+       id="path1-5"
+       cx="85"
+       cy="109.64297"
+       r="9.6429691"
+       inkscape:transform-center-y="-0.60844895"
+       inkscape:transform-center-x="-0.31126466" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;fill:#000080;stroke-width:0.264583"
+       x="76.998161"
+       y="110.77778"
+       id="text1-3"
+       inkscape:transform-center-x="-0.31126313"
+       inkscape:transform-center-y="12.707176"><tspan
+         sodipodi:role="line"
+         id="tspan1-5"
+         style="fill:#000080;stroke-width:0.264583"
+         x="76.998161"
+         y="110.77778">Formatter</tspan></text>
+    <circle
+       style="fill:#cccccc;stroke-width:0.264583"
+       id="path1-5-1"
+       cx="109.64297"
+       cy="134.64297"
+       r="9.6429691" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;fill:#000080;stroke-width:0.264583"
+       x="109.48716"
+       y="133.84225"
+       id="text1-3-2"><tspan
+         sodipodi:role="line"
+         id="tspan1-5-7"
+         style="text-align:center;text-anchor:middle;fill:#000080;stroke-width:0.264583"
+         x="109.48716"
+         y="133.84225">File</tspan><tspan
+         sodipodi:role="line"
+         style="text-align:center;text-anchor:middle;fill:#000080;stroke-width:0.264583"
+         x="109.48716"
+         y="137.811"
+         id="tspan6">Handler</tspan></text>
+    <circle
+       style="fill:#cccccc;stroke-width:0.264583"
+       id="path1-5-6"
+       cx="109.64297"
+       cy="84.642967"
+       r="9.6429691" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;fill:#000080;stroke-width:0.264583"
+       x="109.57941"
+       y="83.842239"
+       id="text1-3-0"><tspan
+         sodipodi:role="line"
+         id="tspan1-5-6"
+         style="text-align:center;text-anchor:middle;fill:#000080;stroke-width:0.264583"
+         x="109.57941"
+         y="83.842239">Console</tspan><tspan
+         sodipodi:role="line"
+         style="text-align:center;text-anchor:middle;fill:#000080;stroke-width:0.264583"
+         x="109.57941"
+         y="87.810989"
+         id="tspan5">Handler</tspan></text>
+    <path
+       style="fill:#00ff00;fill-rule:evenodd;stroke:#00ff00;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       d="m 91.76927,116.51031 11.10443,11.26532"
+       id="path3"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-end="#path1-5-1"
+       inkscape:connection-start="#path1-5" />
+    <path
+       style="fill:#00ff00;fill-rule:evenodd;stroke:#00ff00;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       d="M 91.769271,102.77562 102.8737,91.510313"
+       id="path4"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-end="#path1-5-6"
+       inkscape:connection-start="#path1-5" />
+    <path
+       style="fill:#00ff00;fill-rule:evenodd;stroke:#00ff00;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       id="path5"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#path1"
+       inkscape:connection-end="#path1-5"
+       d="M 54.285936,109.64297 H 75.357031" />
+  </g>
+</svg>
