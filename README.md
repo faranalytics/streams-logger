@@ -6,7 +6,7 @@
 
 *Streams* is an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler, RotatingFileHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios.
 
-![Graph](graph.svg?raw=true&1 "Graph")
+![Graph](graph.svg? "Graph")
 ### Features
 
 - Type-safe logging graphs.
