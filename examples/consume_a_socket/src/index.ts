@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as net from 'node:net';
-import * as stream from 'node:stream';
 import { Transform } from 'streams-logger';
 
 net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000);
