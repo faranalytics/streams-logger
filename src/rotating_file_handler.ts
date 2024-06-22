@@ -1,6 +1,5 @@
 import * as pth from 'node:path';
 import * as fsp from 'node:fs/promises';
-import * as fs from 'node:fs';
 import * as s from 'node:stream';
 import { LogRecord } from './log_record.js';
 import { $stream, Transform } from 'graph-transform';
@@ -25,10 +24,6 @@ export class RotatingFileHandlerWritable extends s.Writable {
         this.mode = mode;
         this.mutex = Promise.resolve();
         this.level = level;
-
-        if (!fs.existsSync(this.path)) {
-            fs.closeSync(fs.openSync(this.path, 'w'));
-        }
     }
 
     async _write(chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): Promise<void> {
@@ -37,7 +32,10 @@ export class RotatingFileHandlerWritable extends s.Writable {
                 await this.mutex.catch((err) => console.error(err));
                 const stats = await fsp.stat(this.path);
                 const message = Buffer.from(chunk.message, this.encoding);
-                if (stats.isFile()) {
+                if (!stats.isFile()) {
+                    await fsp.appendFile(this.path, message, { mode: this.mode, flag: 'a' });
+                }
+                else {
                     if (stats.size + message.length > this.bytes) {
                         await this.rotate();
                     }
@@ -50,8 +48,7 @@ export class RotatingFileHandlerWritable extends s.Writable {
 
     protected async rotate() {
         if (this.rotations === 0) {
-            const fh = await fsp.open(this.path, 'w');
-            fh.close();
+            await fsp.rm(this.path);
         }
         else {
             for (let i = this.rotations - 1; i >= 0; i--) {
