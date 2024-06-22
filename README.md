@@ -53,13 +53,15 @@ Logging is essentially a data transformation task.  When a string is logged to t
 
 In this hypothetical example you will log "Hello, World!" to the console and to a file.
 
-### Import the Logger, Formatter, ConsoleHandler and RotatingFileHandler, and SyslogLevel enum.
+### Implementation
+
+#### Import the Logger, Formatter, ConsoleHandler and RotatingFileHandler, and SyslogLevel enum.
 
 ```ts
 import { Logger, Formatter, ConsoleHandler, RotatingFileHandler, SyslogLevel } from 'streams-logger';
 ```
 
-### Create an instance of a Logger, Formatter, ConsoleHandler and RotatingFileHandler.
+#### Create an instance of a Logger, Formatter, ConsoleHandler and RotatingFileHandler.
 - The `Logger` is set to log at level `SyslogLevel.DEBUG`.  
 - The `Formatter` constructor is passed a serialization function that will output a string containing the ISO time, the log level, the function name, the line number, the column number, and the log message.
 - The `ConsoleHandler` will log the message to `process.stdout`.
@@ -74,7 +76,7 @@ const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', level: SyslogLevel.DEBUG });
 ```
 
-### Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
+#### Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
 *Streams* uses a graph-style API in order to construct a network of log Transforms.  Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, is a [Transform](https://github.com/faranalytics/graph-transform).
 ```ts
 const log = logger.connect(
@@ -85,7 +87,7 @@ const log = logger.connect(
 );
 ```
 
-### Log "Hello, World!" to the console and to the file `./message.log`.
+#### Log "Hello, World!" to the console and to the file `./message.log`.
 
 ```ts
 function sayHello() {
@@ -95,7 +97,7 @@ function sayHello() {
 sayHello();
 ```
 
-#### Output:
+##### Output:
 ```bash
 # ⮶date-time    function name⮷   column⮷ ⮶message
 2024-06-12T00:10:15.894Z:INFO:sayHello:7:9:Hello, World!
