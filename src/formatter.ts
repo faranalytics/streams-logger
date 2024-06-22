@@ -4,7 +4,7 @@ import { Transform } from 'graph-transform';
 import { SyslogLevelT } from './syslog.js';
 
 export interface FormatterOptions {
-    (record: LogRecord<string, SyslogLevelT>): Promise<string>
+    (record: LogRecord<string, SyslogLevelT>): Promise<string> | string
 }
 
 export class Formatter extends Transform<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>> {

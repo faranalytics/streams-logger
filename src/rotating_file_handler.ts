@@ -30,15 +30,20 @@ export class RotatingFileHandlerWritable extends s.Writable {
         if (SyslogLevel[chunk.level] <= this.level) {
             await (this.mutex = (async () => {
                 await this.mutex.catch((err) => console.error(err));
-                const stats = await fsp.stat(this.path);
                 const message = Buffer.from(chunk.message, this.encoding);
-                if (!stats.isFile()) {
-                    await fsp.appendFile(this.path, message, { mode: this.mode, flag: 'a' });
-                }
-                else {
-                    if (stats.size + message.length > this.bytes) {
-                        await this.rotate();
+                try {
+                    const stats = await fsp.stat(this.path);
+                    if (stats.isFile()) {
+                        if (stats.size + message.length > this.bytes) {
+                            await this.rotate();
+                        }
+                        await fsp.appendFile(this.path, message, { mode: this.mode, flag: 'a' });
                     }
+                    else {
+                        console.error(stats);
+                    }
+                }
+                catch (err) {
                     await fsp.appendFile(this.path, message, { mode: this.mode, flag: 'a' });
                 }
             })());

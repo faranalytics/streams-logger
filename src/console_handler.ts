@@ -13,15 +13,17 @@ export class ConsoleHandlerTransform extends s.Transform {
     public level: SyslogLevel;
 
     constructor({ level }: ConsoleHandlerTransformOtions) {
-        super({ writableObjectMode: true, readableObjectMode: false });
+        super({ writableObjectMode: true, readableObjectMode: true });
         this.level = level;
     }
 
     _transform(chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: s.TransformCallback): void {
         if (SyslogLevel[chunk.level] <= this.level) {
-            this.push(chunk.message);
+            callback(null, chunk.message);
         }
-        callback();
+        else{
+            callback();
+        }
     }
 }
 
