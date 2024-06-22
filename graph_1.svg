@@ -8,7 +8,7 @@
    version="1.1"
    id="svg1"
    inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
-   sodipodi:docname="graph.svg"
+   sodipodi:docname="graph_1.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -25,8 +25,8 @@
      inkscape:document-units="mm"
      showguides="true"
      inkscape:zoom="1.1253621"
-     inkscape:cx="264.35935"
-     inkscape:cy="277.68839"
+     inkscape:cx="263.91505"
+     inkscape:cy="277.6884"
      inkscape:window-width="1888"
      inkscape:window-height="1023"
      inkscape:window-x="0"
@@ -40,97 +40,104 @@
        inkscape:locked="false" />
   </sodipodi:namedview>
   <defs
-     id="defs1" />
+     id="defs1">
+    <rect
+       x="-39.185006"
+       y="-32.58013"
+       width="360.40415"
+       height="60.930652"
+       id="rect3" />
+  </defs>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-34.999998,-74.999998)">
     <circle
-       style="fill:#cccccc;stroke-width:0.264583"
+       style="fill:#cccccc;stroke-width:0.198437"
        id="path1"
-       cx="44.642967"
+       cx="52.767967"
        cy="109.64297"
-       r="9.6429691" />
+       r="7.2322268" />
     <text
        xml:space="preserve"
-       style="font-size:3.175px;fill:#000080;stroke-width:0.264583"
-       x="44.33136"
-       y="110.47005"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';fill:#000080;stroke-width:0.198437"
+       x="52.642567"
+       y="110.26328"
        id="text1"><tspan
          sodipodi:role="line"
          id="tspan1"
-         style="text-align:center;text-anchor:middle;fill:#000080;stroke-width:0.264583"
-         x="44.33136"
-         y="110.47005">Logger</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82222px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';text-align:center;text-anchor:middle;fill:#1a1a1a;stroke-width:0.198437"
+         x="52.642567"
+         y="110.26328">Logger</tspan></text>
     <circle
-       style="fill:#cccccc;stroke-width:0.264583"
+       style="fill:#cccccc;stroke-width:2.05746;stroke-dasharray:none"
        id="path1-5"
-       cx="85"
-       cy="109.64297"
-       r="9.6429691"
-       inkscape:transform-center-y="-0.60844895"
-       inkscape:transform-center-x="-0.31126466" />
+       cx="83.30352"
+       cy="109.91083"
+       inkscape:transform-center-y="-0.47315009"
+       inkscape:transform-center-x="-0.2420964"
+       r="7.5" />
     <text
        xml:space="preserve"
-       style="font-size:3.175px;fill:#000080;stroke-width:0.264583"
-       x="84.688393"
-       y="110.77778"
+       style="font-size:2.82222px;fill:#000080;stroke-width:0.198437"
+       x="83.210503"
+       y="110.9044"
        id="text1-3"
-       inkscape:transform-center-x="-0.31126313"
-       inkscape:transform-center-y="12.707176"><tspan
+       inkscape:transform-center-x="-0.23344366"
+       inkscape:transform-center-y="9.5303849"><tspan
          sodipodi:role="line"
          id="tspan1-5"
-         style="text-align:center;text-anchor:middle;fill:#000080;stroke-width:0.264583"
-         x="84.688393"
-         y="110.77778">Formatter</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82222px;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';text-align:center;text-anchor:middle;fill:#1a1a1a;stroke-width:0.198437"
+         x="83.210503"
+         y="110.9044">Formatter</tspan></text>
     <circle
-       style="fill:#cccccc;stroke-width:0.264583"
+       style="fill:#cccccc;stroke-width:0.198437"
        id="path1-5-1"
-       cx="109.64297"
-       cy="134.64297"
-       r="9.6429691" />
+       cx="101.51797"
+       cy="128.39297"
+       r="7.2322268" />
     <text
        xml:space="preserve"
-       style="font-size:3.175px;fill:#000080;stroke-width:0.264583"
-       x="109.48716"
-       y="133.84225"
+       style="font-size:2.82222px;fill:#000080;stroke-width:0.198437"
+       x="101.39256"
+       y="127.79243"
        id="text1-3-2"><tspan
          sodipodi:role="line"
          id="tspan1-5-7"
-         style="text-align:center;text-anchor:middle;fill:#000080;stroke-width:0.264583"
-         x="109.48716"
-         y="133.84225">File</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82222px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';text-align:center;text-anchor:middle;fill:#000080;stroke-width:0.198437"
+         x="101.39256"
+         y="127.79243">File</tspan><tspan
          sodipodi:role="line"
-         style="text-align:center;text-anchor:middle;fill:#000080;stroke-width:0.264583"
-         x="109.48716"
-         y="137.811"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82222px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';text-align:center;text-anchor:middle;fill:#000080;stroke-width:0.198437"
+         x="101.39256"
+         y="131.32021"
          id="tspan6">Handler</tspan></text>
     <circle
-       style="fill:#cccccc;stroke-width:0.264583"
+       style="fill:#cccccc;stroke-width:0.198437"
        id="path1-5-6"
-       cx="109.64297"
-       cy="84.642967"
-       r="9.6429691" />
+       cx="101.51797"
+       cy="90.892967"
+       r="7.2322268" />
     <text
        xml:space="preserve"
-       style="font-size:3.175px;fill:#000080;stroke-width:0.264583"
-       x="109.57941"
-       y="83.842239"
+       style="font-size:2.82222px;fill:#000080;stroke-width:0.198437"
+       x="101.45216"
+       y="90.292419"
        id="text1-3-0"><tspan
          sodipodi:role="line"
          id="tspan1-5-6"
-         style="text-align:center;text-anchor:middle;fill:#000080;stroke-width:0.264583"
-         x="109.57941"
-         y="83.842239">Console</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82222px;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';text-align:center;text-anchor:middle;fill:#1a1a1a;stroke-width:0.198437"
+         x="101.45216"
+         y="90.292419">Console</tspan><tspan
          sodipodi:role="line"
-         style="text-align:center;text-anchor:middle;fill:#000080;stroke-width:0.264583"
-         x="109.57941"
-         y="87.810989"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82222px;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';text-align:center;text-anchor:middle;fill:#1a1a1a;stroke-width:0.198437"
+         x="101.45216"
+         y="93.823814"
          id="tspan5">Handler</tspan></text>
     <path
        style="fill:#00ff00;fill-rule:evenodd;stroke:#00ff00;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-       d="m 91.76927,116.51031 11.10443,11.26532"
+       d="m 88.567898,115.25258 7.873646,7.98936"
        id="path3"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -138,7 +145,7 @@
        inkscape:connection-start="#path1-5" />
     <path
        style="fill:#00ff00;fill-rule:evenodd;stroke:#00ff00;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-       d="M 91.769271,102.77562 102.8737,91.510313"
+       d="m 88.491105,104.49443 8.02449,-8.378443"
        id="path4"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -151,6 +158,22 @@
        inkscape:connector-curvature="0"
        inkscape:connection-start="#path1"
        inkscape:connection-end="#path1-5"
-       d="M 54.285936,109.64297 H 75.357031" />
+       d="m 59.999805,109.70641 15.804119,0.13863" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82223px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';fill:#1a1a1a;stroke-width:1.984;stroke-dasharray:none"
+       x="63.963371"
+       y="98.216446"
+       id="text2"><tspan
+         sodipodi:role="line"
+         id="tspan2"
+         style="fill:#00ff00;stroke-width:1.984"
+         x="63.963371"
+         y="98.216446">A Logging Graph</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,34.999998,74.999998)"
+       id="text3"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.6667px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';white-space:pre;shape-inside:url(#rect3);display:inline;fill:#1a1a1a;stroke-width:7.49858;stroke-dasharray:none" />
   </g>
 </svg>
