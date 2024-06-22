@@ -2,16 +2,16 @@
 
 *Streams* is a type-safe logger for TypeScript and Node.js.
 
-## Introduction
+## Introduction <img align="right" src="./graph.png">
 
-*Streams* is an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler, RotatingFileHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios.
+*Streams* is an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler, RotatingFileHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios. *Streams* supports a graph-like API pattern for building sophisticated logging pipelines.
 
 ### Features
 
 - Type-safe logging graphs.
 - *Streams* is based on the Node.js stream API; hence, it's ready for your Node.js stream-based resource.
 - Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
-- A graph API pattern for constructing sophisticated graph-like logging pipelines.
+- A graph-like API pattern for constructing sophisticated logging pipelines.
 - Error propagation and selective termination of inoperable graph components.
 
 ## Table of Contents
@@ -19,7 +19,7 @@
 - [Installation](#installation)
 - [Concepts](#concepts)
 - [Usage](#usage)
-    - [Log to the Console and to a File](#log-to-the-console-and-to-a-file)
+    - [Log to the Console and a File](#log-to-the-console-and-to-a-file)
 - [Examples](#examples)
     - [*An instance of logging "Hello, World!"*](#an-instance-of-logging-hello-world-example)
 - [API](#api)
@@ -31,7 +31,7 @@
     - [Example Serializer](#example-serializer)
 - [How-Tos](#how-tos)
     - [How to Implement a Custom *Streams* Transform](#how-to-implement-a-custom-streams-transform)
-    - [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-native-nodejs-stream)
+    - [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream)
 - [Backpressure](#backpressure)
 
 ## Installation
@@ -48,7 +48,7 @@ Logging is essentially a data transformation task.  When a string is logged to t
 
 ### Graph API Pattern
 
-*Streams* uses a [graph API pattern](#connect-the-logger-to-the-formatter-and-connect-the-formatter-to-the-consolehandler-and-rotatingfilehandler) for constructing a logging graph. Each graph consists of a network of `Transforms` that together comprise the graph-like logging pipeline.
+*Streams* uses a [graph-like API pattern](#connect-the-logger-to-the-formatter-and-connect-the-formatter-to-the-consolehandler-and-rotatingfilehandler) for constructing a logging graph. Each graph consists of a network of `Transforms` that together comprise a graph logging pipeline.
 
 ## Usage
 
@@ -78,7 +78,7 @@ const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', lev
 ```
 
 #### Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
-*Streams* uses a graph-style API in order to construct a network of log Transforms.  Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, is a [Transform](https://github.com/faranalytics/graph-transform).
+*Streams* uses a graph-like API pattern in order to construct a network of log Transforms.  Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, is a [Transform](https://github.com/faranalytics/graph-transform).
 ```ts
 const log = logger.connect(
     formatter.connect(
@@ -110,6 +110,8 @@ sayHello();
 Please see the [Usage](#usage) section above or the ["Hello, World!"](https://github.com/faranalytics/streams-logger/tree/main/examples/hello_world) example for a working implementation.
 
 ## API
+
+The *Streams* API provides commonly used logging facilities (i.e., Logger, Formatter, and console and file Handlers).  However, you can [consume any writable Node.js stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream) and add it to your logging graph.
 
 ### The Logger Class
 
@@ -342,7 +344,7 @@ This is an example of what a logged message will look like using the serializer 
 
 *Streams* is built on the type-safe Graph-Transform graph API framework.  This means that any Graph-Transform `Transform` may be incorporated into your logging graph given that it meets the contextual type requirements.  Please see the [Graph-Transform](https://github.com/faranalytics/graph-transform) documentation for how to implement a custom `Transform`.
 
-### How to Consume a Readable, Writable, Duplex, or Transform Native Node.js Stream
+### How to Consume a Readable, Writable, Duplex, or Transform Node.js Stream
 
 You can incorporate any Readable, Writable, Duplex, or Transform stream into your logging graph by passing the stream to the `Transform` constructor.  In this hypothetical example a type-safe `Transform` is constructed from a `net.Socket`.  The type variables are specified as `<Buffer, Buffer>`; the writable side of the stream consumes a `Buffer` and the readable side of the stream produces a `Buffer`. 
 

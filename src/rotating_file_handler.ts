@@ -1,6 +1,5 @@
 import * as pth from 'node:path';
 import * as fsp from 'node:fs/promises';
-import * as fs from 'node:fs';
 import * as s from 'node:stream';
 import { LogRecord } from './log_record.js';
 import { $stream, Transform } from 'graph-transform';
@@ -25,22 +24,27 @@ export class RotatingFileHandlerWritable extends s.Writable {
         this.mode = mode;
         this.mutex = Promise.resolve();
         this.level = level;
-
-        if (!fs.existsSync(this.path)) {
-            fs.closeSync(fs.openSync(this.path, 'w'));
-        }
     }
 
     async _write(chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): Promise<void> {
         if (SyslogLevel[chunk.level] <= this.level) {
             await (this.mutex = (async () => {
                 await this.mutex.catch((err) => console.error(err));
-                const stats = await fsp.stat(this.path);
-                if (stats.isFile()) {
-                    if (stats.size + chunk.message.length > this.bytes) {
-                        await this.rotate();
+                const message = Buffer.from(chunk.message, this.encoding);
+                try {
+                    const stats = await fsp.stat(this.path);
+                    if (stats.isFile()) {
+                        if (stats.size + message.length > this.bytes) {
+                            await this.rotate();
+                        }
+                        await fsp.appendFile(this.path, message, { mode: this.mode, flag: 'a' });
                     }
-                    await fsp.appendFile(this.path, chunk.message, { encoding: this.encoding, mode: this.mode, flag: 'a' });
+                    else {
+                        console.error(stats);
+                    }
+                }
+                catch (err) {
+                    await fsp.appendFile(this.path, message, { mode: this.mode, flag: 'a' });
                 }
             })());
         }

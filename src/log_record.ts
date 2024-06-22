@@ -44,7 +44,7 @@ export class LogRecord<MessageT, LevelT> {
         this.depth = depth;
         this.error = error;
         this.threadid = threads.threadId?.toString() ?? '';
-        this.regex = new RegExp(`^${'.*?\\n'.repeat(this.depth)}\\s+at (?<func>[^\\s]+)?(?: \\()?(?<url>file://(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)\\)?`, 'is');
+        this.regex = new RegExp(`^${'[^\\n]*\\n'.repeat(this.depth)}\\s+at (?<func>[^\\s]+)?(?: \\()?(?<url>file://(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)\\)?`, 'is');
         const match = this.error.stack?.match(this.regex);
         const groups = match?.groups;
         if (groups) {
