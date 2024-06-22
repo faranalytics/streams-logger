@@ -1,5 +1,5 @@
 import { LogRecord } from './log_record.js';
-import { Transform, StringToBuffer, BufferToString, JSONToObject, ObjectToJSON } from 'graph-transform';
+import { Transform, StringToBuffer, BufferToString, JSONToObject, ObjectToJSON, $write, $size} from 'graph-transform';
 import { Logger, LogData } from './logger.js';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
 import { Formatter } from './formatter.js';
@@ -19,5 +19,7 @@ export {
     BufferToString,
     ObjectToJSON,
     JSONToObject,
-    RotatingFileHandler
+    RotatingFileHandler,
+    $write,
+    $size
 };

@@ -1,6 +1,6 @@
 import * as s from 'node:stream';
 import { LogRecord } from './log_record.js';
-import { Transform } from 'graph-transform';
+import { Transform, $write, $size} from 'graph-transform';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
 import { KeysUppercase } from './types.js';
 import { QueueSizeLimitExceededError } from './errors.js';
@@ -43,8 +43,8 @@ export class Logger extends Transform<LogData, LogRecord<string, SyslogLevelT>> 
 
     private log(data: LogData) {
         try{
-            this.write(data);
-            if (this.queueSizeLimit && this.size > this.queueSizeLimit) {
+            super[$write](data);
+            if (this.queueSizeLimit && this[$size] > this.queueSizeLimit) {
                 throw new QueueSizeLimitExceededError(`The queue size limit, ${this.queueSizeLimit}, is exceeded.`);
             }
         }
