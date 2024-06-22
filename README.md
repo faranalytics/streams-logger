@@ -11,7 +11,7 @@
 - Type-safe logging graphs.
 - *Streams* is based on the Node.js stream API; hence, it's ready for your Node.js stream-based resource.
 - Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
-- A graph API pattern for constucting sophisticated graph-like logging pipelines.
+- A graph API pattern for constructing sophisticated graph-like logging pipelines.
 - Error propagation and selective termination of inoperable graph components.
 
 ## Table of Contents
@@ -119,7 +119,7 @@ Please see the [Usage](#usage) section above or the ["Hello, World!"](https://gi
     - name `<string>` An optional name for the `Logger`.
     - queueSizeLimit `<number>` Optionally specify a limit on how large (i.e., bytes) the message queue may grow while waiting for a stream to drain.
 
-Constuct a `<Logger<LogData, LogRecord<string, SyslogLevelT>>` that will propogate messages at the specified syslog level.
+Construct a `<Logger<LogData, LogRecord<string, SyslogLevelT>>` that will propagate messages at the specified syslog level.
 
 *public* **logger.level**
 - `<SyslogLevel>`
@@ -328,7 +328,7 @@ const log = logger.connect(
 )
 ```
 
-This is an example of what a logged message will look like using the serilizer defined above.
+This is an example of what a logged message will look like using the serializer defined above.
 
 ```bash
 # ⮶date-time    function name⮷   column⮷ ⮶message
