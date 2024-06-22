@@ -65,7 +65,9 @@ export class RotatingFileHandlerWritable extends s.Writable {
                         await fsp.rename(path, `${this.path}.${i + 1}`);
                     }
                 }
-                catch (e) { /* flow-control */ }
+                catch (e) {
+                    break;
+                }
             }
         }
     }
