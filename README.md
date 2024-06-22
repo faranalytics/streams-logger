@@ -4,14 +4,14 @@
 
 ## Introduction <img align="right" src="./graph.png">
 
-*Streams* is an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler, RotatingFileHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios. *Streams* supports a graph API pattern for building sophisticated graph-like logging pipelines.
+*Streams* is an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler, RotatingFileHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios. *Streams* supports a graph-like API pattern for building sophisticated logging pipelines.
 
 ### Features
 
 - Type-safe logging graphs.
 - *Streams* is based on the Node.js stream API; hence, it's ready for your Node.js stream-based resource.
 - Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
-- A graph API pattern for constructing sophisticated graph-like logging pipelines.
+- A graph-like API pattern for constructing sophisticated logging pipelines.
 - Error propagation and selective termination of inoperable graph components.
 
 ## Table of Contents
@@ -48,7 +48,7 @@ Logging is essentially a data transformation task.  When a string is logged to t
 
 ### Graph API Pattern
 
-*Streams* uses a [graph API pattern](#connect-the-logger-to-the-formatter-and-connect-the-formatter-to-the-consolehandler-and-rotatingfilehandler) for constructing a logging graph. Each graph consists of a network of `Transforms` that together comprise the graph-like logging pipeline.
+*Streams* uses a [graph API pattern](#connect-the-logger-to-the-formatter-and-connect-the-formatter-to-the-consolehandler-and-rotatingfilehandler) for constructing a logging graph. Each graph consists of a network of `Transforms` that together comprise the graph logging pipeline.
 
 ## Usage
 
@@ -78,7 +78,7 @@ const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', lev
 ```
 
 #### Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
-*Streams* uses a graph-style API in order to construct a network of log Transforms.  Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, is a [Transform](https://github.com/faranalytics/graph-transform).
+*Streams* uses a graph-like API pattern in order to construct a network of log Transforms.  Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, is a [Transform](https://github.com/faranalytics/graph-transform).
 ```ts
 const log = logger.connect(
     formatter.connect(
