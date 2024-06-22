@@ -36,11 +36,12 @@ export class RotatingFileHandlerWritable extends s.Writable {
             await (this.mutex = (async () => {
                 await this.mutex.catch((err) => console.error(err));
                 const stats = await fsp.stat(this.path);
+                const message = Buffer.from(chunk.message, this.encoding);
                 if (stats.isFile()) {
-                    if (stats.size + chunk.message.length > this.bytes) {
+                    if (stats.size + message.length > this.bytes) {
                         await this.rotate();
                     }
-                    await fsp.appendFile(this.path, chunk.message, { encoding: this.encoding, mode: this.mode, flag: 'a' });
+                    await fsp.appendFile(this.path, message, { encoding: this.encoding, mode: this.mode, flag: 'a' });
                 }
             })());
         }
