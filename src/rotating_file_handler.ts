@@ -1,9 +1,11 @@
+/* eslint-disable quotes */
 import * as pth from 'node:path';
 import * as fsp from 'node:fs/promises';
 import * as s from 'node:stream';
 import { LogRecord } from './log_record.js';
 import { $stream, Transform } from 'graph-transform';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
+import { Config } from "./index.js";
 
 export class RotatingFileHandlerWritable extends s.Writable {
 
@@ -15,8 +17,12 @@ export class RotatingFileHandlerWritable extends s.Writable {
     public mode: number;
     private mutex: Promise<void>;
 
-    constructor({ level = SyslogLevel.WARN, path, rotations = 0, bytes = 1e6, encoding = 'utf8', mode = 0o666 }: RotatingFileHandlerOptions) {
-        super({ objectMode: true });
+    constructor({ level = SyslogLevel.WARN, path, rotations = 0, bytes = 1e6, encoding = 'utf8', mode = 0o666 }: RotatingFileHandlerOptions,
+        writableOptions?: s.WritableOptions) {
+        super({
+            ...{ highWaterMark: Config.defaultHighWaterMarkObjectMode },
+            ...writableOptions, ...{ objectMode: true }
+        });
         this.path = pth.resolve(pth.normalize(path));
         this.rotations = rotations;
         this.bytes = bytes;
@@ -87,8 +93,8 @@ export interface RotatingFileHandlerOptions {
 
 export class RotatingFileHandler extends Transform<LogRecord<string, SyslogLevelT>, never> {
 
-    constructor(options: RotatingFileHandlerOptions) {
-        super(new RotatingFileHandlerWritable(options));
+    constructor(options: RotatingFileHandlerOptions, writableOptions?: s.WritableOptions) {
+        super(new RotatingFileHandlerWritable(options, writableOptions));
     }
 
     public setLevel(level: SyslogLevel) {

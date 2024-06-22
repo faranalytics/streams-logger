@@ -3,6 +3,9 @@ import * as s from 'node:stream';
 import { Transform, $stream } from 'graph-transform';
 import { LogRecord } from './log_record.js';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
+import { Config } from './index.js';
+
+export const $level = Symbol('level');
 
 export interface ConsoleHandlerTransformOtions {
     level: SyslogLevel;
@@ -10,18 +13,21 @@ export interface ConsoleHandlerTransformOtions {
 
 export class ConsoleHandlerTransform extends s.Transform {
 
-    public level: SyslogLevel;
+    public [$level]: SyslogLevel;
 
-    constructor({ level }: ConsoleHandlerTransformOtions) {
-        super({ writableObjectMode: true, readableObjectMode: true });
-        this.level = level;
+    constructor({ level }: ConsoleHandlerTransformOtions, options?: s.TransformOptions) {
+        super({
+            ...{ highWaterMark: Config.defaultHighWaterMarkObjectMode },
+            ...options, ...{ writableObjectMode: true, readableObjectMode: true }
+        });
+        this[$level] = level;
     }
 
     _transform(chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: s.TransformCallback): void {
-        if (SyslogLevel[chunk.level] <= this.level) {
+        if (SyslogLevel[chunk.level] <= this[$level]) {
             callback(null, chunk.message);
         }
-        else{
+        else {
             callback();
         }
     }
@@ -33,14 +39,14 @@ export interface ConsoleHandlerOptions {
 
 export class ConsoleHandler extends Transform<LogRecord<string, SyslogLevelT>, string> {
 
-    constructor({ level }: ConsoleHandlerOptions = { level: SyslogLevel.WARN }) {
-        super(new ConsoleHandlerTransform({ level }));
+    constructor({ level }: ConsoleHandlerOptions = { level: SyslogLevel.WARN }, transformOptions?: s.TransformOptions) {
+        super(new ConsoleHandlerTransform({ level }, transformOptions));
         this[$stream].pipe(process.stdout);
     }
 
     setLevel(level: SyslogLevel): void {
         if (this[$stream] instanceof ConsoleHandlerTransform) {
-            this[$stream].level = level;
+            this[$stream][$level] = level;
         }
     }
 }

@@ -4,6 +4,7 @@ import { Transform, $write, $size } from 'graph-transform';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
 import { KeysUppercase } from './types.js';
 import { QueueSizeLimitExceededError } from './errors.js';
+import { Config } from './index.js';
 
 export interface LogData {
     message: string;
@@ -27,6 +28,7 @@ export class Logger extends Transform<LogData, LogRecord<string, SyslogLevelT>> 
 
     constructor({ name, level, queueSizeLimit }: LoggerOptions = {}, options?: s.TransformOptions) {
         super(new s.Transform({
+            ...{ highWaterMark: Config.defaultHighWaterMarkObjectMode },
             ...options, ...{
                 writableObjectMode: true,
                 readableObjectMode: true,

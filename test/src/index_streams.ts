@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as streams from 'streams-logger';
 
+// streams.Config.setDefaultHighWaterMark(true, 1e6);
+
+
 const logger = new streams.Logger({ level: streams.SyslogLevel.DEBUG });
 const streams_formatter = new streams.Formatter(async ({ isotime, message, name, level, func, url, line, col }) => (
     `${isotime}:${level}:${func}:${line}:${col}:${message}\n`
@@ -17,7 +20,7 @@ const streams_log = logger.connect(
 
 function streamsSayHello() {
     console.time('streams');
-    for(let i = 0; i < 1e4; i++) {
+    for(let i = 0; i < 1e5; i++) {
         streams_log.info('Hello, World!');
     }}
 
