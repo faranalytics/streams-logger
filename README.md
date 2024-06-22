@@ -111,6 +111,8 @@ Please see the [Usage](#usage) section above or the ["Hello, World!"](https://gi
 
 ## API
 
+The *Streams* API provides commonly used logging facilities (i.e., Logger, Formatter, and console and file Handlers).  However, you can [consume any writable Node.js stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream) and add it to your logging graph.
+
 ### The Logger Class
 
 **new streams-logger.Logger(options)**
