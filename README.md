@@ -15,6 +15,7 @@ Streams is a type-safe logger for TypeScript and Node.js.
 - Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
 - A graph-like API pattern for constructing sophisticated logging pipelines.
 - Error propagation and selective termination of inoperable graph components.
+- Import *Streams* into your Node.js project or take advantage of the TypeScript type definitions. 
 
 ## Table of Contents
 
