@@ -1,6 +1,6 @@
 # *Streams* Logger
 
-*Streams* is a type-safe logger for TypeScript and Node.js.
+Streams is a type-safe logger for TypeScript and Node.js.
 
 ## Introduction
 
