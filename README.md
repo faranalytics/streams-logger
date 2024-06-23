@@ -312,7 +312,7 @@ The thread identifier.
 Returns: `<void>`
 
 **Config.getDefaultHighWaterMark(objectMode)**
-- objectMode `<boolean>` `true` if setting the ObjectMode `highWaterMark`.
+- objectMode `<boolean>` `true` if getting the ObjectMode `highWaterMark`; false, otherwise.
 
 Returns: `<number>` The default `highWaterMark`.
 
