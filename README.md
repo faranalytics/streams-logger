@@ -380,12 +380,12 @@ const socketHandler = new Transform<Buffer, Buffer>(socket);
 ### High Water Mark
 *Streams* Transforms operate on Node.js streams; hence, specialized applications may require additional tuning.  **For ordinary logging tasks, the default high water mark is fine.**  However, for extremely high throughput applications the high water mark should be adjusted accordingly - keeping in mind memory constraints.  You can set a default high water mark using `Config.setDefaultHighWaterMark(objectMode, value)`.  Alternatively, you can pass an optional stream configuration argument to each of the `Transforms` in the *Streams* library.
 
-In this example, the `highWaterMark` of every Streams Transform will be set to `1e6`.
+In this example, the `highWaterMark` of Streams Transform operating in ObjectMode will be set to `1e3`.
 
 ```ts
 import * as streams from 'streams-logger';
 
-streams.Config.setDefaultHighWaterMark(true, 1e6);
+streams.Config.setDefaultHighWaterMark(true, 1e3);
 ```
 
 ### Backpressure
