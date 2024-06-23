@@ -20,7 +20,7 @@ export class RotatingFileHandlerWritable extends s.Writable {
     constructor({ level = SyslogLevel.WARN, path, rotations = 0, bytes = 1e6, encoding = 'utf8', mode = 0o666 }: RotatingFileHandlerOptions,
         writableOptions?: s.WritableOptions) {
         super({
-            ...{ highWaterMark: Config.defaultHighWaterMarkObjectMode },
+            ...Config.getWritableDefaults(true),
             ...writableOptions, ...{ objectMode: true }
         });
         this.path = pth.resolve(pth.normalize(path));

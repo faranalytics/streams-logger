@@ -12,7 +12,7 @@ export class Formatter extends Transform<LogRecord<string, SyslogLevelT>, LogRec
 
     constructor(transform: FormatterOptions, transformOptions?: s.TransformOptions) {
         super(new s.Transform({
-            ...{ highWaterMark: Config.defaultHighWaterMarkObjectMode },
+            ...Config.getDuplexDefaults(true, true),
             ...transformOptions, ...{
                 writableObjectMode: true,
                 readableObjectMode: true,

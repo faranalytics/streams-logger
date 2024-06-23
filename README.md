@@ -364,7 +364,37 @@ This is an example of what a logged message will look like using the serializer 
 
 ### How to Implement a Custom *Streams* Transform
 
-*Streams* is built on the type-safe Graph-Transform graph API framework.  This means that any Graph-Transform `Transform` may be incorporated into your logging graph given that it meets the contextual type requirements.  Please see the [Graph-Transform](https://github.com/faranalytics/graph-transform) documentation for how to implement a custom `Transform`.
+*Streams* is built on the type-safe Graph-Transform graph API framework.  This means that any Graph-Transform `Transform` may be incorporated into your logging graph given that it meets the contextual type requirements.  In order to implement a *Streams* Transform, subclass the `Transform` class, and provide the appropriate *Streams* defaults to the stream constructor.
+
+For example, the following BufferToNumber `Transform` will convert a numeric string to a number.
+
+> NB: writableObjectMode is set to `false` and readableObjectMode is set to `true`; hence, the Node.js stream implementation will handle the input as a `Buffer` and the output as an `object`. It's important that `writableObjectMode` and `readableObjectMode` accurately reflect the input and output types of your Transform.
+
+```ts
+import * as stream from 'node:stream';
+import { Transform, Config } from 'streams-logger';
+
+class BufferToNumber extends Transform<Buffer, number> {
+
+    public encoding: NodeJS.BufferEncoding = 'utf-8';
+
+    constructor(transformOptions: stream.TransformOptions) {
+        super(new stream.Transform({
+            ...Config.getDuplexDefaults(false, true),
+            ...transformOptions,
+            ...{
+                writableObjectMode: false,
+                readableObjectMode: true,
+                transform: (chunk: Buffer, encoding: BufferEncoding, callback: stream.TransformCallback) => {
+                    const result = parseFloat(chunk.toString(this.encoding));
+                    callback(null, result);
+                }
+            }
+        })
+        );
+    }
+}
+```
 
 ### How to Consume a Readable, Writable, Duplex, or Transform Node.js Stream
 

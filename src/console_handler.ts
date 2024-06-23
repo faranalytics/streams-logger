@@ -17,7 +17,7 @@ export class ConsoleHandlerTransform extends s.Transform {
 
     constructor({ level }: ConsoleHandlerTransformOtions, options?: s.TransformOptions) {
         super({
-            ...{ highWaterMark: Config.defaultHighWaterMarkObjectMode },
+            ...Config.getDuplexDefaults(true, true),
             ...options, ...{ writableObjectMode: true, readableObjectMode: true }
         });
         this[$level] = level;
