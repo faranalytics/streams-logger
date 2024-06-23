@@ -62,24 +62,25 @@ In this hypothetical example you will log "Hello, World!" to the console and to 
 
 #### 1. Import the Logger, Formatter, ConsoleHandler and RotatingFileHandler, and SyslogLevel enum.
 
-    ```ts
-    import { Logger, Formatter, ConsoleHandler, RotatingFileHandler, SyslogLevel } from 'streams-logger';
-    ```
+```ts
+import { Logger, Formatter, ConsoleHandler, RotatingFileHandler, SyslogLevel } from 'streams-logger';
+```
 
-2. #### Create an instance of a Logger, Formatter, ConsoleHandler and RotatingFileHandler.
-    - The `Logger` is set to log at level `SyslogLevel.DEBUG`.  
-    - The `Formatter` constructor is passed a serialization function that will output a string containing the ISO time, the log level, the function name, the line number, the column number, and the log message.
-    - The `ConsoleHandler` will log the message to `process.stdout`.
-    - The `RotatingFileHandler` will log the message to the file `./message.log`.
+#### 2. Create an instance of a Logger, Formatter, ConsoleHandler and RotatingFileHandler.
 
-    ```ts
-    const logger = new Logger({ level: SyslogLevel.DEBUG });
-    const formatter = new Formatter(async ({ message, name, level, func, url, line, col }) => (
-        `${new Date().toISOString()}:${level}:${func}:${line}:${col}:${message}\n`
-    ));
-    const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
-    const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', level: SyslogLevel.DEBUG });
-    ```
+- The `Logger` is set to log at level `SyslogLevel.DEBUG`.  
+- The `Formatter` constructor is passed a serialization function that will output a string containing the ISO time, the log level, the function name, the line number, the column number, and the log message.
+- The `ConsoleHandler` will log the message to `process.stdout`.
+- The `RotatingFileHandler` will log the message to the file `./message.log`.
+
+```ts
+const logger = new Logger({ level: SyslogLevel.DEBUG });
+const formatter = new Formatter(async ({ message, name, level, func, url, line, col }) => (
+    `${new Date().toISOString()}:${level}:${func}:${line}:${col}:${message}\n`
+));
+const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
+const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', level: SyslogLevel.DEBUG });
+```
 
 3. #### Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
 *Streams* uses a graph-like API pattern in order to construct a network of log Transforms.  Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, is a [Transform](https://github.com/faranalytics/graph-transform).
