@@ -1,4 +1,4 @@
-import * as s from 'node:stream';
+import * as stream from 'node:stream';
 import { LogRecord } from './log_record.js';
 import { Transform, $write, $size } from 'graph-transform';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
@@ -26,13 +26,13 @@ export class Logger extends Transform<LogData, LogRecord<string, SyslogLevelT>> 
 
     private queueSizeLimit?: number;
 
-    constructor({ name, level, queueSizeLimit }: LoggerOptions = {}, options?: s.TransformOptions) {
-        super(new s.Transform({
+    constructor({ name, level, queueSizeLimit }: LoggerOptions = {}, options?: stream.TransformOptions) {
+        super(new stream.Transform({
             ...Config.getDuplexDefaults(true, true),
             ...options, ...{
                 writableObjectMode: true,
                 readableObjectMode: true,
-                transform: (chunk: LogData, encoding: BufferEncoding, callback: s.TransformCallback) => {
+                transform: (chunk: LogData, encoding: BufferEncoding, callback: stream.TransformCallback) => {
                     const record = new LogRecord<string, SyslogLevelT>({ ...{ depth: 2 }, ...chunk });
                     callback(null, record);
                 }

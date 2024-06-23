@@ -42,28 +42,35 @@ export class RotatingFileHandlerWritable extends s.Writable {
     }
 
     async _write(chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): Promise<void> {
-        if (SyslogLevel[chunk.level] <= this[$level]) {
-            await (this[$mutex] = (async () => {
-                await this[$mutex].catch((err) => console.error(err));
-                const message = Buffer.from(chunk.message, this[$encoding]);
-                try {
-                    const stats = await fsp.stat(this[$path]);
-                    if (stats.isFile()) {
-                        if (stats.size + message.length > this[$bytes]) {
-                            await this.rotate();
+        try {
+            if (SyslogLevel[chunk.level] <= this[$level]) {
+                await (this[$mutex] = (async () => {
+                    await this[$mutex].catch((err) => console.error(err));
+                    const message = Buffer.from(chunk.message, this[$encoding]);
+                    try {
+                        const stats = await fsp.stat(this[$path]);
+                        if (stats.isFile()) {
+                            if (stats.size + message.length > this[$bytes]) {
+                                await this.rotate();
+                            }
+                            await fsp.appendFile(this[$path], message, { mode: this[$mode], flag: 'a' });
                         }
+                        else {
+                            console.error(`The path, ${this[$path]}, is not a file.`);
+                        }
+                    }
+                    catch (err) {
                         await fsp.appendFile(this[$path], message, { mode: this[$mode], flag: 'a' });
                     }
-                    else {
-                        console.error(stats);
-                    }
-                }
-                catch (err) {
-                    await fsp.appendFile(this[$path], message, { mode: this[$mode], flag: 'a' });
-                }
-            })());
+                })());
+            }
         }
-        callback();
+        catch (err) {
+            console.error(err);
+        }
+        finally {
+            callback();
+        }
     }
 
     protected async rotate() {
@@ -77,12 +84,12 @@ export class RotatingFileHandlerWritable extends s.Writable {
                     path = this[$path];
                 }
                 else {
-                    path = `${this[$path]}.${i}`;
+                    path = `${this[$path]}.${i} `;
                 }
                 try {
                     const stats = await fsp.stat(path);
                     if (stats.isFile()) {
-                        await fsp.rename(path, `${this[$path]}.${i + 1}`);
+                        await fsp.rename(path, `${this[$path]}.${i + 1} `);
                     }
                 }
                 catch (e) { /* flow-control */ }

@@ -1,6 +1,6 @@
 # *Streams* Logger
 
-*Streams* is a type-safe logger for TypeScript and Node.js.
+Streams is a type-safe logger for TypeScript and Node.js applications.
 
 ## Introduction
 
@@ -15,6 +15,7 @@
 - Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
 - A graph-like API pattern for constructing sophisticated logging pipelines.
 - Error propagation and selective termination of inoperable graph components.
+- Import *Streams* into your Node.js project or take advantage of the TypeScript type definitions. 
 
 ## Table of Contents
 
@@ -48,7 +49,7 @@ npm install streams-logger
 
 ### Transform
 
-Logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed.  Each data transformation step in a *Streams* logging graph is realized through a type-safe `Transform` implementation.  Each `Transform` in a data transformation graph consumes an input, transforms the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Handlers, etc.) in a *Streams* logging graph *is a* `Transform`.
+Logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed.  Each data transformation step in a *Streams* logging graph is realized through a type-safe `Transform` implementation.  Each `Transform` in a data transformation graph consumes an input, transforms or filters the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Handlers, etc.) in a *Streams* logging graph *is a* `Transform`.
 
 ### Graph API Pattern
 
@@ -413,7 +414,7 @@ const socketHandler = new Transform<Buffer, Buffer>(socket);
 ## Tuning
 
 ### High Water Mark
-*Streams* Transforms operate on Node.js streams; hence, tuning may be required for some applications.  **For ordinary logging tasks, the default high water mark is fine.**  However, for extremely high throughput applications the high water mark should be adjusted accordingly - keeping in mind memory constraints.  You can set a default high water mark using `Config.setDefaultHighWaterMark(objectMode, value)`.  Alternatively, you can pass an optional stream configuration argument to each of the `Transforms` in the *Streams* library.
+*Streams* Transforms operate on Node.js streams; hence, tuning may be required for some applications.  **For ordinary logging tasks, Node's default `highWaterMark` is fine.**  However, for high throughput applications the `highWaterMark` should be adjusted accordingly - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Transforms in the *Streams* library.  Alternatively, you can pass an optional stream configuration argument to each `Transform` individually.
 
 In this example, the `highWaterMark` of Streams Transforms operating in ObjectMode are set to `1e3` objects.
 
@@ -426,6 +427,6 @@ streams.Config.setDefaultHighWaterMark(true, 1e3);
 ### Backpressure
 *Streams* respects backpressure by queueing messages while the stream is draining.  You can set a hard limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.  
 
-For most applications (e.g., common logging applications) setting a `queueSizeLimit` isn't necessary.  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted. This is a vulnerability that is sometimes overlooked and inherent in all streams based implementations.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending nodes in your graph.
+For most applications (e.g., common logging applications) setting a `queueSizeLimit` isn't necessary.  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending nodes in your graph.
 
-If you have a cooperating stream that is backpressuring, you can either set a default high water mark appropriate to your application or increase the high water mark on the specific stream in order to mitigate drain events.
+If you have a cooperating stream that is backpressuring, you can either set a default `highWaterMark` appropriate to your application or increase the `highWaterMark` on the specific stream in order to mitigate drain events.
