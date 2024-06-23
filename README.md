@@ -60,7 +60,7 @@ In this hypothetical example you will log "Hello, World!" to the console and to 
 
 ### Log to the Console and to a File
 
-1. #### Import the Logger, Formatter, ConsoleHandler and RotatingFileHandler, and SyslogLevel enum.
+#### 1. Import the Logger, Formatter, ConsoleHandler and RotatingFileHandler, and SyslogLevel enum.
 
     ```ts
     import { Logger, Formatter, ConsoleHandler, RotatingFileHandler, SyslogLevel } from 'streams-logger';
