@@ -202,7 +202,7 @@ Use a `Formatter` in order to specify how your log message will be formatted pri
 - options `<ConsoleHandlerTransformOtions>`
     - level `<SyslogLevel>` An optional log level.  **Default**: `SyslogLevel.WARN`
 
-Use a ConsoleHandler in order to stream your messages to the console.
+Use a `ConsoleHandler` in order to stream your messages to the console.
 
 *public* **consoleHandler.setLevel(level)**
 - level `<SyslogLevel>` A log level.
@@ -220,7 +220,7 @@ Set the log level.  Must be one of `SyslogLevel`.
     - mode `<number>` An optional mode. **Deafult**:`0o666`
     - level `<SyslogLevel>` An optional log level.  **Default**: `SyslogLevel.WARN`
 
-Use a RotatingFileHandler in order to write your log messages to a file.
+Use a `RotatingFileHandler` in order to write your log messages to a file.
 
 *public* **rotatingFileHandler.setLevel(level)**
 - level `<SyslogLevel>` A log level.
