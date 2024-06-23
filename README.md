@@ -366,7 +366,7 @@ This is an example of what a logged message will look like using the serializer 
 
 *Streams* is built on the type-safe Graph-Transform graph API framework.  This means that any Graph-Transform `Transform` may be incorporated into your logging graph given that it meets the contextual type requirements.  In order to implement a *Streams* Transform, subclass the `Transform` class, and provide the appropriate *Streams* defaults to the stream constructor.
 
-For example, the following BufferToNumber `Transform` will convert a numeric string to a number.
+For example, the following BufferToNumber `Transform` will convert a Buffer to a number.
 
 > NB: writableObjectMode is set to `false` and readableObjectMode is set to `true`; hence, the Node.js stream implementation will handle the input as a `Buffer` and the output as an `object`. It's important that `writableObjectMode` and `readableObjectMode` accurately reflect the input and output types of your Transform.
 
