@@ -414,7 +414,7 @@ const socketHandler = new Transform<Buffer, Buffer>(socket);
 ## Tuning
 
 ### High Water Mark
-*Streams* Transforms operate on Node.js streams; hence, tuning may be required for some applications.  **For ordinary logging tasks, the default high water mark is fine.**  However, for extremely high throughput applications the high water mark should be adjusted accordingly - keeping in mind memory constraints.  You can set a default high water mark using `Config.setDefaultHighWaterMark(objectMode, value)`.  Alternatively, you can pass an optional stream configuration argument to each of the `Transforms` in the *Streams* library.
+*Streams* Transforms operate on Node.js streams; hence, tuning may be required for some applications.  **For ordinary logging tasks, the default `highWaterMark` is fine.**  However, for extremely high throughput applications the `highWaterMark` should be adjusted accordingly - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)`.  Alternatively, you can pass an optional stream configuration argument to each of the `Transforms` in the *Streams* library.
 
 In this example, the `highWaterMark` of Streams Transforms operating in ObjectMode are set to `1e3` objects.
 
@@ -429,4 +429,4 @@ streams.Config.setDefaultHighWaterMark(true, 1e3);
 
 For most applications (e.g., common logging applications) setting a `queueSizeLimit` isn't necessary.  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted. This is a vulnerability that is sometimes overlooked and inherent in all streams based implementations.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending nodes in your graph.
 
-If you have a cooperating stream that is backpressuring, you can either set a default high water mark appropriate to your application or increase the high water mark on the specific stream in order to mitigate drain events.
+If you have a cooperating stream that is backpressuring, you can either set a default `highWaterMark` appropriate to your application or increase the `highWaterMark` on the specific stream in order to mitigate drain events.
