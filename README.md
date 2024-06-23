@@ -82,7 +82,7 @@ const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', level: SyslogLevel.DEBUG });
 ```
 
-3. #### Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
+#### 3. Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
 *Streams* uses a graph-like API pattern in order to construct a network of log Transforms.  Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, is a [Transform](https://github.com/faranalytics/graph-transform).
 ```ts
 const log = logger.connect(
@@ -93,7 +93,7 @@ const log = logger.connect(
 );
 ```
 
-4. #### Log "Hello, World!" to the console and to the file `./message.log`.
+#### 4. Log "Hello, World!" to the console and to the file `./message.log`.
 
 ```ts
 function sayHello() {
