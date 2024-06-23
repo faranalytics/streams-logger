@@ -306,7 +306,7 @@ The thread identifier.
 ### The Streams Config Settings
 
 **Config.setDefaultHighWaterMark(objectMode, value)**
-- objectMode `<boolean>` `true` if setting the ObjectMode `highWaterMark`; false, otherwise..
+- objectMode `<boolean>` `true` if setting the ObjectMode `highWaterMark`; false, otherwise.
 - value `number` `highWaterMark` value.
 
 Returns: `<void>`
