@@ -335,7 +335,7 @@ In the following code excerpt, a serializer is implemented that logs:
 The serializer function is passed to the constructor of a `Formatter`.  The `Logger` is connected to the `Formatter`.  The `Formatter` is connected to the `ConsoleHandler`.
 
 ```ts
-const serializer = async ({ isotime, message, name, level, func, url, line, col }: LogRecord<string, SyslogLevelT>) => {
+const serializer = async ({ isotime, level, func, line, col, message }: LogRecord<string, SyslogLevelT>) => {
     return `${isotime}:${level}:${func}:${line}:${col}:${message}\n`;
 }
 
