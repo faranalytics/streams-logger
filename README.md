@@ -265,7 +265,7 @@ The column of the logging call.
 
 *public* **logRecord.isotime**
 - `<string>`
-The date and time in ISO format.
+The date and time in ISO format at the time of the logging call.
 
 *public* **logRecord.pathname**
 - `<string>`
@@ -306,7 +306,7 @@ The thread identifier.
 ### The Streams Config Settings
 
 **Config.setDefaultHighWaterMark(objectMode, value)**
-- objectMode `<boolean>` `true` if setting the ObjectMode `highWaterMark`.
+- objectMode `<boolean>` `true` if setting the ObjectMode `highWaterMark`; false, otherwise..
 - value `number` `highWaterMark` value.
 
 Returns: `<void>`
