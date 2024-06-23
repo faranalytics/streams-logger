@@ -378,7 +378,15 @@ const socketHandler = new Transform<Buffer, Buffer>(socket);
 ## Tuning
 
 ### High Water Mark
-*Streams* Transforms operate on Node.js streams; hence, specialized applications may require additional tuning.  **For ordinary logging tasks, the default high water mark is fine.**  However, for extremely high throughput applications the high water mark should be adjusted accordingly - keeping in mind memory constraints.  You can set a default high water mark using `Config.setDefaultHighWaterMark(objectMode, value)`.  Alternatively, you can pass an optional stream configuration argument to each of the `Transforms` in the *Streams* library. 
+*Streams* Transforms operate on Node.js streams; hence, specialized applications may require additional tuning.  **For ordinary logging tasks, the default high water mark is fine.**  However, for extremely high throughput applications the high water mark should be adjusted accordingly - keeping in mind memory constraints.  You can set a default high water mark using `Config.setDefaultHighWaterMark(objectMode, value)`.  Alternatively, you can pass an optional stream configuration argument to each of the `Transforms` in the *Streams* library.
+
+In this example, the `highWaterMark` of every Streams Transform will be set to `1e6`.
+
+```ts
+import * as streams from 'streams-logger';
+
+streams.Config.setDefaultHighWaterMark(true, 1e6);
+```
 
 ### Backpressure
 *Streams* respects backpressure by queueing messages while the stream is draining.  You can set a hard limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.
