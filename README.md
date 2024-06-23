@@ -348,6 +348,8 @@ const log = logger.connect(
         consoleHandler
     )
 )
+
+log.info('Hello, World!');
 ```
 
 This is an example of what a logged message will look like using the serializer defined above.
