@@ -428,4 +428,4 @@ streams.Config.setDefaultHighWaterMark(true, 1e3);
 
 For most applications (e.g., common logging applications) setting a `queueSizeLimit` isn't necessary.  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted. This is a vulnerability that is sometimes overlooked and inherent in all streams based implementations.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending nodes in your graph.
 
-If you have a stream that is backpressuring, you can either set a default high water mark appropriate to your application or increase the high water mark on the specific stream in order to mitigate drain events.
+If you have a cooperating stream that is backpressuring, you can either set a default high water mark appropriate to your application or increase the high water mark on the specific stream in order to mitigate drain events.
