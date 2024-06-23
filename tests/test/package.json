@@ -17,7 +17,7 @@
     "node": ">=18.18.0"
   },
   "dependencies": {
-    "streams-logger": "file:.."
+    "streams-logger": "file:../.."
   },
   "type": "module",
   "devDependencies": {

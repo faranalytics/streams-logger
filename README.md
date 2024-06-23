@@ -60,13 +60,14 @@ In this hypothetical example you will log "Hello, World!" to the console and to 
 
 ### Log to the Console and to a File
 
-#### Import the Logger, Formatter, ConsoleHandler and RotatingFileHandler, and SyslogLevel enum.
+#### 1. Import the Logger, Formatter, ConsoleHandler and RotatingFileHandler, and SyslogLevel enum.
 
 ```ts
 import { Logger, Formatter, ConsoleHandler, RotatingFileHandler, SyslogLevel } from 'streams-logger';
 ```
 
-#### Create an instance of a Logger, Formatter, ConsoleHandler and RotatingFileHandler.
+#### 2. Create an instance of a Logger, Formatter, ConsoleHandler and RotatingFileHandler.
+
 - The `Logger` is set to log at level `SyslogLevel.DEBUG`.  
 - The `Formatter` constructor is passed a serialization function that will output a string containing the ISO time, the log level, the function name, the line number, the column number, and the log message.
 - The `ConsoleHandler` will log the message to `process.stdout`.
@@ -81,7 +82,7 @@ const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', level: SyslogLevel.DEBUG });
 ```
 
-#### Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
+#### 3. Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
 *Streams* uses a graph-like API pattern in order to construct a network of log Transforms.  Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, is a [Transform](https://github.com/faranalytics/graph-transform).
 ```ts
 const log = logger.connect(
@@ -92,7 +93,7 @@ const log = logger.connect(
 );
 ```
 
-#### Log "Hello, World!" to the console and to the file `./message.log`.
+#### 4. Log "Hello, World!" to the console and to the file `./message.log`.
 
 ```ts
 function sayHello() {
@@ -190,7 +191,9 @@ Set the log level.  Must be one of `SyslogLevel`.
 ### The Formatter Class
 
 **new streams-logger.Formatter(transform)**
-- transform `(record: LogRecord<string, SyslogLevelT>): Promise<string>` A function that will serialize the `LogRecord<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a serializer.
+- transform `(record: LogRecord<string, SyslogLevelT>): Promise<string>` A function that will format and serialize the `LogRecord<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a serializer.
+
+Use a `Formatter` in order to specify how your log message will be formatted prior to forwarding it to the Handler(s).  An instance of [`LogRecord`](#the-logrecord-class) is created that contains information about the environment at the time of the logging call.  The `LogRecord` is passed as the single argument to serializer function.
 
 ### The ConsoleHandler Class
 
@@ -199,7 +202,7 @@ Set the log level.  Must be one of `SyslogLevel`.
 - options `<ConsoleHandlerTransformOtions>`
     - level `<SyslogLevel>` An optional log level.  **Default**: `SyslogLevel.WARN`
 
-Use a ConsoleHandler in order to stream your messages to the console.
+Use a `ConsoleHandler` in order to stream your messages to the console.
 
 *public* **consoleHandler.setLevel(level)**
 - level `<SyslogLevel>` A log level.
@@ -217,7 +220,7 @@ Set the log level.  Must be one of `SyslogLevel`.
     - mode `<number>` An optional mode. **Deafult**:`0o666`
     - level `<SyslogLevel>` An optional log level.  **Default**: `SyslogLevel.WARN`
 
-Use a RotatingFileHandler in order to write your log messages to a file.
+Use a `RotatingFileHandler` in order to write your log messages to a file.
 
 *public* **rotatingFileHandler.setLevel(level)**
 - level `<SyslogLevel>` A log level.
@@ -234,7 +237,7 @@ Set the log level.  Must be one of `SyslogLevel`.
     - depth `<number>` Used to specify which line of the stack trace to parse.
     - error `<Error>` The `Error` that was generated for parsing.
 
-A `LogRecord` is instantiated each time a message is logged at an allowed level. It contains information about the process and environment at the time of the logging call.  A `LogRecord` is passed as the single argument to a `Formatter` [serialization function](#formatting).
+A `LogRecord` is instantiated each time a message is logged at (or below) the level set on the `Logger` or one of the Handlers. It contains information about the process and environment at the time of the logging call.  A `LogRecord` is passed as the single argument to a `Formatter` [serialization function](#formatting).
 
 *public* **logRecord.message**
 - `<string>`
@@ -262,7 +265,7 @@ The column of the logging call.
 
 *public* **logRecord.isotime**
 - `<string>`
-The date and time in ISO format.
+The date and time in ISO format at the time of the logging call.
 
 *public* **logRecord.pathname**
 - `<string>`
@@ -303,19 +306,19 @@ The thread identifier.
 ### The Streams Config Settings
 
 **Config.setDefaultHighWaterMark(objectMode, value)**
-- objectMode `<boolean>` `true` if setting the ObjectMode `highWaterMark`.
+- objectMode `<boolean>` `true` if setting the ObjectMode `highWaterMark`; false, otherwise.
 - value `number` `highWaterMark` value.
 
 Returns: `<void>`
 
 **Config.getDefaultHighWaterMark(objectMode)**
-- objectMode `<boolean>` `true` if setting the ObjectMode `highWaterMark`.
+- objectMode `<boolean>` `true` if getting the ObjectMode `highWaterMark`; false, otherwise.
 
 Returns: `<number>` The default `highWaterMark`.
 
 ## Formatting
 
-The `Logger` constructs and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the properties of a LogRecord *may* undergo formatting and serialization.  This can be accomplished by creating an instance of a `Formatter` and passing in a custom [serialization function](#example-serializer) that accepts a `LogRecord` as its single argument.  The serialization function can construct a log message from the `LogRecord` properties.  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
+The `Logger` constructs and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the properties of a `LogRecord` *may* undergo formatting and serialization.  This can be accomplished by creating an instance of a `Formatter` and passing in a custom [serialization function](#example-serializer) that accepts a `LogRecord` as its single argument.  The serialization function can construct a log message from the `LogRecord` properties.  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
 
 ### Example Serializer
 
@@ -332,8 +335,8 @@ In the following code excerpt, a serializer is implemented that logs:
 The serializer function is passed to the constructor of a `Formatter`.  The `Logger` is connected to the `Formatter`.  The `Formatter` is connected to the `ConsoleHandler`.
 
 ```ts
-const serializer = async ({ message, name, level, func, url, line, col }: LogRecord<string, SyslogLevelT>) => {
-    return `${new Date().toISOString()}:${level}:${func}:${line}:${col}:${message}\n`;
+const serializer = async ({ isotime, level, func, line, col, message }: LogRecord<string, SyslogLevelT>) => {
+    return `${isotime}:${level}:${func}:${line}:${col}:${message}\n`;
 }
 
 const logger = new Logger({ name: 'main', level: SyslogLevel.DEBUG });
@@ -345,6 +348,8 @@ const log = logger.connect(
         consoleHandler
     )
 )
+
+log.info('Hello, World!');
 ```
 
 This is an example of what a logged message will look like using the serializer defined above.
@@ -359,7 +364,37 @@ This is an example of what a logged message will look like using the serializer 
 
 ### How to Implement a Custom *Streams* Transform
 
-*Streams* is built on the type-safe Graph-Transform graph API framework.  This means that any Graph-Transform `Transform` may be incorporated into your logging graph given that it meets the contextual type requirements.  Please see the [Graph-Transform](https://github.com/faranalytics/graph-transform) documentation for how to implement a custom `Transform`.
+*Streams* is built on the type-safe Graph-Transform graph API framework.  This means that any Graph-Transform `Transform` may be incorporated into your logging graph given that it meets the contextual type requirements.  In order to implement a *Streams* Transform, subclass the `Transform` class, and provide the appropriate *Streams* defaults to the stream constructor.
+
+For example, the following BufferToNumber `Transform` will convert a Buffer to a number.
+
+> NB: writableObjectMode is set to `false` and readableObjectMode is set to `true`; hence, the Node.js stream implementation will handle the input as a `Buffer` and the output as an `object`. It's important that `writableObjectMode` and `readableObjectMode` accurately reflect the input and output types of your Transform.
+
+```ts
+import * as stream from 'node:stream';
+import { Transform, Config } from 'streams-logger';
+
+class BufferToNumber extends Transform<Buffer, number> {
+
+    public encoding: NodeJS.BufferEncoding = 'utf-8';
+
+    constructor(transformOptions: stream.TransformOptions) {
+        super(new stream.Transform({
+            ...Config.getDuplexDefaults(false, true),
+            ...transformOptions,
+            ...{
+                writableObjectMode: false,
+                readableObjectMode: true,
+                transform: (chunk: Buffer, encoding: BufferEncoding, callback: stream.TransformCallback) => {
+                    const result = parseFloat(chunk.toString(this.encoding));
+                    callback(null, result);
+                }
+            }
+        })
+        );
+    }
+}
+```
 
 ### How to Consume a Readable, Writable, Duplex, or Transform Node.js Stream
 
@@ -378,15 +413,19 @@ const socketHandler = new Transform<Buffer, Buffer>(socket);
 ## Tuning
 
 ### High Water Mark
-*Streams* Transforms operate on Node.js streams; hence, specialized applications may require additional tuning.  **For ordinary logging tasks, the default high water mark is fine.**  However, for extremely high throughput applications the high water mark should be adjusted accordingly - keeping in mind memory constraints.  You can set a default high water mark using `Config.setDefaultHighWaterMark(objectMode, value)`.  Alternatively, you can pass an optional stream configuration argument to each of the `Transforms` in the *Streams* library.
+*Streams* Transforms operate on Node.js streams; hence, tuning may be required for some applications.  **For ordinary logging tasks, the default high water mark is fine.**  However, for extremely high throughput applications the high water mark should be adjusted accordingly - keeping in mind memory constraints.  You can set a default high water mark using `Config.setDefaultHighWaterMark(objectMode, value)`.  Alternatively, you can pass an optional stream configuration argument to each of the `Transforms` in the *Streams* library.
 
-In this example, the `highWaterMark` of every Streams Transform will be set to `1e6`.
+In this example, the `highWaterMark` of Streams Transforms operating in ObjectMode are set to `1e3` objects.
 
 ```ts
 import * as streams from 'streams-logger';
 
-streams.Config.setDefaultHighWaterMark(true, 1e6);
+streams.Config.setDefaultHighWaterMark(true, 1e3);
 ```
 
 ### Backpressure
-*Streams* respects backpressure by queueing messages while the stream is draining.  You can set a hard limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.
+*Streams* respects backpressure by queueing messages while the stream is draining.  You can set a hard limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.  
+
+For most applications (e.g., common logging applications) setting a `queueSizeLimit` isn't necessary.  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted. This is a vulnerability that is sometimes overlooked and inherent in all streams based implementations.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending nodes in your graph.
+
+If you have a cooperating stream that is backpressuring, you can either set a default high water mark appropriate to your application or increase the high water mark on the specific stream in order to mitigate drain events.

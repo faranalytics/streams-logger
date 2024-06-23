@@ -28,7 +28,7 @@ export class Logger extends Transform<LogData, LogRecord<string, SyslogLevelT>> 
 
     constructor({ name, level, queueSizeLimit }: LoggerOptions = {}, options?: s.TransformOptions) {
         super(new s.Transform({
-            ...{ highWaterMark: Config.defaultHighWaterMarkObjectMode },
+            ...Config.getDuplexDefaults(true, true),
             ...options, ...{
                 writableObjectMode: true,
                 readableObjectMode: true,
