@@ -414,7 +414,7 @@ const socketHandler = new Transform<Buffer, Buffer>(socket);
 ## Tuning
 
 ### High Water Mark
-*Streams* Transforms operate on Node.js streams; hence, tuning may be required for some applications.  **For ordinary logging tasks, Node's default `highWaterMark` is fine.**  However, for high throughput applications the `highWaterMark` should be adjusted accordingly - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Transforms in the *Streams* library.  Alternatively, you can pass an optional stream configuration argument to each of the `Transforms` in the *Streams* library.
+*Streams* Transforms operate on Node.js streams; hence, tuning may be required for some applications.  **For ordinary logging tasks, Node's default `highWaterMark` is fine.**  However, for high throughput applications the `highWaterMark` should be adjusted accordingly - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Transforms in the *Streams* library.  Alternatively, you can pass an optional stream configuration argument to each `Transform` individually.
 
 In this example, the `highWaterMark` of Streams Transforms operating in ObjectMode are set to `1e3` objects.
 
