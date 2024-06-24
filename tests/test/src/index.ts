@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as net from 'node:net';
@@ -68,10 +69,10 @@ const log = logger.connect(
     )
 );
 
-async function test() {
+function test() {
     log.warn('TEST');
     // setTimeout(() => { server.close(); socket.destroy(); }, 1000);
-}
+};
 
 function main() {
     test();
