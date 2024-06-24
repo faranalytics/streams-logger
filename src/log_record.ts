@@ -34,7 +34,6 @@ export class LogRecord<MessageT, LevelT> {
     private regex: RegExp;
 
     constructor({ message, name, level, depth, error }: LogRecordOptions<MessageT, LevelT>) {
-
         this.isotime = new Date().toISOString();
         this.message = message;
         this.name = name;
