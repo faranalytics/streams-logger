@@ -6,20 +6,13 @@ import { KeysUppercase } from './types.js';
 import { QueueSizeLimitExceededError } from './errors.js';
 import { Config } from './index.js';
 
-export interface LogData {
-    message: string;
-    name: string;
-    level: KeysUppercase<SyslogLevelT>;
-    error: Error;
-}
-
 export interface LoggerOptions {
     level?: SyslogLevel;
     name?: string;
     queueSizeLimit?: number;
 }
 
-export class Logger extends Transform<LogData, LogRecord<string, SyslogLevelT>> {
+export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>> {
 
     public level: SyslogLevel;
     public name: string;
@@ -27,15 +20,11 @@ export class Logger extends Transform<LogData, LogRecord<string, SyslogLevelT>> 
     private queueSizeLimit?: number;
 
     constructor({ name, level, queueSizeLimit }: LoggerOptions = {}, options?: stream.TransformOptions) {
-        super(new stream.Transform({
+        super(new stream.PassThrough({
             ...Config.getDuplexDefaults(true, true),
             ...options, ...{
-                writableObjectMode: true,
                 readableObjectMode: true,
-                transform: (chunk: LogData, encoding: BufferEncoding, callback: stream.TransformCallback) => {
-                    const record = new LogRecord<string, SyslogLevelT>({ ...{ depth: 2 }, ...chunk });
-                    callback(null, record);
-                }
+                writableObjectMode: true
             }
         }));
         this.level = level ?? SyslogLevel.WARN;
@@ -43,8 +32,19 @@ export class Logger extends Transform<LogData, LogRecord<string, SyslogLevelT>> 
         this.queueSizeLimit = queueSizeLimit;
     }
 
-    private log(data: LogData) {
+    protected log(message: string, level: SyslogLevel) {
         try {
+            const targetObject = { stack: '' };
+            if (Config.captureStackTrace) {
+                Error.captureStackTrace(targetObject, this.log);
+            }
+            const data = new LogRecord<string, SyslogLevelT>({
+                message,
+                name: this.name,
+                depth: 2,
+                level: <KeysUppercase<SyslogLevelT>>SyslogLevel[level],
+                stack: targetObject.stack
+            });
             super[$write](data);
             if (this.queueSizeLimit && this[$size] > this.queueSizeLimit) {
                 throw new QueueSizeLimitExceededError(`The queue size limit, ${this.queueSizeLimit}, is exceeded.`);
@@ -62,49 +62,49 @@ export class Logger extends Transform<LogData, LogRecord<string, SyslogLevelT>> 
 
     public debug(message: string): void {
         if (this.level && this.level >= SyslogLevel.DEBUG) {
-            this.log({ message, name: this.name, level: 'DEBUG', error: new Error });
+            this.log(message, SyslogLevel.DEBUG);
         }
     }
 
     public info(message: string): void {
         if (this.level && this.level >= SyslogLevel.INFO) {
-            this.log({ message, name: this.name, level: 'INFO', error: new Error });
+            this.log(message, SyslogLevel.INFO);
         }
     }
 
     public notice(message: string): void {
         if (this.level && this.level >= SyslogLevel.NOTICE) {
-            this.log({ message, name: this.name, level: 'NOTICE', error: new Error });
+            this.log(message, SyslogLevel.NOTICE);
         }
     }
 
     public warn(message: string): void {
         if (this.level && this.level >= SyslogLevel.WARN) {
-            this.log({ message, name: this.name, level: 'WARN', error: new Error });
+            this.log(message, SyslogLevel.WARN);
         }
     }
 
     public error(message: string): void {
         if (this.level && this.level >= SyslogLevel.ERROR) {
-            this.log({ message, name: this.name, level: 'ERROR', error: new Error });
+            this.log(message, SyslogLevel.ERROR);
         }
     }
 
     public crit(message: string): void {
         if (this.level && this.level >= SyslogLevel.CRIT) {
-            this.log({ message, name: this.name, level: 'CRIT', error: new Error });
+            this.log(message, SyslogLevel.CRIT);
         }
     }
 
     public alert(message: string): void {
         if (this.level && this.level >= SyslogLevel.ALERT) {
-            this.log({ message, name: this.name, level: 'ALERT', error: new Error });
+            this.log(message, SyslogLevel.ALERT);
         }
     }
 
     public emerg(message: string): void {
         if (this.level && this.level >= SyslogLevel.EMERG) {
-            this.log({ message, name: this.name, level: 'EMERG', error: new Error });
+            this.log(message, SyslogLevel.EMERG);
         }
     }
 

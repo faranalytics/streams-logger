@@ -7,7 +7,7 @@ export interface LogRecordOptions<MessageT, LevelT> {
     name: string;
     level: KeysUppercase<LevelT>;
     depth: number;
-    error: Error;
+    stack: string;
 }
 
 export class LogRecord<MessageT, LevelT> {
@@ -28,12 +28,12 @@ export class LogRecord<MessageT, LevelT> {
     public pid: string;
     public env: NodeJS.ProcessEnv;
     public threadid: string;
+    public stack: string;
 
-    private error: Error;
     private depth: number;
-    private regex: RegExp;
+    private regex?: RegExp;
 
-    constructor({ message, name, level, depth, error }: LogRecordOptions<MessageT, LevelT>) {
+    constructor({ message, name, level, depth, stack }: LogRecordOptions<MessageT, LevelT>) {
         this.isotime = new Date().toISOString();
         this.message = message;
         this.name = name;
@@ -41,23 +41,25 @@ export class LogRecord<MessageT, LevelT> {
         this.pid = process.pid.toString();
         this.env = process.env;
         this.depth = depth;
-        this.error = error;
+        this.stack = stack;
         this.threadid = threads.threadId?.toString() ?? '';
-        this.regex = new RegExp(`^${'[^\\n]*\\n'.repeat(this.depth)}\\s+at (?<func>[^\\s]+)?(?: \\()?(?<url>file://(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)\\)?`, 'is');
-        const match = this.error.stack?.match(this.regex);
-        const groups = match?.groups;
-        if (groups) {
-            this.func = groups['func'];
-            this.url = groups['url'];
-            this.line = groups['line'];
-            this.col = groups['col'];
-            this.path = groups['path'];
-            const path = pth.parse(this.path);
-            this.pathdir = path.dir;
-            this.pathroot = path.root;
-            this.pathbase = path.base;
-            this.pathname = path.name;
-            this.pathext = path.ext;
+        if (this.stack) {
+            this.regex = new RegExp(`^${'[^\\n]*\\n'.repeat(this.depth)}\\s+at (?<func>[^\\s]+)?(?: \\()?(?<url>file://(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)\\)?`, 'is');
+            const match = this.stack?.match(this.regex);
+            const groups = match?.groups;
+            if (groups) {
+                this.func = groups['func'];
+                this.url = groups['url'];
+                this.line = groups['line'];
+                this.col = groups['col'];
+                this.path = groups['path'];
+                const path = pth.parse(this.path);
+                this.pathdir = path.dir;
+                this.pathroot = path.root;
+                this.pathbase = path.base;
+                this.pathname = path.name;
+                this.pathext = path.ext;
+            }
         }
     }
 }

@@ -4,10 +4,16 @@ class Config {
 
     public defaultHighWaterMark: number;
     public defaultHighWaterMarkObjectMode: number;
+    public captureStackTrace: boolean;
 
-    constructor() {        
+    constructor() {
         this.defaultHighWaterMark = stream.getDefaultHighWaterMark(false);
         this.defaultHighWaterMarkObjectMode = stream.getDefaultHighWaterMark(true);
+        this.captureStackTrace = true;
+    }
+
+    setCaptureStackTrace(value: boolean) {
+        this.captureStackTrace = value;
     }
 
     getDefaultHighWaterMark(objectMode: boolean): number {
@@ -40,7 +46,7 @@ class Config {
         };
     }
 
-    getDuplexDefaults(writableObjectMode:boolean = true, readableObjectMode: boolean = true) : stream.DuplexOptions {
+    getDuplexDefaults(writableObjectMode: boolean = true, readableObjectMode: boolean = true): stream.DuplexOptions {
         const writableDefaults = this.getWritableDefaults(writableObjectMode);
         const readableDefaults = this.getReadableDefaults(readableObjectMode);
         return {
