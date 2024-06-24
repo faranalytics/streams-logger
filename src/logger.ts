@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import * as s from 'node:stream';
 import { LogRecord } from './log_record.js';
 import { Transform, $write, $size } from 'graph-transform';
@@ -44,6 +45,10 @@ export class Logger extends Transform<LogData, LogRecord<string, SyslogLevelT>> 
     }
 
     private log(data: LogData) {
+        const error = {};
+        Error.captureStackTrace(error);
+        //@ts-ignore
+        console.log('error', error.stack);
         try {
             super[$write](data);
             if (this.queueSizeLimit && this[$size] > this.queueSizeLimit) {
@@ -62,6 +67,9 @@ export class Logger extends Transform<LogData, LogRecord<string, SyslogLevelT>> 
 
     public debug(message: string): void {
         if (this.level && this.level >= SyslogLevel.DEBUG) {
+            const error = {};
+            Error.captureStackTrace(error, this.debug);
+            console.log(error);
             this.log({ message, name: this.name, level: 'DEBUG', error: new Error });
         }
     }
@@ -80,7 +88,12 @@ export class Logger extends Transform<LogData, LogRecord<string, SyslogLevelT>> 
 
     public warn(message: string): void {
         if (this.level && this.level >= SyslogLevel.WARN) {
+            console.trace();
             this.log({ message, name: this.name, level: 'WARN', error: new Error });
+            const error = {};
+            Error.captureStackTrace(error);
+            //@ts-ignore
+            console.log('error', error.stack);
         }
     }
 

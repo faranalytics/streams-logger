@@ -13,7 +13,7 @@ const rotatingFileHandler = new streams.RotatingFileHandler({ path: './streams.l
 
 const streams_log = logger.connect(
     streams_formatter.connect(
-        consoleHandler,
+        // consoleHandler,
         rotatingFileHandler
     )
 );
