@@ -130,7 +130,7 @@ The *Streams* API provides commonly used logging facilities (i.e., Logger, Forma
     - queueSizeLimit `<number>` Optionally specify a limit on how large (i.e., bytes) the message queue may grow while waiting for a stream to drain.
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
-Construct a `<Logger<LogData, LogRecord<string, SyslogLevelT>>` that will propagate messages at the specified syslog level.
+Use an instance of a Logger to propagate messages at the specified syslog level.
 
 *public* **logger.level**
 - `<SyslogLevel>`
@@ -140,12 +140,12 @@ The configured log level (e.g., `SyslogLevel.DEBUG`).
 *public* **logger.connect(...transforms)**
 - transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>`  Connect to an Array of `Transforms`.
 
-Returns: `<Logger<LogData, LogRecord<string, SyslogLevelT>>`
+Returns: `<Logger<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>`
 
 *public* **logger.disconnect(...transforms)**
 - transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>` Disconnect from an Array of `Transforms`.
 
-Returns: `<Logger<LogData, LogRecord<string, SyslogLevelT>>`
+Returns: `<Logger<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>`
 
 *public* **logger.debug(message)**
 - message `<string>` Write a DEBUG message to the `Logger`.
@@ -446,13 +446,11 @@ const socketHandler = new Transform<Buffer, Buffer>(socket);
 
 ## Tuning
 
-### Performant Logging
+**For typical logging applications the defaults are fine.**  However, for high throughput applications you may choose to adjust the `highWaterMark` and/or disable stack trace capturing.
 
-*Streams* Transforms operate on Node.js streams; hence, tuning may be required for some applications.  
+### High Water Mark
 
-#### High Water Mark
-
-**For ordinary logging applications, Node's default `highWaterMark` is fine.**  However, for high throughput applications the `highWaterMark` should be adjusted accordingly - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Transforms in the *Streams* library.  Alternatively, you can pass an optional stream configuration argument to each `Transform` individually.
+*Streams* Transforms are implemented using the native Node.js stream API.  You have the option of tuning the Node stream `highWaterMark` to your specific needs - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Transforms in the *Streams* library.  Alternatively, you can pass an optional stream configuration argument to each `Transform` individually.
 
 In this example, the `highWaterMark` of ObjectMode streams and Buffer streams is set artificially to `1e6` objects and `1e6` bytes.
 
@@ -463,9 +461,9 @@ streams.Config.setDefaultHighWaterMark(true, 1e6);
 streams.Config.setDefaultHighWaterMark(false, 1e6);
 ```
 
-#### Stack Trace Capture
+### Stack Trace Capture
 
-Another optional setting that you can take advantage of is to turn off the stack trace capture; however, the cost savings of doing this will be marginal for typical logging applications.
+Another optional setting that you can take advantage of is to turn off the stack trace capture; however, the cost savings of doing this will be marginal for typical logging applications.  Turning off stack trace capture will disable some of the information (e.g., function name and line number) that is normally contained in the `LogRecord` object that is provided to a `Formatter`.
 
 ```ts
 import * as streams from 'streams-logger';
@@ -475,7 +473,7 @@ streams.Config.setCaptureStackTrace(false);
 
 
 ### Backpressure
-*Streams* respects backpressure by queueing messages while the stream is draining.  You can set a hard limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.  
+*Streams* respects backpressure by queueing messages while the stream is draining.  You can set a limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.  
 
 For most applications (e.g., common logging applications) setting a `queueSizeLimit` isn't necessary.  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending nodes in your graph.
 
