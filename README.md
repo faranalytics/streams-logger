@@ -36,9 +36,10 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [How to Implement a Custom *Streams* Transform](#how-to-implement-a-custom-streams-transform)
     - [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream)
 - [Tuning](#tuning)
-    - [High Water Mark](#high-water-mark)
-    - [Backpressure](#backpressure)
     - [Performant Logging](#performant-logging)
+        - [High Water Mark](#high-water-mark)
+        - [Stack Trace Capture](#stack-trace-capture)
+    - [Backpressure](#backpressure)
 
 ## Installation
 
@@ -445,16 +446,32 @@ const socketHandler = new Transform<Buffer, Buffer>(socket);
 
 ## Tuning
 
-### High Water Mark
-*Streams* Transforms operate on Node.js streams; hence, tuning may be required for some applications.  **For ordinary logging tasks, Node's default `highWaterMark` is fine.**  However, for high throughput applications the `highWaterMark` should be adjusted accordingly - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Transforms in the *Streams* library.  Alternatively, you can pass an optional stream configuration argument to each `Transform` individually.
+### Performant Logging
 
-In this example, the `highWaterMark` of Streams Transforms operating in ObjectMode are set to `1e3` objects.
+*Streams* Transforms operate on Node.js streams; hence, tuning may be required for some applications.  
+
+#### High Water Mark
+
+**For ordinary logging applications, Node's default `highWaterMark` is fine.**  However, for high throughput applications the `highWaterMark` should be adjusted accordingly - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Transforms in the *Streams* library.  Alternatively, you can pass an optional stream configuration argument to each `Transform` individually.
+
+In this example, the `highWaterMark` of ObjectMode streams is set to `1e6` objects and the `highWaterMark` of Buffer streams is set to `1e6` bytes.
 
 ```ts
 import * as streams from 'streams-logger';
 
-streams.Config.setDefaultHighWaterMark(true, 1e3);
+streams.Config.setDefaultHighWaterMark(true, 1e6);
+streams.Config.setDefaultHighWaterMark(false, 1e6);
 ```
+
+#### Stack Trace Capture
+
+Another optional setting that you can take advantage of is to turn off the stack trace capture.  The cost savings of doing this will be marginal for typical logging applications.
+
+```ts
+import * as streams from 'streams-logger';
+stream.Config.setCaptureStackTrace(false);
+```
+
 
 ### Backpressure
 *Streams* respects backpressure by queueing messages while the stream is draining.  You can set a hard limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.  
@@ -462,15 +479,3 @@ streams.Config.setDefaultHighWaterMark(true, 1e3);
 For most applications (e.g., common logging applications) setting a `queueSizeLimit` isn't necessary.  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending nodes in your graph.
 
 If you have a cooperating stream that is backpressuring, you can either set a default `highWaterMark` appropriate to your application or increase the `highWaterMark` on the specific stream in order to mitigate drain events.
-
-### Performant Logging
-For most applications the defaults are fine - and recommended.  However, for performant logging you can set a high default `highWaterMark` and turn off the stack trace capture.  For example, something along the lines of:
-
-```ts
-import * as streams from 'streams-logger';
-
-streams.Config.setDefaultHighWaterMark(true, 1e6);
-streams.Config.setDefaultHighWaterMark(false, 1e6);
-stream.Config.setCaptureStackTrace(false);
-```
-However, the cost savings of doing this will be marginal for most ordinary *logging* applications.
