@@ -465,7 +465,7 @@ streams.Config.setDefaultHighWaterMark(false, 1e6);
 
 #### Stack Trace Capture
 
-Another optional setting that you can take advantage of is to turn off the stack trace capture.  The cost savings of doing this will be marginal for typical logging applications.
+Another optional setting that you can take advantage of is to turn off the stack trace capture; however, the cost savings of doing this will be marginal for typical logging applications.
 
 ```ts
 import * as streams from 'streams-logger';
