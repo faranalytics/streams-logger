@@ -10,10 +10,10 @@ export interface FormatterOptions {
 
 export class Formatter extends Transform<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>> {
 
-    constructor(transform: FormatterOptions, transformOptions?: s.TransformOptions) {
+    constructor(transform: FormatterOptions, streamOptions?: s.TransformOptions) {
         super(new s.Transform({
             ...Config.getDuplexDefaults(true, true),
-            ...transformOptions, ...{
+            ...streamOptions, ...{
                 writableObjectMode: true,
                 readableObjectMode: true,
                 transform: async (chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: s.TransformCallback) => {

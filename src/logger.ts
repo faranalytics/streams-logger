@@ -19,10 +19,10 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
 
     private queueSizeLimit?: number;
 
-    constructor({ name, level, queueSizeLimit }: LoggerOptions = {}, options?: stream.TransformOptions) {
+    constructor({ name, level, queueSizeLimit }: LoggerOptions = {}, streamOptions?: stream.TransformOptions) {
         super(new stream.PassThrough({
             ...Config.getDuplexDefaults(true, true),
-            ...options, ...{
+            ...streamOptions, ...{
                 readableObjectMode: true,
                 writableObjectMode: true
             }

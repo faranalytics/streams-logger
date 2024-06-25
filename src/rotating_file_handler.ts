@@ -109,8 +109,8 @@ export interface RotatingFileHandlerOptions {
 
 export class RotatingFileHandler extends Transform<LogRecord<string, SyslogLevelT>, never> {
 
-    constructor(options: RotatingFileHandlerOptions, writableOptions?: s.WritableOptions) {
-        super(new RotatingFileHandlerWritable(options, writableOptions));
+    constructor(options: RotatingFileHandlerOptions, streamOptions?: s.WritableOptions) {
+        super(new RotatingFileHandlerWritable(options, streamOptions));
     }
 
     public setLevel(level: SyslogLevel) {
