@@ -38,6 +38,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
 - [Tuning](#tuning)
     - [High Water Mark](#high-water-mark)
     - [Backpressure](#backpressure)
+    - [Performant Logging](#performant-logging)
 
 ## Installation
 
@@ -461,3 +462,15 @@ streams.Config.setDefaultHighWaterMark(true, 1e3);
 For most applications (e.g., common logging applications) setting a `queueSizeLimit` isn't necessary.  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending nodes in your graph.
 
 If you have a cooperating stream that is backpressuring, you can either set a default `highWaterMark` appropriate to your application or increase the `highWaterMark` on the specific stream in order to mitigate drain events.
+
+### Performant Logging
+For most applications the defaults are fine - and recommended.  However, for performant logging you can set a high default `highWaterMark` and turn off the stack trace capture.  For example, something along the lines of:
+
+```ts
+import * as streams from 'streams-logger';
+
+streams.Config.setDefaultHighWaterMark(true, 1e6);
+streams.Config.setDefaultHighWaterMark(false, 1e6);
+stream.Config.setCaptureStackTrace(false);
+```
+However, the cost savings of doing this will be marginal for most ordinary *logging* applications.
