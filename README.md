@@ -36,7 +36,9 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [How to Implement a Custom *Streams* Transform](#how-to-implement-a-custom-streams-transform)
     - [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream)
 - [Tuning](#tuning)
-    - [High Water Mark](#high-water-mark)
+    - [Performant Logging](#performant-logging)
+        - [High Water Mark](#high-water-mark)
+        - [Stack Trace Capture](#stack-trace-capture)
     - [Backpressure](#backpressure)
 
 ## Installation
@@ -121,11 +123,12 @@ The *Streams* API provides commonly used logging facilities (i.e., Logger, Forma
 
 ### The Logger Class
 
-**new streams-logger.Logger(options)**
+**new streams-logger.Logger(options, streamOptions)**
 - options `<LoggerOptions>`
     - level `<SyslogLevel>` The syslog compliant logger level.
     - name `<string>` An optional name for the `Logger`.
     - queueSizeLimit `<number>` Optionally specify a limit on how large (i.e., bytes) the message queue may grow while waiting for a stream to drain.
+- streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
 Construct a `<Logger<LogData, LogRecord<string, SyslogLevelT>>` that will propagate messages at the specified syslog level.
 
@@ -191,17 +194,19 @@ Set the log level.  Must be one of `SyslogLevel`.
 
 ### The Formatter Class
 
-**new streams-logger.Formatter(transform)**
+**new streams-logger.Formatter(transform, streamOptions)**
 - transform `(record: LogRecord<string, SyslogLevelT>): Promise<string>` A function that will format and serialize the `LogRecord<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a serializer.
+- streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
 Use a `Formatter` in order to specify how your log message will be formatted prior to forwarding it to the Handler(s).  An instance of [`LogRecord`](#the-logrecord-class) is created that contains information about the environment at the time of the logging call.  The `LogRecord` is passed as the single argument to serializer function.
 
 ### The ConsoleHandler Class
 
-**new streams-logger.ConsoleHandler()**
+**new streams-logger.ConsoleHandler(options, streamOptions)**
 
 - options `<ConsoleHandlerTransformOtions>`
     - level `<SyslogLevel>` An optional log level.  **Default**: `SyslogLevel.WARN`
+- streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
 Use a `ConsoleHandler` in order to stream your messages to the console.
 
@@ -212,7 +217,7 @@ Set the log level.  Must be one of `SyslogLevel`.
 
 ### The RotatingFileHandler Class
 
-**new streams-logger.RotatingFileHandler(options)**
+**new streams-logger.RotatingFileHandler(options, streamOptions)**
 - options `<RotatingFileHandlerOptions>`
     - path `<string>` 
     - rotations `<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10>` An optional number of log rotations.
@@ -220,6 +225,7 @@ Set the log level.  Must be one of `SyslogLevel`.
     - encoding `<BufferEncoding>` An optional encoding. **Default**: `utf8`
     - mode `<number>` An optional mode. **Deafult**:`0o666`
     - level `<SyslogLevel>` An optional log level.  **Default**: `SyslogLevel.WARN`
+- streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
 Use a `RotatingFileHandler` in order to write your log messages to a file.
 
@@ -232,13 +238,13 @@ Set the log level.  Must be one of `SyslogLevel`.
 
 **new streams-logger.LogRecord(options)**
 - options `<LoggerOptions>`
-    - message `<string>` The logger message.
+    - message `<string>` The logged message.
     - name `<string>` The name of the `Logger`.
     - level `<KeysUppercase<LevelT>` An uppercase string representing the log level.
     - depth `<number>` Used to specify which line of the stack trace to parse.
-    - error `<Error>` The `Error` that was generated for parsing.
+    - stack `<string>` An optional stack trace.
 
-A `LogRecord` is instantiated each time a message is logged at (or below) the level set on the `Logger` or one of the Handlers. It contains information about the process and environment at the time of the logging call.  A `LogRecord` is passed as the single argument to a `Formatter` [serialization function](#formatting).
+A `LogRecord` is instantiated each time a message is logged at (or below) the level set on the `Logger`. It contains information about the process and environment at the time of the logging call.  A `LogRecord` is passed as the single argument to a `Formatter` [serialization function](#formatting).
 
 *public* **logRecord.message**
 - `<string>`
@@ -254,15 +260,15 @@ An uppercase string representation of the level.
 
 *public* **logRecord.func**
 - `<string>`
-The name of the function where the logging call took place.
+The name of the function where the logging call took place.  Available if `Config.captureStackTrace` is set to `true`.
 
 *public* **logRecord.line**
 - `<string>`
-The line number of the logging call.
+The line number of the logging call.  Available if `Config.captureStackTrace` is set to `true`.
 
 *public* **logRecord.col**
 - `<string>`
-The column of the logging call.
+The column of the logging call.  Available if `Config.captureStackTrace` is set to `true`.
 
 *public* **logRecord.isotime**
 - `<string>`
@@ -270,27 +276,27 @@ The date and time in ISO format at the time of the logging call.
 
 *public* **logRecord.pathname**
 - `<string>`
-The name of the module.
+The name of the module.  Available if `Config.captureStackTrace` is set to `true`.
 
 *public* **logRecord.path**
 - `<string>`
-The complete path of the module.
+The complete path of the module.  Available if `Config.captureStackTrace` is set to `true`.
 
 *public* **logRecord.pathdir**
 - `<string>`
-The directory part of the path.
+The directory part of the path.  Available if `Config.captureStackTrace` is set to `true`.
 
 *public* **logRecord.pathroot**
 - `<string>`
-The root of the path.
+The root of the path.  Available if `Config.captureStackTrace` is set to `true`.
 
 *public* **logRecord.pathbase**
 - `<string>`
-The module filename.
+The module filename.  Available if `Config.captureStackTrace` is set to `true`.
 
 *public* **logRecord.pathext**
 - `<string>`
-The extension of the module.
+The extension of the module.  Available if `Config.captureStackTrace` is set to `true`.
 
 *public* **logRecord.pid**
 - `<string>`
@@ -304,22 +310,49 @@ The process environment.
 - `<string>`
 The thread identifier.
 
-### The Streams Config Settings
+### The Streams Config Settings Object
 
 **Config.setDefaultHighWaterMark(objectMode, value)**
-- objectMode `<boolean>` `true` if setting the ObjectMode `highWaterMark`; false, otherwise.
-- value `number` `highWaterMark` value.
+- objectMode `<boolean>` `true` if setting the ObjectMode `highWaterMark`; `false`, otherwise.
+- value `number` The `highWaterMark` value.
 
 Returns: `<void>`
 
 **Config.getDefaultHighWaterMark(objectMode)**
-- objectMode `<boolean>` `true` if getting the ObjectMode `highWaterMark`; false, otherwise.
+- objectMode `<boolean>` `true` if getting the ObjectMode `highWaterMark`; `false`, otherwise.
 
 Returns: `<number>` The default `highWaterMark`.
 
+**Config.setCaptureStackTrace(value)**
+- value `<boolean>` Set this to `true` in order to capture a stack trace on each logging call.  Default: `true`
+
+Returns: `<void>`
+
+**Config.getDuplexDefaults(writableObjectMode, readableObjectMode)**
+- writableObjectMode `<boolean>` `true` for ObjectMode; `false` otherwise.
+- readableObjectMode `<boolean>` `true` for ObjectMode; `false` otherwise.
+
+Returns: `<stream.DuplexOptions>`
+
+Use `Config.getDuplexDefaults` when implementing a [custom *Streams* Transform](#how-to-implement-a-custom-streams-transform).
+
+**Config.getWritableDefaults(writableObjectMode)**
+- writableObjectMode `<boolean>` `true` for ObjectMode; `false` otherwise.
+
+Returns: `<stream.WritableOptions>`
+
+Use `Config.getWritableDefaults` when implementing a [custom *Streams* Transform](#how-to-implement-a-custom-streams-transform).
+
+**Config.getReadableDefaults(readableObjectMode)**
+- readableObjectMode `<boolean>` `true` for ObjectMode; `false` otherwise.
+
+Returns: `<stream.ReadableOptions>`
+
+Use `Config.getReadableDefaults` when implementing a [custom *Streams* Transform](#how-to-implement-a-custom-streams-transform).
+
 ## Formatting
 
-The `Logger` constructs and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the properties of a `LogRecord` *may* undergo formatting and serialization.  This can be accomplished by creating an instance of a `Formatter` and passing in a custom [serialization function](#example-serializer) that accepts a `LogRecord` as its single argument.  The serialization function can construct a log message from the `LogRecord` properties.  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
+The `Logger` constructs and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the properties of a `LogRecord` *may* undergo formatting and serialization.  This can be accomplished by creating an instance of a `Formatter` and passing in a custom [serialization function](#example-serializer) that accepts a `LogRecord` as its single argument.  The serialization function can construct a log message from the `LogRecord` [properties](#the-logrecord-class).  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
 
 ### Example Serializer
 
@@ -413,16 +446,33 @@ const socketHandler = new Transform<Buffer, Buffer>(socket);
 
 ## Tuning
 
-### High Water Mark
-*Streams* Transforms operate on Node.js streams; hence, tuning may be required for some applications.  **For ordinary logging tasks, Node's default `highWaterMark` is fine.**  However, for high throughput applications the `highWaterMark` should be adjusted accordingly - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Transforms in the *Streams* library.  Alternatively, you can pass an optional stream configuration argument to each `Transform` individually.
+### Performant Logging
 
-In this example, the `highWaterMark` of Streams Transforms operating in ObjectMode are set to `1e3` objects.
+*Streams* Transforms operate on Node.js streams; hence, tuning may be required for some applications.  
+
+#### High Water Mark
+
+**For ordinary logging applications, Node's default `highWaterMark` is fine.**  However, for high throughput applications the `highWaterMark` should be adjusted accordingly - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Transforms in the *Streams* library.  Alternatively, you can pass an optional stream configuration argument to each `Transform` individually.
+
+In this example, the `highWaterMark` of ObjectMode streams is set to `1e6` objects and the `highWaterMark` of Buffer streams is set to `1e6` bytes.
 
 ```ts
 import * as streams from 'streams-logger';
 
-streams.Config.setDefaultHighWaterMark(true, 1e3);
+streams.Config.setDefaultHighWaterMark(true, 1e6);
+streams.Config.setDefaultHighWaterMark(false, 1e6);
 ```
+
+#### Stack Trace Capture
+
+Another optional setting that you can take advantage of is to turn off the stack trace capture; however, the cost savings of doing this will be marginal for typical logging applications.
+
+```ts
+import * as streams from 'streams-logger';
+
+streams.Config.setCaptureStackTrace(false);
+```
+
 
 ### Backpressure
 *Streams* respects backpressure by queueing messages while the stream is draining.  You can set a hard limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.  

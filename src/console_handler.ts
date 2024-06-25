@@ -15,10 +15,10 @@ export class ConsoleHandlerTransform extends s.Transform {
 
     public [$level]: SyslogLevel;
 
-    constructor({ level }: ConsoleHandlerTransformOtions, transformOptions?: s.TransformOptions) {
+    constructor({ level }: ConsoleHandlerTransformOtions, streamOptions?: s.TransformOptions) {
         super({
             ...Config.getDuplexDefaults(true, true),
-            ...transformOptions, 
+            ...streamOptions, 
             ...{ writableObjectMode: true, readableObjectMode: true }
         });
         this[$level] = level;

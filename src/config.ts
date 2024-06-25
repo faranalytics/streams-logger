@@ -2,13 +2,11 @@ import * as stream from 'node:stream';
 
 class Config {
 
-    public defaultHighWaterMark: number;
-    public defaultHighWaterMarkObjectMode: number;
+    public defaultHighWaterMark?: number;
+    public defaultHighWaterMarkObjectMode?: number;
     public captureStackTrace: boolean;
 
     constructor() {
-        this.defaultHighWaterMark = stream.getDefaultHighWaterMark(false);
-        this.defaultHighWaterMarkObjectMode = stream.getDefaultHighWaterMark(true);
         this.captureStackTrace = true;
     }
 
@@ -18,10 +16,20 @@ class Config {
 
     getDefaultHighWaterMark(objectMode: boolean): number {
         if (objectMode) {
-            return this.defaultHighWaterMarkObjectMode;
+            if (this.defaultHighWaterMarkObjectMode) {
+                return this.defaultHighWaterMarkObjectMode;
+            }
+            else {
+                return stream.getDefaultHighWaterMark(true);
+            }
         }
         else {
-            return this.defaultHighWaterMark;
+            if (this.defaultHighWaterMark) {
+                return this.defaultHighWaterMark;
+            }
+            else {
+                return stream.getDefaultHighWaterMark(false);
+            }
         }
     }
 
