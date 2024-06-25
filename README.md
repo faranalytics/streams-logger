@@ -470,7 +470,7 @@ Another optional setting that you can take advantage of is to turn off the stack
 ```ts
 import * as streams from 'streams-logger';
 
-stream.Config.setCaptureStackTrace(false);
+streams.Config.setCaptureStackTrace(false);
 ```
 
 
