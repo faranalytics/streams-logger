@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as stream from 'node:stream';
 import { LogRecord } from './log_record.js';
 import { Transform, $write, $size } from 'graph-transform';
@@ -6,10 +5,6 @@ import { SyslogLevel, SyslogLevelT } from './syslog.js';
 import { KeysUppercase } from './types.js';
 import { QueueSizeLimitExceededError } from './errors.js';
 import { Config } from './index.js';
-
-export interface StackTrace {
-    stack:string;
-}
 
 export interface LoggerOptions {
     level?: SyslogLevel;
@@ -39,14 +34,16 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
 
     protected log(message: string, level: SyslogLevel) {
         try {
-            const targetObject = {};
-            Error.captureStackTrace(targetObject, this.log);
+            const targetObject = { stack: '' };
+            if (Config.captureStackTrace) {
+                Error.captureStackTrace(targetObject, this.log);
+            }
             const data = new LogRecord<string, SyslogLevelT>({
                 message,
                 name: this.name,
-                depth: 1,
+                depth: 2,
                 level: <KeysUppercase<SyslogLevelT>>SyslogLevel[level],
-                stack: (<StackTrace>targetObject).stack
+                stack: targetObject.stack
             });
             super[$write](data);
             if (this.queueSizeLimit && this[$size] > this.queueSizeLimit) {

@@ -31,7 +31,7 @@ export class LogRecord<MessageT, LevelT> {
     public stack: string;
 
     private depth: number;
-    private regex: RegExp;
+    private regex?: RegExp;
 
     constructor({ message, name, level, depth, stack }: LogRecordOptions<MessageT, LevelT>) {
         this.isotime = new Date().toISOString();
@@ -43,21 +43,23 @@ export class LogRecord<MessageT, LevelT> {
         this.depth = depth;
         this.stack = stack;
         this.threadid = threads.threadId?.toString() ?? '';
-        this.regex = new RegExp(`^${'[^\\n]*\\n'.repeat(this.depth)}\\s+at (?<func>[^\\s]+)?(?: \\()?(?<url>file://(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)\\)?`, 'is');
-        const match = this.stack?.match(this.regex);
-        const groups = match?.groups;
-        if (groups) {
-            this.func = groups['func'];
-            this.url = groups['url'];
-            this.line = groups['line'];
-            this.col = groups['col'];
-            this.path = groups['path'];
-            const path = pth.parse(this.path);
-            this.pathdir = path.dir;
-            this.pathroot = path.root;
-            this.pathbase = path.base;
-            this.pathname = path.name;
-            this.pathext = path.ext;
+        if (this.stack) {
+            this.regex = new RegExp(`^${'[^\\n]*\\n'.repeat(this.depth)}\\s+at (?<func>[^\\s]+)?(?: \\()?(?<url>file://(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)\\)?`, 'is');
+            const match = this.stack?.match(this.regex);
+            const groups = match?.groups;
+            if (groups) {
+                this.func = groups['func'];
+                this.url = groups['url'];
+                this.line = groups['line'];
+                this.col = groups['col'];
+                this.path = groups['path'];
+                const path = pth.parse(this.path);
+                this.pathdir = path.dir;
+                this.pathroot = path.root;
+                this.pathbase = path.base;
+                this.pathname = path.name;
+                this.pathext = path.ext;
+            }
         }
     }
 }
