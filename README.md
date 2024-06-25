@@ -310,7 +310,7 @@ The process environment.
 - `<string>`
 The thread identifier.
 
-### The Streams Config Settings
+### The Streams Config Settings Object
 
 **Config.setDefaultHighWaterMark(objectMode, value)**
 - objectMode `<boolean>` `true` if setting the ObjectMode `highWaterMark`; `false`, otherwise.
