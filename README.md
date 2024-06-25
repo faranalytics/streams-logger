@@ -454,7 +454,7 @@ const socketHandler = new Transform<Buffer, Buffer>(socket);
 
 **For ordinary logging applications, Node's default `highWaterMark` is fine.**  However, for high throughput applications the `highWaterMark` should be adjusted accordingly - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Transforms in the *Streams* library.  Alternatively, you can pass an optional stream configuration argument to each `Transform` individually.
 
-In this example, the `highWaterMark` of ObjectMode streams is set to `1e6` objects and the `highWaterMark` of Buffer streams is set to `1e6` bytes.
+In this example, the `highWaterMark` of ObjectMode streams and Buffer streams is set artificially to `1e6` objects and `1e6` bytes.
 
 ```ts
 import * as streams from 'streams-logger';
