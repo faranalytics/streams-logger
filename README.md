@@ -30,16 +30,19 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [The Formatter Class](#the-formatter-class)
     - [The ConsoleHandler Class](#the-consolehandler-class)
     - [The RotatingFileHandler Class](#the-rotatingfilehandler-class)
+    - [The SocketHandler Class]()
 - [Formatting](#formatting)
     - [Example Serializer](#example-serializer)
+- [Using a Socket Handler]
+- [Hierarchical Logging](#hierarchical-logging)
 - [How-Tos](#how-tos)
-    - [How to Implement a Custom *Streams* Transform](#how-to-implement-a-custom-streams-transform)
+    - [How to Implement a Custom *Streams* Transform.](#how-to-implement-a-custom-streams-transform)
     - [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream)
 - [Tuning](#tuning)
-    - [Performant Logging](#performant-logging)
-        - [High Water Mark](#high-water-mark)
-        - [Stack Trace Capture](#stack-trace-capture)
-    - [Backpressure](#backpressure)
+    - [Tune the highWaterMark.](#tune-the-highwatermark)
+    - [Disable the stack trace capture.](#disable-the-stack-trace-capture)
+    - [Disconnect from root.](#disconnect-from-root)
+- [Backpressure](#backpressure)
 
 ## Installation
 
@@ -127,10 +130,11 @@ The *Streams* API provides commonly used logging facilities (i.e., Logger, Forma
 - options `<LoggerOptions>`
     - level `<SyslogLevel>` The syslog compliant logger level.
     - name `<string>` An optional name for the `Logger`.
+    - parent `<Logger>` An optional parent `Logger`.  **Default:** `streams-logger.root`
     - queueSizeLimit `<number>` Optionally specify a limit on how large (i.e., bytes) the message queue may grow while waiting for a stream to drain.
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
-Construct a `<Logger<LogData, LogRecord<string, SyslogLevelT>>` that will propagate messages at the specified syslog level.
+Use an instance of a Logger to propagate messages at the specified syslog level.
 
 *public* **logger.level**
 - `<SyslogLevel>`
@@ -140,12 +144,12 @@ The configured log level (e.g., `SyslogLevel.DEBUG`).
 *public* **logger.connect(...transforms)**
 - transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>`  Connect to an Array of `Transforms`.
 
-Returns: `<Logger<LogData, LogRecord<string, SyslogLevelT>>`
+Returns: `<Logger<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>`
 
 *public* **logger.disconnect(...transforms)**
 - transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>` Disconnect from an Array of `Transforms`.
 
-Returns: `<Logger<LogData, LogRecord<string, SyslogLevelT>>`
+Returns: `<Logger<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>`
 
 *public* **logger.debug(message)**
 - message `<string>` Write a DEBUG message to the `Logger`.
@@ -233,6 +237,18 @@ Use a `RotatingFileHandler` in order to write your log messages to a file.
 - level `<SyslogLevel>` A log level.
 
 Set the log level.  Must be one of `SyslogLevel`.
+
+### The SocketHandler Class
+
+**new streams-logger.SocketHandler\<InT, OutT\>(options, streamOptions)**
+- options `<SocketHandlerOptions>`
+    - socket `<Socket>` 
+    - reviver `<(this: unknown, key: string, value: unknown) => unknown>` An optional reviver for `JSON.parse`.
+    - replacer `<(this: unknown, key: string, value: unknown) => unknown>` An optional replacer for `JSON.stringify`.
+    - space `<string | number>` An optional space specification for `JSON.stringify`. 
+- streamOptions `<stream.DuplexOptions>` Optional options to be passed to the stream.
+
+Use a `SocketHandler` in order to connect *Stream* graphs over the network.  You can specify the expected input and output of the SocketHandler instance using the `InT` and `OutT` type variables.  Please see [Using a Socket Handler] for instructions on how to user a `SocketHandler` in a *Streams* logging graph.
 
 ### The LogRecord Class
 
@@ -393,6 +409,29 @@ This is an example of what a logged message will look like using the serializer 
 2024-06-12T00:10:15.894Z:INFO:sayHello:7:9:Hello, World!
 #                        ⮴level       ⮴line number
 ```
+## Using a Socket Handler
+
+
+## Hierarchical Logging
+
+*Streams* supports a hierarchical logging.  By default every `Logger` instance is connected to the root `Logger` (`streams-logger.root`).  However, you may optionally specify an antecedent other than `root` by assigning an instance of `Logger` to the `parent` property in the `LoggerOptions`.  The antecedent of the root `Logger` is `null`.
+
+You may capture logging events from other modules (*and your own*) by connecting a `Transform` to the `streams-logger.root` `Logger`. E.g.,
+
+```ts
+import * as streams from 'streams-logger';
+
+const formatter = new streams.Formatter(async ({ isotime, message, name, level, func, url, line, col }) => (
+    `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
+));
+const consoleHandler = new streams.ConsoleHandler({ level: streams.SyslogLevel.DEBUG });
+
+streams.root.connect(
+    formatter.connect(
+        consoleHandler
+    )
+);
+```
 
 ## How-Tos
 
@@ -446,15 +485,13 @@ const socketHandler = new Transform<Buffer, Buffer>(socket);
 
 ## Tuning
 
-### Performant Logging
+**For typical logging applications the defaults are fine.**  However, for high throughput applications you may choose to adjust the `highWaterMark`, disconnect your `Logger` from the root `Logger`, and/or disable stack trace capturing.
 
-*Streams* Transforms operate on Node.js streams; hence, tuning may be required for some applications.  
+### Tune the `highWaterMark`.
 
-#### High Water Mark
+*Streams* Transforms are implemented using the native Node.js stream API.  You have the option of tuning the Node stream `highWaterMark` to your specific needs - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Transforms in the *Streams* library.  Alternatively, you can pass an optional stream configuration argument to each `Transform` individually.
 
-**For ordinary logging applications, Node's default `highWaterMark` is fine.**  However, for high throughput applications the `highWaterMark` should be adjusted accordingly - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Transforms in the *Streams* library.  Alternatively, you can pass an optional stream configuration argument to each `Transform` individually.
-
-In this example, the `highWaterMark` of ObjectMode streams is set to `1e6` objects and the `highWaterMark` of Buffer streams is set to `1e6` bytes.
+In this example, the `highWaterMark` of ObjectMode streams and Buffer streams artificially set to `1e6` objects and `1e6` bytes.
 
 ```ts
 import * as streams from 'streams-logger';
@@ -463,9 +500,9 @@ streams.Config.setDefaultHighWaterMark(true, 1e6);
 streams.Config.setDefaultHighWaterMark(false, 1e6);
 ```
 
-#### Stack Trace Capture
+### Disable the stack trace capture.
 
-Another optional setting that you can take advantage of is to turn off the stack trace capture; however, the cost savings of doing this will be marginal for typical logging applications.
+Another optional setting that you can take advantage of is to turn off the stack trace capture; however, the cost savings of doing this will be marginal for typical logging applications.  Turning off stack trace capture will disable some of the information (e.g., function name and line number) that is normally contained in the `LogRecord` object that is provided to a `Formatter`.
 
 ```ts
 import * as streams from 'streams-logger';
@@ -473,10 +510,27 @@ import * as streams from 'streams-logger';
 streams.Config.setCaptureStackTrace(false);
 ```
 
+### Disconnect from root.
+
+You can optionally disconnect your `Logger` from the root `Logger` or a specified antecedent.  This will prevent message propagation to the root logger, which will provide cost savings and isolation.  E.g.,
+
+```ts
+import * as streams from 'streams-logger';
+
+...
+
+const log = logger.connect(
+    formatter.connect(
+        consoleHandler
+    )
+);
+
+log.disconnect(streams.root);
+```
 
 ### Backpressure
-*Streams* respects backpressure by queueing messages while the stream is draining.  You can set a hard limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.  
+*Streams* respects backpressure by queueing messages while the stream is draining.  You can set a limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.  
 
-For most applications (e.g., common logging applications) setting a `queueSizeLimit` isn't necessary.  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending nodes in your graph.
+For typical logging applications setting a `queueSizeLimit` isn't necessary.  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending nodes in your graph.
 
 If you have a cooperating stream that is backpressuring, you can either set a default `highWaterMark` appropriate to your application or increase the `highWaterMark` on the specific stream in order to mitigate drain events.

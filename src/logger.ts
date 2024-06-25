@@ -10,6 +10,7 @@ export interface LoggerOptions {
     level?: SyslogLevel;
     name?: string;
     queueSizeLimit?: number;
+    parent?: Logger | null;
 }
 
 export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>> {
@@ -18,8 +19,9 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
     public name: string;
 
     private queueSizeLimit?: number;
+    private parent?: Logger | null;
 
-    constructor({ name, level, queueSizeLimit }: LoggerOptions = {}, streamOptions?: stream.TransformOptions) {
+    constructor({ name, level, queueSizeLimit, parent }: LoggerOptions = {}, streamOptions?: stream.TransformOptions) {
         super(new stream.PassThrough({
             ...Config.getDuplexDefaults(true, true),
             ...streamOptions, ...{
@@ -30,6 +32,13 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
         this.level = level ?? SyslogLevel.WARN;
         this.name = name ?? '';
         this.queueSizeLimit = queueSizeLimit;
+
+        if (this.parent !== null) {
+            this.parent = parent ?? root;
+            if (this.parent) {
+                this.connect(this.parent);
+            }
+        }
     }
 
     protected log(message: string, level: SyslogLevel) {
@@ -112,3 +121,13 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
         this.level = level;
     }
 }
+
+// eslint-disable-next-line prefer-const, no-var
+export var root: Logger = new Logger({ name: 'root', parent: null });
+
+root.connect(new Transform<LogRecord<string, SyslogLevelT>, never>(new stream.Writable({
+    objectMode: true,
+    write(chunk: unknown, encoding: BufferEncoding, callback: stream.TransformCallback) {
+        callback();
+    }
+})));
