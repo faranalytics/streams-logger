@@ -324,7 +324,7 @@ Returns: `<void>`
 Returns: `<number>` The default `highWaterMark`.
 
 **Config.setCaptureStackTrace(value)**
-- value `<boolean>` Set this to true in order to capture a stack trace on each logging call.  Default: `true`
+- value `<boolean>` Set this to `true` in order to capture a stack trace on each logging call.  Default: `true`
 
 Returns: `<void>`
 
