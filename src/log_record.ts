@@ -42,9 +42,10 @@ export class LogRecord<MessageT, LevelT> {
         this.env = process.env;
         this.depth = depth;
         this.stack = stack;
+        console.log(stack);
         this.threadid = threads.threadId?.toString() ?? '';
         if (this.stack) {
-            this.regex = new RegExp(`^${'[^\\n]*\\n'.repeat(this.depth)}\\s+at (?<func>[^\\s]+)?(?: \\()?(?<url>file://(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)\\)?`, 'is');
+            this.regex = new RegExp(`^${'[^\\n]*\\n'.repeat(this.depth)}\\s+at (?<func>[^\\s]+)?.*?(?<url>file://(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)`, 'is');
             const match = this.stack?.match(this.regex);
             const groups = match?.groups;
             if (groups) {

@@ -17,4 +17,6 @@ function sayHello() {
     log.info('Hello, World!');
 }
 
+setInterval(sayHello, 1e3);
+
 sayHello();
