@@ -398,7 +398,7 @@ This is an example of what a logged message will look like using the serializer 
 
 ## Hierarchical Logging
 
-*Streams* supports a hierarchical logger graph.  By default every `Logger` instance is connected to the root `Logger` (`streams-logger.root`).  However, you may optionally specify an antecedent by assigning an instance of `Logger` to the `parent` property in the `LoggerOptions`.  The root `Logger`'s antecedent is `null`.
+*Streams* supports a hierarchical logging.  By default every `Logger` instance is connected to the root `Logger` (`streams-logger.root`).  However, you may optionally specify an antecedent other than `root` by assigning an instance of `Logger` to the `parent` property in the `LoggerOptions`.  The antecedent of the root `Logger` is `null`.
 
 You may capture logging events from other modules (*and your own*) by connecting a `Transform` to the `streams-logger.root` `Logger`. E.g.,
 
