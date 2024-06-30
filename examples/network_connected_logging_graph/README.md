@@ -18,9 +18,9 @@ import { once } from 'node:events';
 import { Logger, Formatter, ConsoleHandler, SocketHandler, LogRecord, SyslogLevelT, SyslogLevel } from 'streams-logger';
 
 net.createServer((socket: net.Socket) => {
-    const socketHandler1 = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>({ socket });
-    const socketHandler2 = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>({ socket });
-    socketHandler1.connect(socketHandler2);
+    const socketHandlerIn = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>({ socket });
+    const socketHandlerOut = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>({ socket });
+    socketHandlerIn.connect(socketHandlerOut);
 }).listen(3000);
 const socket = net.createConnection({ port: 3000 });
 await once(socket, 'connect');
