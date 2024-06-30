@@ -37,8 +37,8 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
 - [Using a Socket Handler](#using-a-socket-handler)
 - [Hierarchical Logging](#hierarchical-logging)
 - [How-Tos](#how-tos)
-    - [How to Implement a Custom *Streams* Transform.](#how-to-implement-a-custom-streams-transform)
-    - [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream)
+    - [How to implement a custom *Streams* Transform.](#how-to-implement-a-custom-streams-transform)
+    - [How to consume a Readable, Writable, Duplex, or Transform stream.](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream)
 - [Tuning](#tuning)
     - [Tune the highWaterMark.](#tune-the-highwatermark)
     - [Disable the stack trace capture.](#disable-the-stack-trace-capture)
@@ -440,7 +440,7 @@ streams.root.connect(
 
 ## How-Tos
 
-### How to Implement a Custom *Streams* Transform
+### How to implement a custom *Streams* Transform.
 
 *Streams* is built on the type-safe Graph-Transform graph API framework.  This means that any Graph-Transform `Transform` may be incorporated into your logging graph given that it meets the contextual type requirements.  In order to implement a *Streams* Transform, subclass the `Transform` class, and provide the appropriate *Streams* defaults to the stream constructor.
 
@@ -474,7 +474,7 @@ class BufferToNumber extends Transform<Buffer, number> {
 }
 ```
 
-### How to Consume a Readable, Writable, Duplex, or Transform Node.js Stream
+### How to consume a Readable, Writable, Duplex, or Transform Node.js stream.
 
 You can incorporate any Readable, Writable, Duplex, or Transform stream into your logging graph by passing the stream to the `Transform` constructor.  In this hypothetical example a type-safe `Transform` is constructed from a `net.Socket`.  The type variables are specified as `<Buffer, Buffer>`; the writable side of the stream consumes a `Buffer` and the readable side of the stream produces a `Buffer`. 
 
