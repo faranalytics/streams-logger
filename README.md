@@ -6,7 +6,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
 
 <img align="right" src="./graph.png">
 
-*Streams* is an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios. *Streams* supports a graph-like API pattern for building sophisticated logging pipelines.
+*Streams* is an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios. *Streams* supports a graph-like API pattern for building sophisticated logging pipelines.
 
 ### Features
 
@@ -29,6 +29,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
 - [API](#api)
     - [The Logger Class](#the-logger-class)
     - [The Formatter Class](#the-formatter-class)
+    - [The Filter Class](#the-filter-class)
     - [The ConsoleHandler Class](#the-consolehandler-class)
     - [The RotatingFileHandler Class](#the-rotatingfilehandler-class)
     - [The SocketHandler Class](#the-sockethandler-class)
@@ -55,7 +56,7 @@ npm install streams-logger
 
 ### Transform
 
-Logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed.  Each data transformation step in a *Streams* logging graph is realized through a type-safe `Transform` implementation.  Each `Transform` in a data transformation graph consumes an input, transforms or filters the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Handlers, etc.) in a *Streams* logging graph *is a* `Transform`.
+Logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed.  Each data transformation step in a *Streams* logging graph is realized through a type-safe `Transform` implementation.  Each `Transform` in a data transformation graph consumes an input, transforms or filters the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Filters, Handlers, etc.) in a *Streams* logging graph *is a* `Transform`.
 
 ### Graph API Pattern
 
@@ -202,11 +203,19 @@ Set the log level.  Must be one of `SyslogLevel`.
 
 ### The Formatter Class
 
-**new streams-logger.Formatter(transform, streamOptions)**
-- transform `(record: LogRecord<string, SyslogLevelT>): Promise<string>` A function that will format and serialize the `LogRecord<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a serializer.
+**new streams-logger.Formatter(options, streamOptions)**
+- options
+    - format `(record: LogRecord<string, SyslogLevelT>): Promise<string> | string` A function that will format and serialize the `LogRecord<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a serializer.
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
 Use a `Formatter` in order to specify how your log message will be formatted prior to forwarding it to the Handler(s).  An instance of [`LogRecord`](#the-logrecord-class) is created that contains information about the environment at the time of the logging call.  The `LogRecord` is passed as the single argument to serializer function.
+
+### The Filter Class
+
+**new streams-logger.Filter(options, streamOptions)**
+- options
+    - filter `(record: LogRecord<string, SyslogLevelT>): Promise<boolean> | boolean` A function that will filter the `LogRecord<string, SyslogLevelT>`.  Return `true` in order to permit the message through; otherwise, return `false`.
+- streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
 ### The ConsoleHandler Class
 

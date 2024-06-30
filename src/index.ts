@@ -6,6 +6,7 @@ import { SyslogLevel, SyslogLevelT } from './syslog.js';
 import { Formatter } from './formatter.js';
 import { ConsoleHandler } from './console_handler.js';
 import { RotatingFileHandler } from './rotating_file_handler.js';
+import { Filter } from './filter.js';
 
 export {
     Transform,
@@ -22,6 +23,7 @@ export {
     AnyToTest,
     AnyToVoid,
     SocketHandler,
+    Filter,
     root,
     Config,
     $write,
