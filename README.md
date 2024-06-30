@@ -415,7 +415,7 @@ This is an example of what a logged message will look like using the serializer 
 ```
 ## Using a Socket Handler
 
-You can use *Streams* in order to easily connect logging graphs over the network.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for instructions on how to use a `SocketHandler` in order to connect *Streams* logging graphs over the network.
+*Streams* is built on native Node.js streams.  Sockets are also streams.  Hence, it's natural and easy to connect logging graphs over the network.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for instructions on how to use a `SocketHandler` in order to connect *Streams* logging graphs over the network.
 
 ## Hierarchical Logging
 
