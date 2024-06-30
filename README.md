@@ -32,7 +32,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [The RotatingFileHandler Class](#the-rotatingfilehandler-class)
 - [Formatting](#formatting)
     - [Example Serializer](#example-serializer)
-- [Hierarchical Logging]()
+- [Hierarchical Logging](#hierarchical-logging)
 - [How-Tos](#how-tos)
     - [How to Implement a Custom *Streams* Transform](#how-to-implement-a-custom-streams-transform)
     - [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream)
