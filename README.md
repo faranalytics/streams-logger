@@ -252,7 +252,7 @@ Set the log level.  Must be one of `SyslogLevel`.
     - space `<string | number>` An optional space specification for `JSON.stringify`. 
 - streamOptions `<stream.DuplexOptions>` Optional options to be passed to the stream.
 
-Use a `SocketHandler` in order to connect *Stream* graphs over the network.  You can specify the expected input and output of the SocketHandler instance using the `InT` and `OutT` type variables.  Please see [Using a Socket Handler] for instructions on how to user a `SocketHandler` in a *Streams* logging graph.
+Use a `SocketHandler` in order to connect *Stream* graphs over the network.  You can specify the expected input and output of the SocketHandler instance using the `InT` and `OutT` type variables.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for instructions on how to use a `SocketHandler` in order to connect *Streams* logging graphs over the network.
 
 ### The LogRecord Class
 
@@ -415,6 +415,7 @@ This is an example of what a logged message will look like using the serializer 
 ```
 ## Using a Socket Handler
 
+You can use *Streams* in order to easily connect logging graphs over the network.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for instructions on how to use a `SocketHandler` in order to connect *Streams* logging graphs over the network.
 
 ## Hierarchical Logging
 
