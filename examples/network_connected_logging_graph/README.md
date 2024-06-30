@@ -2,6 +2,7 @@
 
 In this example you will contruct a *Streams* logging graph that incorporates a `SocketHandler` at each end of the network socket.  
 
+## Step by Step
 1. A `Logger` is used in order to log a `Hello, World!` message.  
 2. The message is formatted.
 3. The message is serialized, and sent over a socket to a server.  
