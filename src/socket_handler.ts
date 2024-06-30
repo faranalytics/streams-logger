@@ -7,15 +7,15 @@ import { Config } from './index.js';
 
 export const $level = Symbol('level');
 
-export interface ConsoleHandlerTransformOtions {
+export interface SocketHandlerTransformOtions {
     level: SyslogLevel;
 }
 
-export class ConsoleHandlerTransform extends s.Transform {
+export class SocketHandlerTransform extends s.Transform {
 
     public [$level]: SyslogLevel;
 
-    constructor({ level }: ConsoleHandlerTransformOtions, streamOptions?: s.TransformOptions) {
+    constructor({ level }: SocketHandlerTransformOtions, streamOptions?: s.TransformOptions) {
         super({
             ...Config.getDuplexDefaults(true, true),
             ...streamOptions, 
@@ -34,19 +34,19 @@ export class ConsoleHandlerTransform extends s.Transform {
     }
 }
 
-export interface ConsoleHandlerOptions {
+export interface SocketHandlerOptions {
     level: SyslogLevel;
 }
 
 export class SocketHandler extends Transform<LogRecord<string, SyslogLevelT>, string> {
 
-    constructor({ level }: ConsoleHandlerOptions = { level: SyslogLevel.WARN }, transformOptions?: s.TransformOptions) {
-        super(new ConsoleHandlerTransform({ level }, transformOptions));
+    constructor({ level }: SocketHandlerOptions = { level: SyslogLevel.WARN }, transformOptions?: s.TransformOptions) {
+        super(new SocketHandlerTransform({ level }, transformOptions));
         this[$stream].pipe(process.stdout);
     }
 
     setLevel(level: SyslogLevel): void {
-        if (this[$stream] instanceof ConsoleHandlerTransform) {
+        if (this[$stream] instanceof SocketHandlerTransform) {
             this[$stream][$level] = level;
         }
     }
