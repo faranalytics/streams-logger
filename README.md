@@ -409,6 +409,8 @@ This is an example of what a logged message will look like using the serializer 
 2024-06-12T00:10:15.894Z:INFO:sayHello:7:9:Hello, World!
 #                        ⮴level       ⮴line number
 ```
+## Using a Socket Handler
+
 
 ## Hierarchical Logging
 
