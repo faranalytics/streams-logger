@@ -522,15 +522,12 @@ You can optionally disconnect your `Logger` from the root `Logger` or a specifie
 
 ```ts
 import * as streams from 'streams-logger';
-
 ...
-
 const log = logger.connect(
     formatter.connect(
         consoleHandler
     )
 );
-
 log.disconnect(streams.root);
 ```
 
