@@ -497,7 +497,7 @@ const socketHandler = new Transform<Buffer, Buffer>(socket);
 
 *Streams* Transforms are implemented using the native Node.js stream API.  You have the option of tuning the Node stream `highWaterMark` to your specific needs - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Transforms in the *Streams* library.  Alternatively, you can pass an optional stream configuration argument to each `Transform` individually.
 
-In this example, the `highWaterMark` of ObjectMode streams and Buffer streams artificially set to `1e6` objects and `1e6` bytes.
+In this example, the `highWaterMark` of ObjectMode streams and Buffer streams is artificially set to `1e6` objects and `1e6` bytes.
 
 ```ts
 import * as streams from 'streams-logger';
