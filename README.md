@@ -33,6 +33,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [The SocketHandler Class]()
 - [Formatting](#formatting)
     - [Example Serializer](#example-serializer)
+- [Using a Socket Handler]
 - [Hierarchical Logging](#hierarchical-logging)
 - [How-Tos](#how-tos)
     - [How to Implement a Custom *Streams* Transform.](#how-to-implement-a-custom-streams-transform)
@@ -236,6 +237,18 @@ Use a `RotatingFileHandler` in order to write your log messages to a file.
 - level `<SyslogLevel>` A log level.
 
 Set the log level.  Must be one of `SyslogLevel`.
+
+### The SocketHandler Class
+
+**new streams-logger.SocketHandler\<InT, OutT\>(options, streamOptions)**
+- options `<SocketHandlerOptions>`
+    - socket `<Socket>` 
+    - reviver `<(this: unknown, key: string, value: unknown) => unknown>` An optional reviver for `JSON.parse`.
+    - replacer `<(this: unknown, key: string, value: unknown) => unknown>` An optional replacer for `JSON.stringify`.
+    - space `<string | number>` An optional space specification for `JSON.stringify`. 
+- streamOptions `<stream.DuplexOptions>` Optional options to be passed to the stream.
+
+Use a `SocketHandler` in order to connect *Stream* graphs over the network.  You can specify the expected input and output of the SocketHandler instance using the `InT` and `OutT` type variables.  Please see [Using a Socket Handler] for instructions on how to user a `SocketHandler` in a *Streams* logging graph.
 
 ### The LogRecord Class
 
