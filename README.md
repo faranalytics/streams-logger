@@ -415,7 +415,15 @@ This is an example of what a logged message will look like using the serializer 
 ```
 ## Using a Socket Handler
 
-*Streams* is built on native Node.js streams.  Node represents sockets as streams; hence, it's easy and natural to construct network connected *Streams* logging graphs.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for a working implementation.
+*Streams* is built on native Node.js streams.  Node represents sockets as streams; hence, it's easy and natural to construct network connected *Streams* logging graphs.  You may choose, for example, to use a Console Handler locally and log to a RotatingFileHandler on a remote server.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for a working implementation.
+
+### Security
+
+#### Use TLS encryption.
+TLS Encryption may be implemented using native Node.js [TLS Encryption](https://nodejs.org/docs/latest-v20.x/api/tls.html).
+
+#### Use TLS client certificate authentication.
+TLS Client Certificate Authentication may be implemented using native Node.js [TLS Client Authentication](https://nodejs.org/docs/latest-v20.x/api/tls.html).
 
 ## Hierarchical Logging
 
