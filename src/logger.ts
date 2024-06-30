@@ -10,7 +10,7 @@ export interface LoggerOptions {
     level?: SyslogLevel;
     name?: string;
     queueSizeLimit?: number;
-    antecedent?: Logger | null;
+    parent?: Logger | null;
 }
 
 export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>> {
@@ -19,9 +19,9 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
     public name: string;
 
     private queueSizeLimit?: number;
-    private antecedent?: Logger | null;
+    private parent?: Logger | null;
 
-    constructor({ name, level, queueSizeLimit, antecedent }: LoggerOptions = {}, streamOptions?: stream.TransformOptions) {
+    constructor({ name, level, queueSizeLimit, parent }: LoggerOptions = {}, streamOptions?: stream.TransformOptions) {
         super(new stream.PassThrough({
             ...Config.getDuplexDefaults(true, true),
             ...streamOptions, ...{
@@ -33,10 +33,10 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
         this.name = name ?? '';
         this.queueSizeLimit = queueSizeLimit;
 
-        if (this.antecedent !== null) {
-            this.antecedent = antecedent ?? root;
-            if (this.antecedent) {
-                this.connect(root);
+        if (this.parent !== null) {
+            this.parent = parent ?? root;
+            if (this.parent) {
+                this.connect(this.parent);
             }
         }
     }
@@ -122,10 +122,8 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
     }
 }
 
-// eslint-disable-next-line prefer-const
-export let root: Logger;
-
-root = new Logger({ name: 'root' });
+// eslint-disable-next-line prefer-const, no-var
+export var root: Logger = new Logger({ name: 'root', parent: null });
 
 root.connect(new Transform<LogRecord<string, SyslogLevelT>, never>(new stream.Writable({
     objectMode: true,
@@ -133,5 +131,3 @@ root.connect(new Transform<LogRecord<string, SyslogLevelT>, never>(new stream.Wr
         callback();
     }
 })));
-
-// Any logger can disconnect from the root.

@@ -32,6 +32,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [The RotatingFileHandler Class](#the-rotatingfilehandler-class)
 - [Formatting](#formatting)
     - [Example Serializer](#example-serializer)
+- [Hierarchical Logging]()
 - [How-Tos](#how-tos)
     - [How to Implement a Custom *Streams* Transform](#how-to-implement-a-custom-streams-transform)
     - [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream)
@@ -127,6 +128,7 @@ The *Streams* API provides commonly used logging facilities (i.e., Logger, Forma
 - options `<LoggerOptions>`
     - level `<SyslogLevel>` The syslog compliant logger level.
     - name `<string>` An optional name for the `Logger`.
+    - parent `<Logger>` An optional parent `Logger`.  **Default:** `streams-logger.root`
     - queueSizeLimit `<number>` Optionally specify a limit on how large (i.e., bytes) the message queue may grow while waiting for a stream to drain.
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
@@ -394,6 +396,28 @@ This is an example of what a logged message will look like using the serializer 
 #                        ⮴level       ⮴line number
 ```
 
+## Hierarchical Logging
+
+*Streams* supports a hierarchical logger graph.  By default every `Logger` instance is connected to the root `Logger` (`streams-logger.root`).  However, you may optionally designate an antecedent by specifying a `parent` in the `LoggerOptions` of the `Logger` constructor.
+
+You may capture logging events from other modules by connecting a `Transform` to the `streams-logger.root` `Logger`. E.g.,
+
+```ts
+import * as streams from 'streams-logger';
+
+const formatter = new streams.Formatter(async ({ isotime, message, name, level, func, url, line, col }) => (
+    `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
+));
+
+const consoleHandler = new streams.ConsoleHandler({ level: streams.SyslogLevel.DEBUG });
+
+streams.root.connect(
+    formatter.connect(
+        consoleHandler
+    )
+);
+```
+
 ## How-Tos
 
 ### How to Implement a Custom *Streams* Transform
@@ -446,9 +470,9 @@ const socketHandler = new Transform<Buffer, Buffer>(socket);
 
 ## Tuning
 
-**For typical logging applications the defaults are fine.**  However, for high throughput applications you may choose to adjust the `highWaterMark` and/or disable stack trace capturing.
+**For typical logging applications the defaults are fine.**  However, for high throughput applications you may choose to adjust the `highWaterMark`, disconnect your `Logger` from the root `Logger`, and/or disable stack trace capturing.
 
-### High Water Mark
+### Tune the `highWaterMark`.
 
 *Streams* Transforms are implemented using the native Node.js stream API.  You have the option of tuning the Node stream `highWaterMark` to your specific needs - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Transforms in the *Streams* library.  Alternatively, you can pass an optional stream configuration argument to each `Transform` individually.
 
@@ -461,7 +485,7 @@ streams.Config.setDefaultHighWaterMark(true, 1e6);
 streams.Config.setDefaultHighWaterMark(false, 1e6);
 ```
 
-### Stack Trace Capture
+### Disable stack trace capture.
 
 Another optional setting that you can take advantage of is to turn off the stack trace capture; however, the cost savings of doing this will be marginal for typical logging applications.  Turning off stack trace capture will disable some of the information (e.g., function name and line number) that is normally contained in the `LogRecord` object that is provided to a `Formatter`.
 
@@ -471,6 +495,23 @@ import * as streams from 'streams-logger';
 streams.Config.setCaptureStackTrace(false);
 ```
 
+### Disconnect from the root.
+
+You can optionally disconnect your `Logger` from the root `Logger` or a specified antecedent.  This will prevent message propagation to the root logger, which will provide cost savings and isolation.  E.g.,
+
+```ts
+import * as streams from 'streams-logger';
+
+...
+
+const log = logger.connect(
+    formatter.connect(
+        consoleHandler
+    )
+);
+
+log.disconnect(streams.root);
+```
 
 ### Backpressure
 *Streams* respects backpressure by queueing messages while the stream is draining.  You can set a limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.  

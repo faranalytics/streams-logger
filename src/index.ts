@@ -1,6 +1,6 @@
 import { config as Config } from './config.js';
 import { LogRecord } from './log_record.js';
-import { Transform, StringToBuffer, BufferToString, JSONToObject, ObjectToJSON, $write, $size } from 'graph-transform';
+import { Transform, BufferToString, $write, $size, ObjectToBuffer, BufferToObject, AnyToTest, AnyToVoid, SocketHandler } from 'graph-transform';
 import { Logger, root } from './logger.js';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
 import { Formatter } from './formatter.js';
@@ -15,11 +15,13 @@ export {
     SyslogLevelT,
     Formatter,
     ConsoleHandler,
-    StringToBuffer,
     BufferToString,
-    ObjectToJSON,
-    JSONToObject,
     RotatingFileHandler,
+    ObjectToBuffer,
+    BufferToObject,
+    AnyToTest,
+    AnyToVoid,
+    SocketHandler,
     root,
     Config,
     $write,
