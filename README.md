@@ -24,7 +24,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
 - [Usage](#usage)
     - [Log to the Console and a File](#log-to-the-console-and-to-a-file)
 - [Examples](#examples)
-    - [*An instance of logging "Hello, World!"*](#an-instance-of-logging-hello-world-example)
+    - [*An Instance of Logging "Hello, World!"*](#an-instance-of-logging-hello-world-example)
     - [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example)
 - [API](#api)
     - [The Logger Class](#the-logger-class)
@@ -118,7 +118,7 @@ sayHello();
 ```
 ## Examples
 
-### *An instance of logging "Hello, World!"* <sup><sup>(example)</sup></sup>
+### *An Instance of Logging "Hello, World!"* <sup><sup>(example)</sup></sup>
 Please see the [Usage](#usage) section above or the ["Hello, World!"](https://github.com/faranalytics/streams-logger/tree/main/examples/hello_world) example for a working implementation.
 
 ### *A Network Connected **Streams** Logging Graph* <sup><sup>(example)</sup></sup>
