@@ -419,10 +419,10 @@ This is an example of what a logged message will look like using the serializer 
 
 ### Security
 
-#### Use TLS encryption.
+#### Configure your server to use TLS encryption.
 TLS Encryption may be implemented using native Node.js [TLS Encryption](https://nodejs.org/docs/latest-v20.x/api/tls.html).
 
-#### Use TLS client certificate authentication.
+#### Configure your client to use TLS client certificate authentication.
 TLS Client Certificate Authentication may be implemented using native Node.js [TLS Client Authentication](https://nodejs.org/docs/latest-v20.x/api/tls.html).
 
 ## Hierarchical Logging
