@@ -4,21 +4,25 @@ import { Transform } from 'graph-transform';
 import { SyslogLevelT } from './syslog.js';
 import { Config } from './index.js';
 
-export interface FormatterOptions {
-    format: (record: LogRecord<string, SyslogLevelT>) => Promise<string> | string
+export interface FilterOptions {
+    filter: (record: LogRecord<string, SyslogLevelT>) => Promise<boolean> | boolean
 }
 
-export class Formatter extends Transform<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>> {
+export class Filter extends Transform<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>> {
 
-    constructor({ format }: FormatterOptions, streamOptions?: s.TransformOptions) {
+    constructor({ filter }: FilterOptions, streamOptions?: s.TransformOptions) {
         super(new s.Transform({
             ...Config.getDuplexDefaults(true, true),
             ...streamOptions, ...{
                 writableObjectMode: true,
                 readableObjectMode: true,
                 transform: async (chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: s.TransformCallback) => {
-                    chunk.message = await format(chunk);
-                    callback(null, chunk);
+                    if (await filter(chunk)) {
+                        callback(null, chunk);
+                    }
+                    else {
+                        callback();
+                    }
                 }
             }
         }));

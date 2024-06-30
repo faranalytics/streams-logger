@@ -6,7 +6,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
 
 <img align="right" src="./graph.png">
 
-*Streams* is an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios. *Streams* supports a graph-like API pattern for building sophisticated logging pipelines.
+*Streams* is an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios. *Streams* supports a graph-like API pattern for building sophisticated logging pipelines.
 
 ### Features
 
@@ -29,6 +29,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
 - [API](#api)
     - [The Logger Class](#the-logger-class)
     - [The Formatter Class](#the-formatter-class)
+    - [The Filter Class](#the-filter-class)
     - [The ConsoleHandler Class](#the-consolehandler-class)
     - [The RotatingFileHandler Class](#the-rotatingfilehandler-class)
     - [The SocketHandler Class](#the-sockethandler-class)
@@ -55,7 +56,7 @@ npm install streams-logger
 
 ### Transform
 
-Logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed.  Each data transformation step in a *Streams* logging graph is realized through a type-safe `Transform` implementation.  Each `Transform` in a data transformation graph consumes an input, transforms or filters the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Handlers, etc.) in a *Streams* logging graph *is a* `Transform`.
+Logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed.  Each data transformation step in a *Streams* logging graph is realized through a type-safe `Transform` implementation.  Each `Transform` in a data transformation graph consumes an input, transforms or filters the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Filters, Handlers, etc.) in a *Streams* logging graph *is a* `Transform`.
 
 ### Graph API Pattern
 
@@ -76,15 +77,17 @@ import { Logger, Formatter, ConsoleHandler, RotatingFileHandler, SyslogLevel } f
 #### 2. Create an instance of a Logger, Formatter, ConsoleHandler and RotatingFileHandler.
 
 - The `Logger` is set to log at level `SyslogLevel.DEBUG`.  
-- The `Formatter` constructor is passed a serialization function that will output a string containing the ISO time, the log level, the function name, the line number, the column number, and the log message.
+- The `Formatter` constructor is passed a `format` function that will serialize data contained in the `LogRecord` to a string containing the ISO time, the log level, the function name, the line number, the column number, and the log message.
 - The `ConsoleHandler` will log the message to `process.stdout`.
 - The `RotatingFileHandler` will log the message to the file `./message.log`.
 
 ```ts
 const logger = new Logger({ level: SyslogLevel.DEBUG });
-const formatter = new Formatter(async ({ message, name, level, func, url, line, col }) => (
-    `${new Date().toISOString()}:${level}:${func}:${line}:${col}:${message}\n`
-));
+const formatter = new Formatter({
+    format: async ({ isotime, message, name, level, func, url, line, col }) => (
+        `${isotime}:${level}:${func}:${line}:${col}:${message}\n`
+    )
+});
 const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', level: SyslogLevel.DEBUG });
 ```
@@ -202,11 +205,19 @@ Set the log level.  Must be one of `SyslogLevel`.
 
 ### The Formatter Class
 
-**new streams-logger.Formatter(transform, streamOptions)**
-- transform `(record: LogRecord<string, SyslogLevelT>): Promise<string>` A function that will format and serialize the `LogRecord<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a serializer.
+**new streams-logger.Formatter(options, streamOptions)**
+- options
+    - format `(record: LogRecord<string, SyslogLevelT>): Promise<string> | string` A function that will format and serialize the `LogRecord<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a serializer.
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
 Use a `Formatter` in order to specify how your log message will be formatted prior to forwarding it to the Handler(s).  An instance of [`LogRecord`](#the-logrecord-class) is created that contains information about the environment at the time of the logging call.  The `LogRecord` is passed as the single argument to serializer function.
+
+### The Filter Class
+
+**new streams-logger.Filter(options, streamOptions)**
+- options
+    - filter `(record: LogRecord<string, SyslogLevelT>): Promise<boolean> | boolean` A function that will filter the `LogRecord<string, SyslogLevelT>`.  Return `true` in order to permit the message through; otherwise, return `false`.
+- streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
 ### The ConsoleHandler Class
 
@@ -386,15 +397,16 @@ In the following code excerpt, a serializer is implemented that logs:
 6. The log message
 7. A newline
 
-The serializer function is passed to the constructor of a `Formatter`.  The `Logger` is connected to the `Formatter`.  The `Formatter` is connected to the `ConsoleHandler`.
+The `format` function is passed to the constructor of a `Formatter`, which will serialize the data contained in the `LogRecord` to a string.  The `Logger` is connected to the `Formatter`.  The `Formatter` is connected to the `ConsoleHandler`.
 
 ```ts
-const serializer = async ({ isotime, level, func, line, col, message }: LogRecord<string, SyslogLevelT>) => {
-    return `${isotime}:${level}:${func}:${line}:${col}:${message}\n`;
-}
 
 const logger = new Logger({ name: 'main', level: SyslogLevel.DEBUG });
-const formatter = new Formatter(serializer);
+const formatter = new Formatter({
+    format: async ({ isotime, message, name, level, func, url, line, col }) => (
+        `${isotime}:${level}:${func}:${line}:${col}:${message}\n`
+    )
+});
 const consoleHandler = new ConsoleHandler();
 
 const log = logger.connect(
@@ -415,7 +427,15 @@ This is an example of what a logged message will look like using the serializer 
 ```
 ## Using a Socket Handler
 
-*Streams* is built on native Node.js streams.  And, sockets are streams.  Hence, it's natural and easy to connect *Streams* logging graphs over the network.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for instructions on how to use a `SocketHandler` in order to construct network connected *Streams* logging graphs.
+*Streams* is built on native Node.js streams.  Node represents sockets as streams; hence, it's easy and natural to construct network connected logging graphs.  You may choose, for example, to use a `ConsoleHandler` locally and log to a `RotatingFileHandler` on a remote server.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for a working implementation.
+
+### Security
+
+#### Configure your server to use TLS encryption.
+TLS Encryption may be implemented using native Node.js [TLS Encryption](https://nodejs.org/docs/latest-v20.x/api/tls.html).
+
+#### Configure your client to use TLS client certificate authentication.
+TLS Client Certificate Authentication may be implemented using native Node.js [TLS Client Authentication](https://nodejs.org/docs/latest-v20.x/api/tls.html).
 
 ## Hierarchical Logging
 
@@ -426,9 +446,11 @@ You may capture logging events from other modules (*and your own*) by connecting
 ```ts
 import * as streams from 'streams-logger';
 
-const formatter = new streams.Formatter(async ({ isotime, message, name, level, func, url, line, col }) => (
-    `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
-));
+const formatter = new Formatter({
+    format: async ({ isotime, message, name, level, func, url, line, col }) => (
+        `${isotime}:${level}:${func}:${line}:${col}:${message}\n`
+    )
+});
 const consoleHandler = new streams.ConsoleHandler({ level: streams.SyslogLevel.DEBUG });
 
 streams.root.connect(

@@ -4,8 +4,7 @@ import * as fs from 'node:fs';
 import * as streams from 'streams-logger';
 import { describe, test } from 'node:test';
 import * as assert from 'node:assert';
-import { LogRecord, SyslogLevelT } from 'streams-logger';
-import { SocketHandler, AnyToTest } from 'streams-logger';
+import { LogRecord, SyslogLevelT, Filter, SocketHandler, AnyToTest } from 'streams-logger';
 
 // streams.Config.setDefaultHighWaterMark(true, 1e6);
 // streams.Config.setDefaultHighWaterMark(false, 1e6);
@@ -16,7 +15,7 @@ const suite = async (
     callback: (error?: Error | null | undefined) => void
 ) => {
     await describe('Test.', async () => {
-        await test('Assert that `chunk` matches `regExp`.', async () => {
+        await test('Assert that `chunk.message` matches `regExp`.', async () => {
             assert.match(chunk.message, /Hello, World!/);
         });
     });
@@ -34,14 +33,23 @@ const socket = net.createConnection({ port: 3000 });
 await new Promise((r, e) => socket.once('connect', r).once('error', e));
 const socketHandler = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>({ socket });
 
-
 const logger = new streams.Logger({ level: streams.SyslogLevel.DEBUG, name: 'test' });
-const streams_formatter = new streams.Formatter(async ({ isotime, message, name, level, func, url, line, col }) => (
-    `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
-));
-const streams_formatter_root = new streams.Formatter(async ({ isotime, message, name, level, func, url, line, col }) => (
-    `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
-));
+const streams_formatter = new streams.Formatter({
+    format: async ({ isotime, message, name, level, func, url, line, col }) => (
+        `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
+    )
+});
+const streams_filter = new streams.Filter({
+    filter: (record: LogRecord<string, SyslogLevelT>) => {
+        return record.name == 'test';
+    }
+});
+
+const streams_formatter_root = new streams.Formatter({
+    format: async ({ isotime, message, name, level, func, url, line, col }) => (
+        `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
+    )
+});
 
 const consoleHandler = new streams.ConsoleHandler({ level: streams.SyslogLevel.DEBUG });
 
@@ -53,9 +61,11 @@ const consoleHandler = new streams.ConsoleHandler({ level: streams.SyslogLevel.D
 
 const log = logger.connect(
     streams_formatter.connect(
-        socketHandler.connect(
-            anyToTest,
-            consoleHandler
+        streams_filter.connect(
+            socketHandler.connect(
+                anyToTest,
+                consoleHandler
+            )
         )
     )
 );
