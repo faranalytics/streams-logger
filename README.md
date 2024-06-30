@@ -37,8 +37,9 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [How to Implement a Custom *Streams* Transform.](#how-to-implement-a-custom-streams-transform)
     - [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream)
 - [Tuning](#tuning)
-    - [Tuning the `highWaterMark`.](#tune-the-highwatermark)
-    - [Disabling the Stack Trace Capture](#stack-trace-capture)
+    - [Tune the highWaterMark.](#tune-the-highwatermark)
+    - [Disable the stack trace capture.](#disable-the-stack-trace-capture)
+    - [Disconnect from root.](#disconnect-from-root)
 - [Backpressure](#backpressure)
 
 ## Installation
