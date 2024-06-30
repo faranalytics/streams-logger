@@ -34,13 +34,12 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [Example Serializer](#example-serializer)
 - [Hierarchical Logging](#hierarchical-logging)
 - [How-Tos](#how-tos)
-    - [How to Implement a Custom *Streams* Transform](#how-to-implement-a-custom-streams-transform)
+    - [How to Implement a Custom *Streams* Transform.](#how-to-implement-a-custom-streams-transform)
     - [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream)
 - [Tuning](#tuning)
-    - [Performant Logging](#performant-logging)
-        - [High Water Mark](#high-water-mark)
-        - [Stack Trace Capture](#stack-trace-capture)
-    - [Backpressure](#backpressure)
+    - [Tuning the `highWaterMark`.](#tune-the-highwatermark)
+    - [Disabling the Stack Trace Capture](#stack-trace-capture)
+- [Backpressure](#backpressure)
 
 ## Installation
 
@@ -484,7 +483,7 @@ streams.Config.setDefaultHighWaterMark(true, 1e6);
 streams.Config.setDefaultHighWaterMark(false, 1e6);
 ```
 
-### Disable stack trace capture.
+### Disable the stack trace capture.
 
 Another optional setting that you can take advantage of is to turn off the stack trace capture; however, the cost savings of doing this will be marginal for typical logging applications.  Turning off stack trace capture will disable some of the information (e.g., function name and line number) that is normally contained in the `LogRecord` object that is provided to a `Formatter`.
 
