@@ -30,6 +30,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [The Formatter Class](#the-formatter-class)
     - [The ConsoleHandler Class](#the-consolehandler-class)
     - [The RotatingFileHandler Class](#the-rotatingfilehandler-class)
+    - [The SocketHandler Class]()
 - [Formatting](#formatting)
     - [Example Serializer](#example-serializer)
 - [Hierarchical Logging](#hierarchical-logging)

@@ -10,28 +10,29 @@ import { SocketHandler, AnyToTest } from 'streams-logger';
 // streams.Config.setDefaultHighWaterMark(true, 1e6);
 // streams.Config.setDefaultHighWaterMark(false, 1e6);
 
-const anyToTest = new AnyToTest<LogRecord<string, SyslogLevelT>>(
-    async (
-        chunk: LogRecord<string, SyslogLevelT>,
-        encoding: BufferEncoding,
-        callback: (error?: Error | null | undefined) => void
-    ) => {
-        await describe('Test.', async () => {
-            await test('Assert that `chunk` matches `regExp`.', async () => {
-                assert.match(chunk.message, /Hello, World!/);
-            });
+const suite = async (
+    chunk: LogRecord<string, SyslogLevelT>,
+    encoding: BufferEncoding,
+    callback: (error?: Error | null | undefined) => void
+) => {
+    await describe('Test.', async () => {
+        await test('Assert that `chunk` matches `regExp`.', async () => {
+            assert.match(chunk.message, /Hello, World!/);
         });
-        callback();
     });
+    callback();
+};
+
+const anyToTest = new AnyToTest<LogRecord<string, SyslogLevelT>>({ suite });
 
 net.createServer((socket: net.Socket) => {
-    const socketHandler1 = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>(socket);
-    const socketHandler2 = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>(socket);
+    const socketHandler1 = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>({ socket });
+    const socketHandler2 = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>({ socket });
     socketHandler1.connect(socketHandler2);
 }).listen(3000);
 const socket = net.createConnection({ port: 3000 });
 await new Promise((r, e) => socket.once('connect', r).once('error', e));
-const socketHandler = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>(socket);
+const socketHandler = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>({ socket });
 
 
 const logger = new streams.Logger({ level: streams.SyslogLevel.DEBUG, name: 'test' });
