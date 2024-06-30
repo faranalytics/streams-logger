@@ -25,7 +25,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [Log to the Console and a File](#log-to-the-console-and-to-a-file)
 - [Examples](#examples)
     - [*An instance of logging "Hello, World!"*](#an-instance-of-logging-hello-world-example)
-    - [*A Network Connected **Streams** Logging Graph*]
+    - [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example)
 - [API](#api)
     - [The Logger Class](#the-logger-class)
     - [The Formatter Class](#the-formatter-class)
@@ -34,7 +34,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [The SocketHandler Class](#the-sockethandler-class)
 - [Formatting](#formatting)
     - [Example Serializer](#example-serializer)
-- [Using a Socket Handler](#a-network-connected-streams-logging-graph-example)
+- [Using a Socket Handler](#using-a-socket-handler)
 - [Hierarchical Logging](#hierarchical-logging)
 - [How-Tos](#how-tos)
     - [How to Implement a Custom *Streams* Transform.](#how-to-implement-a-custom-streams-transform)
