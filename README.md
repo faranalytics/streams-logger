@@ -126,7 +126,7 @@ Please see the [*Network Connected **Streams** Logging Graph*](https://github.co
 
 ## API
 
-The *Streams* API provides commonly used logging facilities (i.e., Logger, Formatter, and console and file Handlers).  However, you can [consume any writable Node.js stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream) and add it to your logging graph.
+The *Streams* API provides commonly used logging facilities (i.e., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)).  However, you can [consume any Node.js stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream) and add it to your logging graph.
 
 ### The Logger Class
 
