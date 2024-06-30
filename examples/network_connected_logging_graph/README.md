@@ -1,7 +1,46 @@
 # *A Network Connected **Streams** Logging Graph*
 
+In this example you will contruct a *Streams* logging graph that incorporates a `SocketHandler` at each end of the network socket.  
+
+1. A `Logger` is used in order to log a `Hello, World` message.  
+2. The message is formatted.
+3. The message is serialized, and sent over a socket to a server.  
+4. The server serializes and echos the `LogRecord` back to the client. 
+5. The message is finally deserialized and logged to the console.
 
 ## Implementation
+
+`index.ts`
+```ts
+import * as net from 'node:net';
+import { once } from 'node:events';
+import { Logger, Formatter, ConsoleHandler, SocketHandler, LogRecord, SyslogLevelT, SyslogLevel } from 'streams-logger';
+
+net.createServer((socket: net.Socket) => {
+    const socketHandler1 = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>({ socket });
+    const socketHandler2 = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>({ socket });
+    socketHandler1.connect(socketHandler2);
+}).listen(3000);
+const socket = net.createConnection({ port: 3000 });
+await once(socket, 'connect');
+const socketHandler = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>({ socket });
+
+const logger = new Logger({ level: SyslogLevel.DEBUG, name: 'main' });
+const formatter = new Formatter(async ({ isotime, message, name, level, func, url, line, col }) => (
+    `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
+));
+const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
+
+const log = logger.connect(
+    formatter.connect(
+        socketHandler.connect(
+            consoleHandler
+        )
+    )
+);
+
+log.warn('Hello, World!');
+```
 
 ## Instructions
 
@@ -29,5 +68,5 @@ npm start
 ```
 #### Output
 ```bash
-2024-06-12T00:10:15.894Z:INFO:sayHello:7:9:Hello, World!
+main:2024-06-30T15:17:25.109Z:WARN:undefined:17:5:Hello, World!
 ```
