@@ -31,10 +31,10 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [The Formatter Class](#the-formatter-class)
     - [The ConsoleHandler Class](#the-consolehandler-class)
     - [The RotatingFileHandler Class](#the-rotatingfilehandler-class)
-    - [The SocketHandler Class]()
+    - [The SocketHandler Class](#the-sockethandler-class)
 - [Formatting](#formatting)
     - [Example Serializer](#example-serializer)
-- [Using a Socket Handler]
+- [Using a Socket Handler](#a-network-connected-streams-logging-graph-example)
 - [Hierarchical Logging](#hierarchical-logging)
 - [How-Tos](#how-tos)
     - [How to Implement a Custom *Streams* Transform.](#how-to-implement-a-custom-streams-transform)
