@@ -10,6 +10,7 @@ export interface LoggerOptions {
     level?: SyslogLevel;
     name?: string;
     queueSizeLimit?: number;
+    antecedent?: Logger | null;
 }
 
 export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>> {
@@ -18,8 +19,9 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
     public name: string;
 
     private queueSizeLimit?: number;
+    private antecedent?: Logger | null;
 
-    constructor({ name, level, queueSizeLimit }: LoggerOptions = {}, streamOptions?: stream.TransformOptions) {
+    constructor({ name, level, queueSizeLimit, antecedent }: LoggerOptions = {}, streamOptions?: stream.TransformOptions) {
         super(new stream.PassThrough({
             ...Config.getDuplexDefaults(true, true),
             ...streamOptions, ...{
@@ -30,6 +32,13 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
         this.level = level ?? SyslogLevel.WARN;
         this.name = name ?? '';
         this.queueSizeLimit = queueSizeLimit;
+
+        if (this.antecedent !== null) {
+            this.antecedent = antecedent ?? root;
+            if (this.antecedent) {
+                this.connect(root);
+            }
+        }
     }
 
     protected log(message: string, level: SyslogLevel) {
@@ -112,3 +121,17 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
         this.level = level;
     }
 }
+
+// eslint-disable-next-line prefer-const
+export let root: Logger;
+
+root = new Logger({ name: 'root' });
+
+root.connect(new Transform<LogRecord<string, SyslogLevelT>, never>(new stream.Writable({
+    objectMode: true,
+    write(chunk: unknown, encoding: BufferEncoding, callback: stream.TransformCallback) {
+        callback();
+    }
+})));
+
+// Any logger can disconnect from the root.
