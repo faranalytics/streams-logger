@@ -1,7 +1,7 @@
 import * as stream from 'node:stream';
 import { Transform, Config } from 'streams-logger';
 
-class BufferToNumber extends Transform<Buffer, number> {
+export class BufferToNumber extends Transform<Buffer, number> {
 
     public encoding: NodeJS.BufferEncoding = 'utf-8';
 

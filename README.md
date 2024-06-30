@@ -6,7 +6,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
 
 <img align="right" src="./graph.png">
 
-*Streams* is an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., Logger, Formatter, ConsoleHandler, RotatingFileHandler) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios. *Streams* supports a graph-like API pattern for building sophisticated logging pipelines.
+*Streams* is an intuitive type-safe logging facility built on native Node.js streams.  You can use the built-in logging components (e.g., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)) for [common logging tasks](#usage) or implement your own logging [Transforms](https://github.com/faranalytics/graph-transform) to handle a wide range of logging scenarios. *Streams* supports a graph-like API pattern for building sophisticated logging pipelines.
 
 ### Features
 
@@ -24,20 +24,21 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
 - [Usage](#usage)
     - [Log to the Console and a File](#log-to-the-console-and-to-a-file)
 - [Examples](#examples)
-    - [*An instance of logging "Hello, World!"*](#an-instance-of-logging-hello-world-example)
+    - [*An Instance of Logging "Hello, World!"*](#an-instance-of-logging-hello-world-example)
+    - [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example)
 - [API](#api)
     - [The Logger Class](#the-logger-class)
     - [The Formatter Class](#the-formatter-class)
     - [The ConsoleHandler Class](#the-consolehandler-class)
     - [The RotatingFileHandler Class](#the-rotatingfilehandler-class)
-    - [The SocketHandler Class]()
+    - [The SocketHandler Class](#the-sockethandler-class)
 - [Formatting](#formatting)
     - [Example Serializer](#example-serializer)
-- [Using a Socket Handler]
+- [Using a Socket Handler](#using-a-socket-handler)
 - [Hierarchical Logging](#hierarchical-logging)
 - [How-Tos](#how-tos)
-    - [How to Implement a Custom *Streams* Transform.](#how-to-implement-a-custom-streams-transform)
-    - [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream)
+    - [How to implement a custom *Streams* Transform.](#how-to-implement-a-custom-streams-transform)
+    - [How to consume a Readable, Writable, Duplex, or Transform stream.](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream)
 - [Tuning](#tuning)
     - [Tune the highWaterMark.](#tune-the-highwatermark)
     - [Disable the stack trace capture.](#disable-the-stack-trace-capture)
@@ -117,12 +118,15 @@ sayHello();
 ```
 ## Examples
 
-### *An instance of logging "Hello, World!"* <sup><sup>(example)</sup></sup>
+### *An Instance of Logging "Hello, World!"* <sup><sup>(example)</sup></sup>
 Please see the [Usage](#usage) section above or the ["Hello, World!"](https://github.com/faranalytics/streams-logger/tree/main/examples/hello_world) example for a working implementation.
+
+### *A Network Connected **Streams** Logging Graph* <sup><sup>(example)</sup></sup>
+Please see the [*Network Connected **Streams** Logging Graph*](https://github.com/faranalytics/streams-logger/tree/main/examples/network_connected_logging_graph) example that demonstrates how to connect *Streams* logging graphs over the network.
 
 ## API
 
-The *Streams* API provides commonly used logging facilities (i.e., Logger, Formatter, and console and file Handlers).  However, you can [consume any writable Node.js stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream) and add it to your logging graph.
+The *Streams* API provides commonly used logging facilities (i.e., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)).  However, you can [consume any Node.js stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream) and add it to your logging graph.
 
 ### The Logger Class
 
@@ -248,7 +252,7 @@ Set the log level.  Must be one of `SyslogLevel`.
     - space `<string | number>` An optional space specification for `JSON.stringify`. 
 - streamOptions `<stream.DuplexOptions>` Optional options to be passed to the stream.
 
-Use a `SocketHandler` in order to connect *Stream* graphs over the network.  You can specify the expected input and output of the SocketHandler instance using the `InT` and `OutT` type variables.  Please see [Using a Socket Handler] for instructions on how to user a `SocketHandler` in a *Streams* logging graph.
+Use a `SocketHandler` in order to connect *Stream* graphs over the network.  You can specify the expected input and output of the SocketHandler instance using the `InT` and `OutT` type variables.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for instructions on how to use a `SocketHandler` in order to connect *Streams* logging graphs over the network.
 
 ### The LogRecord Class
 
@@ -411,6 +415,7 @@ This is an example of what a logged message will look like using the serializer 
 ```
 ## Using a Socket Handler
 
+*Streams* is built on native Node.js streams.  And, sockets are streams.  Hence, it's natural and easy to connect *Streams* logging graphs over the network.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for instructions on how to use a `SocketHandler` in order to construct network connected *Streams* logging graphs.
 
 ## Hierarchical Logging
 
@@ -435,7 +440,7 @@ streams.root.connect(
 
 ## How-Tos
 
-### How to Implement a Custom *Streams* Transform
+### How to implement a custom *Streams* Transform.
 
 *Streams* is built on the type-safe Graph-Transform graph API framework.  This means that any Graph-Transform `Transform` may be incorporated into your logging graph given that it meets the contextual type requirements.  In order to implement a *Streams* Transform, subclass the `Transform` class, and provide the appropriate *Streams* defaults to the stream constructor.
 
@@ -469,17 +474,18 @@ class BufferToNumber extends Transform<Buffer, number> {
 }
 ```
 
-### How to Consume a Readable, Writable, Duplex, or Transform Node.js Stream
+### How to consume a Readable, Writable, Duplex, or Transform Node.js stream.
 
 You can incorporate any Readable, Writable, Duplex, or Transform stream into your logging graph by passing the stream to the `Transform` constructor.  In this hypothetical example a type-safe `Transform` is constructed from a `net.Socket`.  The type variables are specified as `<Buffer, Buffer>`; the writable side of the stream consumes a `Buffer` and the readable side of the stream produces a `Buffer`. 
 
 ```ts
 import * as net from 'node:net';
+import { once } from 'node:events';
 import { Transform } from 'streams-logger';
 
 net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000);
 const socket = net.createConnection({ port: 3000 });
-await new Promise((r, e) => socket.once('connect', r).once('error', e));
+await once(socket, 'connect');
 const socketHandler = new Transform<Buffer, Buffer>(socket);
 ```
 
@@ -491,7 +497,7 @@ const socketHandler = new Transform<Buffer, Buffer>(socket);
 
 *Streams* Transforms are implemented using the native Node.js stream API.  You have the option of tuning the Node stream `highWaterMark` to your specific needs - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Transforms in the *Streams* library.  Alternatively, you can pass an optional stream configuration argument to each `Transform` individually.
 
-In this example, the `highWaterMark` of ObjectMode streams and Buffer streams artificially set to `1e6` objects and `1e6` bytes.
+In this example, the `highWaterMark` of ObjectMode streams and Buffer streams is artificially set to `1e6` objects and `1e6` bytes.
 
 ```ts
 import * as streams from 'streams-logger';
@@ -516,21 +522,18 @@ You can optionally disconnect your `Logger` from the root `Logger` or a specifie
 
 ```ts
 import * as streams from 'streams-logger';
-
 ...
-
 const log = logger.connect(
     formatter.connect(
         consoleHandler
     )
 );
-
 log.disconnect(streams.root);
 ```
 
 ### Backpressure
 *Streams* respects backpressure by queueing messages while the stream is draining.  You can set a limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.  
 
-For typical logging applications setting a `queueSizeLimit` isn't necessary.  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending nodes in your graph.
+**For typical logging applications setting a `queueSizeLimit` isn't necessary.**  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending nodes in your graph.
 
-If you have a cooperating stream that is backpressuring, you can either set a default `highWaterMark` appropriate to your application or increase the `highWaterMark` on the specific stream in order to mitigate drain events.
+If you have a *cooperating* stream that is backpressuring, you can either set a default `highWaterMark` appropriate to your application or increase the `highWaterMark` on the specific stream in order to mitigate drain events.
