@@ -398,9 +398,9 @@ This is an example of what a logged message will look like using the serializer 
 
 ## Hierarchical Logging
 
-*Streams* supports a hierarchical logger graph.  By default every `Logger` instance is connected to the root `Logger` (`streams-logger.root`).  However, you may optionally designate an antecedent by specifying a `parent` in the `LoggerOptions` of the `Logger` constructor.
+*Streams* supports a hierarchical logger graph.  By default every `Logger` instance is connected to the root `Logger` (`streams-logger.root`).  However, you may optionally specify an antecedent by assigning an instance of `Logger` to the `parent` property in the `LoggerOptions`.  The root `Logger`'s antecedent is `null`.
 
-You may capture logging events from other modules by connecting a `Transform` to the `streams-logger.root` `Logger`. E.g.,
+You may capture logging events from other modules (*and your own*) by connecting a `Transform` to the `streams-logger.root` `Logger`. E.g.,
 
 ```ts
 import * as streams from 'streams-logger';
@@ -408,7 +408,6 @@ import * as streams from 'streams-logger';
 const formatter = new streams.Formatter(async ({ isotime, message, name, level, func, url, line, col }) => (
     `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
 ));
-
 const consoleHandler = new streams.ConsoleHandler({ level: streams.SyslogLevel.DEBUG });
 
 streams.root.connect(
@@ -495,7 +494,7 @@ import * as streams from 'streams-logger';
 streams.Config.setCaptureStackTrace(false);
 ```
 
-### Disconnect from the root.
+### Disconnect from root.
 
 You can optionally disconnect your `Logger` from the root `Logger` or a specified antecedent.  This will prevent message propagation to the root logger, which will provide cost savings and isolation.  E.g.,
 

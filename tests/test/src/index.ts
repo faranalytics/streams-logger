@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as net from 'node:net';
 import * as fs from 'node:fs';
@@ -11,15 +10,19 @@ import { SocketHandler, AnyToTest } from 'streams-logger';
 // streams.Config.setDefaultHighWaterMark(true, 1e6);
 // streams.Config.setDefaultHighWaterMark(false, 1e6);
 
-
-const anyToTest = new AnyToTest<LogRecord<string, SyslogLevelT>>(async (chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void) => {
-    await describe('Test.', async () => {
-        await test('Assert that `chunk` matches `regExp`.', async () => {
-            assert.match(chunk.message, /Hello, World!/);
+const anyToTest = new AnyToTest<LogRecord<string, SyslogLevelT>>(
+    async (
+        chunk: LogRecord<string, SyslogLevelT>,
+        encoding: BufferEncoding,
+        callback: (error?: Error | null | undefined) => void
+    ) => {
+        await describe('Test.', async () => {
+            await test('Assert that `chunk` matches `regExp`.', async () => {
+                assert.match(chunk.message, /Hello, World!/);
+            });
         });
+        callback();
     });
-    callback();
-});
 
 net.createServer((socket: net.Socket) => {
     const socketHandler1 = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>(socket);
@@ -49,9 +52,9 @@ const consoleHandler = new streams.ConsoleHandler({ level: streams.SyslogLevel.D
 
 const log = logger.connect(
     streams_formatter.connect(
-        consoleHandler,
         socketHandler.connect(
-            anyToTest
+            anyToTest,
+            consoleHandler
         )
     )
 );
