@@ -27,9 +27,11 @@ await once(socket, 'connect');
 const socketHandler = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>({ socket });
 
 const logger = new Logger({ level: SyslogLevel.DEBUG, name: 'main' });
-const formatter = new Formatter(async ({ isotime, message, name, level, func, url, line, col }) => (
-    `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
-));
+const formatter = new Formatter({
+    format: async ({ isotime, message, name, level, func, url, line, col }) => (
+        `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
+    )
+});
 const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 
 const log = logger.connect(
