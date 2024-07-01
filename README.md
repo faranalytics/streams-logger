@@ -83,9 +83,11 @@ import { Logger, Formatter, ConsoleHandler, RotatingFileHandler, SyslogLevel } f
 
 ```ts
 const logger = new Logger({ level: SyslogLevel.DEBUG });
-const formatter = new Formatter(async ({ message, name, level, func, url, line, col }) => (
-    `${new Date().toISOString()}:${level}:${func}:${line}:${col}:${message}\n`
-));
+const formatter = new Formatter({
+    format: async ({ isotime, message, name, level, func, url, line, col }) => (
+        `${isotime}:${level}:${func}:${line}:${col}:${message}\n`
+    )
+});
 const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', level: SyslogLevel.DEBUG });
 ```
@@ -395,15 +397,16 @@ In the following code excerpt, a serializer is implemented that logs:
 6. The log message
 7. A newline
 
-The serializer function is passed to the constructor of a `Formatter`.  The `Logger` is connected to the `Formatter`.  The `Formatter` is connected to the `ConsoleHandler`.
+The format function is passed to the constructor of a `Formatter` that will serialize the data contained in the `LogRecord` to a string.  The `Logger` is connected to the `Formatter`.  The `Formatter` is connected to the `ConsoleHandler`.
 
 ```ts
-const serializer = async ({ isotime, level, func, line, col, message }: LogRecord<string, SyslogLevelT>) => {
-    return `${isotime}:${level}:${func}:${line}:${col}:${message}\n`;
-}
 
 const logger = new Logger({ name: 'main', level: SyslogLevel.DEBUG });
-const formatter = new Formatter(serializer);
+const formatter = new Formatter({
+    format: async ({ isotime, message, name, level, func, url, line, col }) => (
+        `${isotime}:${level}:${func}:${line}:${col}:${message}\n`
+    )
+});
 const consoleHandler = new ConsoleHandler();
 
 const log = logger.connect(
@@ -443,9 +446,11 @@ You may capture logging events from other modules (*and your own*) by connecting
 ```ts
 import * as streams from 'streams-logger';
 
-const formatter = new streams.Formatter(async ({ isotime, message, name, level, func, url, line, col }) => (
-    `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
-));
+const formatter = new Formatter({
+    format: async ({ isotime, message, name, level, func, url, line, col }) => (
+        `${isotime}:${level}:${func}:${line}:${col}:${message}\n`
+    )
+});
 const consoleHandler = new streams.ConsoleHandler({ level: streams.SyslogLevel.DEBUG });
 
 streams.root.connect(
