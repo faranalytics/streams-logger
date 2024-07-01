@@ -9,6 +9,7 @@ import { LogRecord, SyslogLevelT, Filter, SocketHandler, AnyToTest } from 'strea
 // streams.Config.setDefaultHighWaterMark(true, 1e6);
 // streams.Config.setDefaultHighWaterMark(false, 1e6);
 
+const MESSAGE = 'Hello, World!'.repeat(3);
 const suite = async (
     chunk: LogRecord<string, SyslogLevelT>,
     encoding: BufferEncoding,
@@ -73,7 +74,7 @@ const log = logger.connect(
 // log.disconnect(streams.root);
 
 function sayHello() {
-    log.warn('Hello, World!');
+    log.warn(MESSAGE);
 }
 
 sayHello();
