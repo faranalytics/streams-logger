@@ -25,13 +25,13 @@ const suite = async (
 const anyToTest = new AnyToTest<LogRecord<string, SyslogLevelT>>({ suite });
 
 net.createServer((socket: net.Socket) => {
-    const socketHandler1 = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>({ socket });
-    const socketHandler2 = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>({ socket });
+    const socketHandler1 = new SocketHandler({ socket });
+    const socketHandler2 = new SocketHandler({ socket });
     socketHandler1.connect(socketHandler2);
 }).listen(3000);
 const socket = net.createConnection({ port: 3000 });
 await new Promise((r, e) => socket.once('connect', r).once('error', e));
-const socketHandler = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>({ socket });
+const socketHandler = new SocketHandler({ socket });
 
 const logger = new streams.Logger({ level: streams.SyslogLevel.DEBUG, name: 'test' });
 const streams_formatter = new streams.Formatter({
