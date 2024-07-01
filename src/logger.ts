@@ -19,7 +19,6 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
     public name: string;
 
     private queueSizeLimit?: number;
-    private parent?: Logger | null;
 
     constructor({ name, level, queueSizeLimit, parent }: LoggerOptions = {}, streamOptions?: stream.TransformOptions) {
         super(new stream.Transform({
@@ -41,10 +40,10 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
         this.name = name ?? '';
         this.queueSizeLimit = queueSizeLimit;
 
-        if (this.parent !== null) {
-            this.parent = parent ?? root;
-            if (this.parent) {
-                this.connect(this.parent);
+        if (parent !== null) {
+            parent = parent ?? root;
+            if (parent) {
+                this.connect(parent);
             }
         }
     }
