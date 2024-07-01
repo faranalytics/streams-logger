@@ -1,6 +1,6 @@
 {
   "name": "streams-logger",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
@@ -35,7 +35,6 @@
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.13.1"
   },
-  "type": "module",
   "keywords": [
     "logger",
     "logging",
