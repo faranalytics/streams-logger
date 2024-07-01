@@ -275,7 +275,9 @@ Use a `SocketHandler` in order to connect *Stream* graphs over the network.  Ple
     - depth `<number>` Used to specify which line of the stack trace to parse.
     - stack `<string>` An optional stack trace.
 
-A `LogRecord` is instantiated each time a message is logged at (or below) the level set on the `Logger`. It contains information about the process and environment at the time of the logging call.  A `LogRecord` is passed as the single argument to a `Formatter` [serialization function](#formatting).
+A `LogRecord` is instantiated each time a message is logged at (or below) the level set on the `Logger`. It contains information about the process and environment at the time of the logging call.  All *Streams* Transforms take a `LogRecord` as an input and emit a `LogRecord` as an output.  
+
+A `LogRecord` is passed as the single argument to the [format function](#formatting) of the `Formatter`; information about the environment can be extracted from the `LogRecord` in order to format the logged message.
 
 *public* **logRecord.message**
 - `<string>`
