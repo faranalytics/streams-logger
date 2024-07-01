@@ -277,7 +277,7 @@ Use a `SocketHandler` in order to connect *Stream* graphs over the network.  Ple
 
 A `LogRecord` is instantiated each time a message is logged at (or below) the level set on the `Logger`. It contains information about the process and environment at the time of the logging call.  All *Streams* Transforms take a `LogRecord` as an input and emit a `LogRecord` as an output.  
 
-The `LogRecord` is passed as the single argument to the [format function](#formatting) of the `Formatter`; information about the environment can be extracted from the `LogRecord` in order to format the logged message.
+The `LogRecord` is passed as the single argument to the [format function](#formatting) of the `Formatter`; information about the environment can be extracted from the `LogRecord` in order to format the logged message.  The following properties will be available to the `format` functioning depending on the setting of `Config.captureStackTrace`.
 
 *public* **logRecord.message**
 - `<string>`
