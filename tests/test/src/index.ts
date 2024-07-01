@@ -15,7 +15,7 @@ const suite = async (
     callback: (error?: Error | null | undefined) => void
 ) => {
     await describe('Test.', async () => {
-        await test('Assert that `chunk` matches `regExp`.', async () => {
+        await test('Assert that `chunk.message` matches `regExp`.', async () => {
             assert.match(chunk.message, /Hello, World!/);
         });
     });
@@ -32,7 +32,6 @@ net.createServer((socket: net.Socket) => {
 const socket = net.createConnection({ port: 3000 });
 await new Promise((r, e) => socket.once('connect', r).once('error', e));
 const socketHandler = new SocketHandler<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>({ socket });
-
 
 const logger = new streams.Logger({ level: streams.SyslogLevel.DEBUG, name: 'test' });
 const streams_formatter = new streams.Formatter({
