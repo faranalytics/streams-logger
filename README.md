@@ -77,7 +77,7 @@ import { Logger, Formatter, ConsoleHandler, RotatingFileHandler, SyslogLevel } f
 #### 2. Create an instance of a Logger, Formatter, ConsoleHandler and RotatingFileHandler.
 
 - The `Logger` is set to log at level `SyslogLevel.DEBUG`.  
-- The `Formatter` constructor is passed a serialization function that will output a string containing the ISO time, the log level, the function name, the line number, the column number, and the log message.
+- The `Formatter` constructor is passed a `format` function that will serialize data contained in the `LogRecord` to a string containing the ISO time, the log level, the function name, the line number, the column number, and the log message.
 - The `ConsoleHandler` will log the message to `process.stdout`.
 - The `RotatingFileHandler` will log the message to the file `./message.log`.
 
@@ -397,7 +397,7 @@ In the following code excerpt, a serializer is implemented that logs:
 6. The log message
 7. A newline
 
-The format function is passed to the constructor of a `Formatter` that will serialize the data contained in the `LogRecord` to a string.  The `Logger` is connected to the `Formatter`.  The `Formatter` is connected to the `ConsoleHandler`.
+The `format` function is passed to the constructor of a `Formatter`, which will serialize the data contained in the `LogRecord` to a string.  The `Logger` is connected to the `Formatter`.  The `Formatter` is connected to the `ConsoleHandler`.
 
 ```ts
 
