@@ -12,23 +12,23 @@ export interface LogRecordOptions<MessageT, LevelT> {
 
 export class LogRecord<MessageT, LevelT> {
     public message: MessageT;
-    public name: string;
+    public name: string = '';
     public level: KeysUppercase<LevelT>;
-    public func?: string;
-    public url?: string;
-    public line?: string;
-    public col?: string;
-    public isotime: string;
-    public pathname?: string;
-    public path?: string;
-    public pathdir?: string;
-    public pathroot?: string;
-    public pathbase?: string;
-    public pathext?: string;
-    public pid: string;
-    public env: NodeJS.ProcessEnv;
-    public threadid: string;
-    public stack: string;
+    public func?: string = '';
+    public url?: string = '';
+    public line?: string = '';
+    public col?: string = '';
+    public isotime: string = '';
+    public pathname?: string = '';
+    public path?: string = '';
+    public pathdir?: string = '';
+    public pathroot?: string = '';
+    public pathbase?: string = '';
+    public pathext?: string = '';
+    public pid: string = '';
+    public env: NodeJS.ProcessEnv = {};
+    public threadid: string = '';
+    public stack: string = '';
 
     private depth: number;
     private regex?: RegExp;

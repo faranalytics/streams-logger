@@ -1,6 +1,6 @@
 import * as stream from 'node:stream';
 import { LogRecord } from './log_record.js';
-import { Transform, $write, $size } from 'graph-transform';
+import { Transform, $write, $size, $rhsConnected } from 'graph-transform';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
 import { KeysUppercase } from './types.js';
 import { QueueSizeLimitExceededError } from './errors.js';
@@ -19,24 +19,31 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
     public name: string;
 
     private queueSizeLimit?: number;
-    private parent?: Logger | null;
 
     constructor({ name, level, queueSizeLimit, parent }: LoggerOptions = {}, streamOptions?: stream.TransformOptions) {
-        super(new stream.PassThrough({
+        super(new stream.Transform({
             ...Config.getDuplexDefaults(true, true),
             ...streamOptions, ...{
                 readableObjectMode: true,
-                writableObjectMode: true
+                writableObjectMode: true,
+                transform: (chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
+                    if (this[$rhsConnected]) {
+                        callback(null, chunk);
+                    }
+                    else {
+                        callback();
+                    }
+                }
             }
         }));
         this.level = level ?? SyslogLevel.WARN;
         this.name = name ?? '';
         this.queueSizeLimit = queueSizeLimit;
 
-        if (this.parent !== null) {
-            this.parent = parent ?? root;
-            if (this.parent) {
-                this.connect(this.parent);
+        if (parent !== null) {
+            parent = parent ?? root;
+            if (parent) {
+                this.connect(parent);
             }
         }
     }
@@ -124,10 +131,3 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
 
 // eslint-disable-next-line prefer-const, no-var
 export var root: Logger = new Logger({ name: 'root', parent: null });
-
-root.connect(new Transform<LogRecord<string, SyslogLevelT>, never>(new stream.Writable({
-    objectMode: true,
-    write(chunk: unknown, encoding: BufferEncoding, callback: stream.TransformCallback) {
-        callback();
-    }
-})));

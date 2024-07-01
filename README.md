@@ -10,10 +10,11 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
 
 ### Features
 
-- Type-safe logging graphs.
-- *Streams* is based on the Node.js stream API; hence, it's ready for your Node.js stream-based resource.
+- A library of commonly used logging components: [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class).
+- A rich selection of [contextual data](#the-logrecord-class) (e.g., module name, function name, line number, etc.) for augmenting log messages.
+- A type-safe graph-like API pattern for constructing sophisticated [logging graphs](#graph-api-pattern).
+- Wraps the Node.js stream API; hence, *Streams* is ready for your Node.js stream-based resource.
 - Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
-- A graph-like API pattern for constructing sophisticated logging pipelines.
 - Error propagation and selective termination of inoperable graph components.
 - Import *Streams* into your Node.js project or take advantage of the TypeScript type definitions. 
 
@@ -56,7 +57,7 @@ npm install streams-logger
 
 ### Transform
 
-Logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed.  Each data transformation step in a *Streams* logging graph is realized through a type-safe `Transform` implementation.  Each `Transform` in a data transformation graph consumes an input, transforms or filters the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Filters, Handlers, etc.) in a *Streams* logging graph *is a* `Transform`.
+Logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed.  Each data transformation step in a *Streams* logging graph is realized through a `Transform` implementation.  Each `Transform` in a data transformation graph consumes an input, transforms or filters the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Filters, Handlers, etc.) in a *Streams* logging graph *is a* `Transform`.
 
 ### Graph API Pattern
 
@@ -275,7 +276,9 @@ Use a `SocketHandler` in order to connect *Stream* graphs over the network.  Ple
     - depth `<number>` Used to specify which line of the stack trace to parse.
     - stack `<string>` An optional stack trace.
 
-A `LogRecord` is instantiated each time a message is logged at (or below) the level set on the `Logger`. It contains information about the process and environment at the time of the logging call.  A `LogRecord` is passed as the single argument to a `Formatter` [serialization function](#formatting).
+A `LogRecord` is instantiated each time a message is logged at (or below) the level set on the `Logger`. It contains information about the process and environment at the time of the logging call.  All *Streams* Transforms take a `LogRecord` as an input and emit a `LogRecord` as an output.  
+
+The `LogRecord` is passed as the single argument to the [format function](#formatting) of the `Formatter`; information about the environment can be extracted from the `LogRecord` in order to format the logged message.  The following properties will be available to the `format` functioning depending on the setting of `Config.captureStackTrace`.
 
 *public* **logRecord.message**
 - `<string>`
@@ -383,7 +386,7 @@ Use `Config.getReadableDefaults` when implementing a [custom *Streams* Transform
 
 ## Formatting
 
-The `Logger` constructs and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the properties of a `LogRecord` *may* undergo formatting and serialization.  This can be accomplished by creating an instance of a `Formatter` and passing in a custom [serialization function](#example-serializer) that accepts a `LogRecord` as its single argument.  The serialization function can construct a log message from the `LogRecord` [properties](#the-logrecord-class).  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
+The `Logger` constructs and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the properties of a `LogRecord` *may* undergo formatting and serialization.  This can be accomplished by passing a `FormatterOptions` object, to the constructor of a `Formatter`, with its `format` property set to a custom [serialization function](#example-serializer) that accepts a `LogRecord` as its single argument.  The serialization function can construct a log message from the `LogRecord` [properties](#the-logrecord-class).  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
 
 ### Example Serializer
 
@@ -427,9 +430,11 @@ This is an example of what a logged message will look like using the serializer 
 ```
 ## Using a Socket Handler
 
-*Streams* is built on native Node.js streams.  Node represents sockets as streams; hence, it's easy and natural to construct network connected logging graphs.  You may choose, for example, to use a `ConsoleHandler` locally and log to a `RotatingFileHandler` on a remote server.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for a working implementation.
+*Streams* uses Node.js streams for message propagation.  Node represents sockets as streams; hence, sockets are a natural extension of a *Streams* logging graph.  For example, you may choose to use a `ConsoleHandler` locally and log to a `RotatingFileHandler` on a remote server.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for a working implementation.
 
 ### Security
+
+The `SocketHandler` options take a socket instance as an argument.  The `net.Server` that produces this socket may be configured however you choose.  You can encrypt the data sent over TCP connections and authenticate clients by configuring your `net.Server` accordingly.
 
 #### Configure your server to use TLS encryption.
 TLS Encryption may be implemented using native Node.js [TLS Encryption](https://nodejs.org/docs/latest-v20.x/api/tls.html).
@@ -439,7 +444,7 @@ TLS Client Certificate Authentication may be implemented using native Node.js [T
 
 ## Hierarchical Logging
 
-*Streams* supports a hierarchical logging.  By default every `Logger` instance is connected to the root `Logger` (`streams-logger.root`).  However, you may optionally specify an antecedent other than `root` by assigning an instance of `Logger` to the `parent` property in the `LoggerOptions`.  The antecedent of the root `Logger` is `null`.
+*Streams* supports hierarchical logging.  By default every `Logger` instance is connected to the root `Logger` (`streams-logger.root`).  However, you may optionally specify an antecedent other than `root` by assigning an instance of `Logger` to the `parent` property in the `LoggerOptions`.  The antecedent of the root `Logger` is `null`.
 
 You may capture logging events from other modules (*and your own*) by connecting a `Transform` to the `streams-logger.root` `Logger`. E.g.,
 
@@ -466,39 +471,54 @@ streams.root.connect(
 
 *Streams* is built on the type-safe Graph-Transform graph API framework.  This means that any Graph-Transform `Transform` may be incorporated into your logging graph given that it meets the contextual type requirements.  In order to implement a *Streams* Transform, subclass the `Transform` class, and provide the appropriate *Streams* defaults to the stream constructor.
 
-For example, the following BufferToNumber `Transform` will convert a Buffer to a number.
+For example, the somewhat contrived `LogRecordToBuffer` implementation transforms the `message` contained in a `LogRecord` to a `Buffer`; the graph pipeline streams the message to `process.stdout`.
 
-> NB: writableObjectMode is set to `false` and readableObjectMode is set to `true`; hence, the Node.js stream implementation will handle the input as a `Buffer` and the output as an `object`. It's important that `writableObjectMode` and `readableObjectMode` accurately reflect the input and output types of your Transform.
+> NB: `writableObjectMode` is set to `true` and `readableObjectMode` is set to `false`; hence, the Node.js stream implementation will handle the input as a `object` and the output as an `Buffer`. It's important that `writableObjectMode` and `readableObjectMode` accurately reflect the input and output types of your Transform.
 
 ```ts
 import * as stream from 'node:stream';
-import { Transform, Config } from 'streams-logger';
+import { Logger, Transform, Config, LogRecord, SyslogLevelT } from 'streams-logger';
 
-class BufferToNumber extends Transform<Buffer, number> {
+export class LogRecordToBuffer extends Transform<LogRecord<string, SyslogLevelT>, Buffer> {
 
     public encoding: NodeJS.BufferEncoding = 'utf-8';
 
-    constructor(transformOptions: stream.TransformOptions) {
+    constructor(streamOptions?: stream.TransformOptions) {
         super(new stream.Transform({
-            ...Config.getDuplexDefaults(false, true),
-            ...transformOptions,
+            ...Config.getDuplexDefaults(true, false),
+            ...streamOptions,
             ...{
-                writableObjectMode: false,
-                readableObjectMode: true,
-                transform: (chunk: Buffer, encoding: BufferEncoding, callback: stream.TransformCallback) => {
-                    const result = parseFloat(chunk.toString(this.encoding));
-                    callback(null, result);
+                writableObjectMode: true,
+                readableObjectMode: false,
+                transform: (chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
+                    callback(null, Buffer.from(chunk.message, this.encoding));
                 }
             }
         })
         );
     }
 }
+
+const log = new Logger();
+const messageToHex = new LogRecordToBuffer();
+const console = new Transform<Buffer, never>(process.stdout)
+
+log.connect(
+    messageToHex.connect(
+        console
+    )
+);
+
+log.warn('Hello, World!\n');
+```
+#### Output
+```bash
+Hello, World!
 ```
 
 ### How to consume a Readable, Writable, Duplex, or Transform Node.js stream.
 
-You can incorporate any Readable, Writable, Duplex, or Transform stream into your logging graph by passing the stream to the `Transform` constructor.  In this hypothetical example a type-safe `Transform` is constructed from a `net.Socket`.  The type variables are specified as `<Buffer, Buffer>`; the writable side of the stream consumes a `Buffer` and the readable side of the stream produces a `Buffer`. 
+You can incorporate any Readable, Writable, Duplex, or Transform stream into your logging graph, given that it meets the contextual type requirements, by passing the stream to the `Transform` constructor.  In this hypothetical example a type-safe `Transform` is constructed from a `net.Socket`.  The type variables are specified as `<Buffer, Buffer>`; the writable side of the stream consumes a `Buffer` and the readable side of the stream produces a `Buffer`. 
 
 ```ts
 import * as net from 'node:net';
@@ -553,7 +573,7 @@ const log = logger.connect(
 log.disconnect(streams.root);
 ```
 
-### Backpressure
+## Backpressure
 *Streams* respects backpressure by queueing messages while the stream is draining.  You can set a limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.  
 
 **For typical logging applications setting a `queueSizeLimit` isn't necessary.**  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending nodes in your graph.

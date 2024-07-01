@@ -1,17 +1,23 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as net from 'node:net';
 import { once } from 'node:events';
-import { Logger, Formatter, ConsoleHandler, SocketHandler, SyslogLevel } from 'streams-logger';
+import { Logger, Formatter, ConsoleHandler, SocketHandler, SyslogLevel, RotatingFileHandler } from 'streams-logger';
 
+const serverRotatingFileHandler = new RotatingFileHandler({ path: 'server.log' });
 net.createServer((socket: net.Socket) => {
-    const socketHandlerIn = new SocketHandler({ socket });
-    const socketHandlerOut = new SocketHandler({ socket });
-    socketHandlerIn.connect(socketHandlerOut);
+    const serverFormatter = new Formatter({ format: async ({ message }) => (`${new Date().toISOString()}:${message}`) });
+    const socketHandler = new SocketHandler({ socket });
+    socketHandler.connect(
+        serverFormatter.connect(
+            serverRotatingFileHandler,
+            socketHandler
+        )
+    );
 }).listen(3000);
+
 const socket = net.createConnection({ port: 3000 });
 await once(socket, 'connect');
 const socketHandler = new SocketHandler({ socket });
-
 const logger = new Logger({ level: SyslogLevel.DEBUG, name: 'main' });
 const formatter = new Formatter({
     format: async ({ isotime, message, name, level, func, url, line, col }) => (
@@ -22,10 +28,13 @@ const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 
 const log = logger.connect(
     formatter.connect(
+        consoleHandler,
         socketHandler.connect(
             consoleHandler
         )
     )
 );
 
-log.warn('Hello, World!');
+(function sayHello() {
+    log.warn('Hello, World!');
+})();

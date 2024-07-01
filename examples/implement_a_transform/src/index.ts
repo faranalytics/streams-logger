@@ -1,22 +1,35 @@
 import * as stream from 'node:stream';
-import { Transform, Config } from 'streams-logger';
+import { Logger, Transform, Config, LogRecord, SyslogLevelT } from 'streams-logger';
 
-export class BufferToNumber extends Transform<Buffer, number> {
+export class LogRecordToBuffer extends Transform<LogRecord<string, SyslogLevelT>, Buffer> {
 
     public encoding: NodeJS.BufferEncoding = 'utf-8';
 
-    constructor() {
+    constructor(streamOptions?: stream.TransformOptions) {
         super(new stream.Transform({
-            ...Config.getDuplexDefaults(false, true),
+            ...Config.getDuplexDefaults(true, false),
+            ...streamOptions,
             ...{
-                writableObjectMode: false,
-                readableObjectMode: true,
-                transform: (chunk: Buffer, encoding: BufferEncoding, callback: stream.TransformCallback) => {
-                    const result = parseFloat(chunk.toString(this.encoding));
-                    callback(null, result);
+                writableObjectMode: true,
+                readableObjectMode: false,
+                transform: (chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
+                    callback(null, Buffer.from(chunk.message, this.encoding));
                 }
             }
         })
         );
     }
 }
+
+const log = new Logger();
+const messageToHex = new LogRecordToBuffer();
+const console = new Transform<Buffer, never>(process.stdout)
+
+log.connect(
+    messageToHex.connect(
+        console
+    )
+);
+
+log.warn('Hello, World!\n');
+
