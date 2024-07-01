@@ -255,7 +255,7 @@ Set the log level.  Must be one of `SyslogLevel`.
 
 ### The SocketHandler Class
 
-**new streams-logger.SocketHandler\<InT, OutT\>(options, streamOptions)**
+**new streams-logger.SocketHandler(options, streamOptions)**
 - options `<SocketHandlerOptions>`
     - socket `<Socket>` 
     - reviver `<(this: unknown, key: string, value: unknown) => unknown>` An optional reviver for `JSON.parse`.
@@ -263,7 +263,7 @@ Set the log level.  Must be one of `SyslogLevel`.
     - space `<string | number>` An optional space specification for `JSON.stringify`. 
 - streamOptions `<stream.DuplexOptions>` Optional options to be passed to the stream.
 
-Use a `SocketHandler` in order to connect *Stream* graphs over the network.  You can specify the expected input and output of the SocketHandler instance using the `InT` and `OutT` type variables.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for instructions on how to use a `SocketHandler` in order to connect *Streams* logging graphs over the network.
+Use a `SocketHandler` in order to connect *Stream* graphs over the network.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for instructions on how to use a `SocketHandler` in order to connect *Streams* logging graphs over the network.
 
 ### The LogRecord Class
 

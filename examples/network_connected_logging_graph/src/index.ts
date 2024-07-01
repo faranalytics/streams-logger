@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as net from 'node:net';
 import { once } from 'node:events';
-import { Logger, Formatter, ConsoleHandler, SocketHandler, LogRecord, SyslogLevelT, SyslogLevel } from 'streams-logger';
+import { Logger, Formatter, ConsoleHandler, SocketHandler, SyslogLevel } from 'streams-logger';
 
 net.createServer((socket: net.Socket) => {
     const socketHandlerIn = new SocketHandler({ socket });
