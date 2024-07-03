@@ -3,7 +3,7 @@ import * as pth from 'node:path';
 import * as fsp from 'node:fs/promises';
 import * as s from 'node:stream';
 import { LogRecord } from './log_record.js';
-import { $stream, Transform } from 'graph-transform';
+import { Node, $stream } from '@farar/nodes';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
 import { Config } from "./index.js";
 
@@ -107,7 +107,7 @@ export interface RotatingFileHandlerOptions {
     level?: SyslogLevel;
 }
 
-export class RotatingFileHandler extends Transform<LogRecord<string, SyslogLevelT>, never> {
+export class RotatingFileHandler extends Node<LogRecord<string, SyslogLevelT>, never> {
 
     constructor(options: RotatingFileHandlerOptions, streamOptions?: s.WritableOptions) {
         super(new RotatingFileHandlerWritable(options, streamOptions));

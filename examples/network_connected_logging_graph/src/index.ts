@@ -4,12 +4,12 @@ import { once } from 'node:events';
 import { Logger, Formatter, ConsoleHandler, SocketHandler, SyslogLevel, RotatingFileHandler } from 'streams-logger';
 
 const serverRotatingFileHandler = new RotatingFileHandler({ path: 'server.log' });
+const serverFormatter = new Formatter({ format: async ({ message }) => (`${new Date().toISOString()}:${message}`) });
+const formatterNode = serverFormatter.connect(serverRotatingFileHandler);
 net.createServer((socket: net.Socket) => {
-    const serverFormatter = new Formatter({ format: async ({ message }) => (`${new Date().toISOString()}:${message}`) });
     const socketHandler = new SocketHandler({ socket });
     socketHandler.connect(
-        serverFormatter.connect(
-            serverRotatingFileHandler,
+        formatterNode.connect(
             socketHandler
         )
     );

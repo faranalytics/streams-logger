@@ -1,6 +1,6 @@
 
 import * as s from 'node:stream';
-import { Transform, $stream } from 'graph-transform';
+import { Node, $stream } from '@farar/nodes';
 import { LogRecord } from './log_record.js';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
 import { Config } from './index.js';
@@ -38,7 +38,7 @@ export interface ConsoleHandlerOptions {
     level: SyslogLevel;
 }
 
-export class ConsoleHandler extends Transform<LogRecord<string, SyslogLevelT>, string> {
+export class ConsoleHandler extends Node<LogRecord<string, SyslogLevelT>, string> {
 
     constructor({ level }: ConsoleHandlerOptions = { level: SyslogLevel.WARN }, transformOptions?: s.TransformOptions) {
         super(new ConsoleHandlerTransform({ level }, transformOptions));

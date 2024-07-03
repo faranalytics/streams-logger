@@ -1,6 +1,6 @@
 import { config as Config } from './config.js';
 import { LogRecord } from './log_record.js';
-import { Transform, BufferToString, $write, $size, ObjectToBuffer, BufferToObject, AnyToTest, AnyToVoid } from 'graph-transform';
+import { Node, BufferToString, $write, ObjectToBuffer, BufferToObject, AnyToTest, AnyToVoid } from '@farar/nodes';
 import { Logger, root } from './logger.js';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
 import { Formatter } from './formatter.js';
@@ -10,7 +10,7 @@ import { Filter } from './filter.js';
 import { SocketHandler } from './socket_handler.js';
 
 export {
-    Transform,
+    Node,
     LogRecord,
     Logger,
     SyslogLevel,
@@ -28,5 +28,4 @@ export {
     root,
     Config,
     $write,
-    $size
 };

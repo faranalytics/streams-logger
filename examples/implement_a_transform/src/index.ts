@@ -1,7 +1,7 @@
 import * as stream from 'node:stream';
-import { Logger, Transform, Config, LogRecord, SyslogLevelT } from 'streams-logger';
+import { Logger, Node, Config, LogRecord, SyslogLevelT } from 'streams-logger';
 
-export class LogRecordToBuffer extends Transform<LogRecord<string, SyslogLevelT>, Buffer> {
+export class LogRecordToBuffer extends Node<LogRecord<string, SyslogLevelT>, Buffer> {
 
     public encoding: NodeJS.BufferEncoding = 'utf-8';
 
@@ -23,7 +23,7 @@ export class LogRecordToBuffer extends Transform<LogRecord<string, SyslogLevelT>
 
 const log = new Logger();
 const messageToHex = new LogRecordToBuffer();
-const console = new Transform<Buffer, never>(process.stdout)
+const console = new Node<Buffer, never>(process.stdout)
 
 log.connect(
     messageToHex.connect(

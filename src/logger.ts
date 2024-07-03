@@ -1,6 +1,6 @@
 import * as stream from 'node:stream';
 import { LogRecord } from './log_record.js';
-import { Transform, $write, $size, $rhsConnected } from 'graph-transform';
+import { Node, $write, $ins } from '@farar/nodes';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
 import { KeysUppercase } from './types.js';
 import { QueueSizeLimitExceededError } from './errors.js';
@@ -8,26 +8,27 @@ import { Config } from './index.js';
 
 export interface LoggerOptions {
     level?: SyslogLevel;
-    name?: string;
+    name: string;
     queueSizeLimit?: number;
     parent?: Logger | null;
+    captureStackTrace?: boolean;
 }
 
-export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>> {
+export class Logger extends Node<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>> {
 
     public level: SyslogLevel;
     public name: string;
+    public captureStackTrace: boolean;
+    public queueSizeLimit?: number;
 
-    private queueSizeLimit?: number;
-
-    constructor({ name, level, queueSizeLimit, parent }: LoggerOptions = {}, streamOptions?: stream.TransformOptions) {
+    constructor({ name = '', level, queueSizeLimit, parent, captureStackTrace = true}: LoggerOptions, streamOptions?: stream.TransformOptions) {
         super(new stream.Transform({
             ...Config.getDuplexDefaults(true, true),
             ...streamOptions, ...{
                 readableObjectMode: true,
                 writableObjectMode: true,
                 transform: (chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
-                    if (this[$rhsConnected]) {
+                    if (this[$ins]) {
                         callback(null, chunk);
                     }
                     else {
@@ -39,6 +40,7 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
         this.level = level ?? SyslogLevel.WARN;
         this.name = name ?? '';
         this.queueSizeLimit = queueSizeLimit;
+        this.captureStackTrace = captureStackTrace;
 
         if (parent !== null) {
             parent = parent ?? root;
@@ -48,10 +50,10 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
         }
     }
 
-    protected log(message: string, level: SyslogLevel) {
+    protected async log(message: string, level: SyslogLevel) {
         try {
             const targetObject = { stack: '' };
-            if (Config.captureStackTrace) {
+            if (Config.captureStackTrace && this.captureStackTrace) {
                 Error.captureStackTrace(targetObject, this.log);
             }
             const data = new LogRecord<string, SyslogLevelT>({
@@ -61,10 +63,10 @@ export class Logger extends Transform<LogRecord<string, SyslogLevelT>, LogRecord
                 level: <KeysUppercase<SyslogLevelT>>SyslogLevel[level],
                 stack: targetObject.stack
             });
-            super[$write](data);
-            if (this.queueSizeLimit && this[$size] > this.queueSizeLimit) {
-                throw new QueueSizeLimitExceededError(`The queue size limit, ${this.queueSizeLimit}, is exceeded.`);
-            }
+            await super[$write](data);
+            // if (this.queueSizeLimit && this[$size] > this.queueSizeLimit) {
+            //     throw new QueueSizeLimitExceededError(`The queue size limit, ${this.queueSizeLimit}, is exceeded.`);
+            // }
         }
         catch (err) {
             if (err instanceof QueueSizeLimitExceededError) {
