@@ -7,15 +7,15 @@ import { Config } from './index.js';
 
 export const $level = Symbol('level');
 
-export interface ConsoleHandlerTransformOtions {
+export interface ConsoleHandlerTransformOptions<T> {
     level: SyslogLevel;
 }
 
-export class ConsoleHandlerTransform extends s.Transform {
+export class ConsoleHandlerTransform<T> extends s.Transform {
 
     public [$level]: SyslogLevel;
 
-    constructor({ level }: ConsoleHandlerTransformOtions, streamOptions?: s.TransformOptions) {
+    constructor({ level }: ConsoleHandlerOptions<T>, streamOptions?: s.TransformOptions) {
         super({
             ...Config.getDuplexDefaults(true, true),
             ...streamOptions, 
@@ -24,7 +24,7 @@ export class ConsoleHandlerTransform extends s.Transform {
         this[$level] = level;
     }
 
-    _transform(chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: s.TransformCallback): void {
+    _transform(chunk: LogRecord<T, SyslogLevelT>, encoding: BufferEncoding, callback: s.TransformCallback): void {
         if (SyslogLevel[chunk.level] <= this[$level]) {
             callback(null, chunk.message);
         }
@@ -34,14 +34,14 @@ export class ConsoleHandlerTransform extends s.Transform {
     }
 }
 
-export interface ConsoleHandlerOptions {
+export interface ConsoleHandlerOptions<T> {
     level: SyslogLevel;
 }
 
-export class ConsoleHandler extends Node<LogRecord<string, SyslogLevelT>, string> {
+export class ConsoleHandler<T> extends Node<LogRecord<T, SyslogLevelT>, string> {
 
-    constructor({ level }: ConsoleHandlerOptions = { level: SyslogLevel.WARN }, transformOptions?: s.TransformOptions) {
-        super(new ConsoleHandlerTransform({ level }, transformOptions));
+    constructor({ level }: ConsoleHandlerOptions<T> = { level: SyslogLevel.WARN }, transformOptions?: s.TransformOptions) {
+        super(new ConsoleHandlerTransform<T>({ level }, transformOptions));
         this[$stream].pipe(process.stdout);
     }
 

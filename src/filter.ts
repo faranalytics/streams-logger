@@ -4,19 +4,19 @@ import { Node } from '@farar/nodes';
 import { SyslogLevelT } from './syslog.js';
 import { Config } from './index.js';
 
-export interface FilterOptions {
-    filter: (record: LogRecord<string, SyslogLevelT>) => Promise<boolean> | boolean
+export interface FilterOptions<T> {
+    filter: (record: LogRecord<T, SyslogLevelT>) => Promise<boolean> | boolean
 }
 
-export class Filter extends Node<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>> {
+export class Filter<T> extends Node<LogRecord<T, SyslogLevelT>, LogRecord<T, SyslogLevelT>> {
 
-    constructor({ filter }: FilterOptions, streamOptions?: s.TransformOptions) {
+    constructor({ filter }: FilterOptions<T>, streamOptions?: s.TransformOptions) {
         super(new s.Transform({
             ...Config.getDuplexDefaults(true, true),
             ...streamOptions, ...{
                 writableObjectMode: true,
                 readableObjectMode: true,
-                transform: async (chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: s.TransformCallback) => {
+                transform: async (chunk: LogRecord<T, SyslogLevelT>, encoding: BufferEncoding, callback: s.TransformCallback) => {
                     if (await filter(chunk)) {
                         callback(null, chunk);
                     }

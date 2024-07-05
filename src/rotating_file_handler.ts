@@ -16,7 +16,7 @@ export const $mode = Symbol('mode');
 export const $mutex = Symbol('mutex');
 
 
-export class RotatingFileHandlerWritable extends s.Writable {
+export class RotatingFileHandlerWritable<T> extends s.Writable {
 
     public [$level]: SyslogLevel;
     public [$path]: string;
@@ -41,12 +41,20 @@ export class RotatingFileHandlerWritable extends s.Writable {
         this[$level] = level;
     }
 
-    async _write(chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): Promise<void> {
+    async _write(chunk: LogRecord<T, SyslogLevelT>, encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): Promise<void> {
         try {
+            let serialized: string;
+            if (typeof chunk.message != 'string') {
+                serialized = JSON.stringify(chunk.message);
+            }
+            else {
+                serialized = chunk.message;
+            }
+
             if (SyslogLevel[chunk.level] <= this[$level]) {
                 await (this[$mutex] = (async () => {
                     await this[$mutex].catch((err) => console.error(err));
-                    const message = Buffer.from(chunk.message, this[$encoding]);
+                    const message = Buffer.from(serialized, this[$encoding]);
                     try {
                         const stats = await fsp.stat(this[$path]);
                         if (stats.isFile()) {
@@ -107,10 +115,10 @@ export interface RotatingFileHandlerOptions {
     level?: SyslogLevel;
 }
 
-export class RotatingFileHandler extends Node<LogRecord<string, SyslogLevelT>, never> {
+export class RotatingFileHandler<T> extends Node<LogRecord<T, SyslogLevelT>, never> {
 
     constructor(options: RotatingFileHandlerOptions, streamOptions?: s.WritableOptions) {
-        super(new RotatingFileHandlerWritable(options, streamOptions));
+        super(new RotatingFileHandlerWritable<T>(options, streamOptions));
     }
 
     public setLevel(level: SyslogLevel) {

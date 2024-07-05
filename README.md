@@ -56,7 +56,7 @@ npm install streams-logger
 
 ## Concepts
 
-### Data Transformation Node
+### Node
 
 Logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed.  Each data transformation step in a *Streams* logging graph is realized through a `Node` implementation.  Each `Node` in a data transformation graph consumes an input, transforms or filters the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Filters, Handlers, etc.) in a *Streams* logging graph *is a* `Node`.
 
@@ -84,14 +84,14 @@ import { Logger, Formatter, ConsoleHandler, RotatingFileHandler, SyslogLevel } f
 - The `RotatingFileHandler` will log the message to the file `./message.log`.
 
 ```ts
-const logger = new Logger({ level: SyslogLevel.DEBUG });
-const formatter = new Formatter({
+const logger = new Logger<string>({ level: SyslogLevel.DEBUG });
+const formatter = new Formatter<string>({
     format: async ({ isotime, message, name, level, func, url, line, col }) => (
         `${isotime}:${level}:${func}:${line}:${col}:${message}\n`
     )
 });
-const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
-const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', level: SyslogLevel.DEBUG });
+const consoleHandler = new ConsoleHandler<string>({ level: SyslogLevel.DEBUG });
+const rotatingFileHandler = new RotatingFileHandler<string>({ path: './message.log', level: SyslogLevel.DEBUG });
 ```
 
 #### 3. Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
@@ -135,12 +135,13 @@ The *Streams* API provides commonly used logging facilities (i.e., the [Logger](
 
 ### The Logger Class
 
-**new streams-logger.Logger(options, streamOptions)**
+**new streams-logger.Logger\<MessageT\>(options, streamOptions)**
+- `<MessageT>` The type of the logged message. 
 - options `<LoggerOptions>`
     - level `<SyslogLevel>` The syslog compliant logger level.
     - name `<string>` An optional name for the `Logger`.
     - parent `<Logger>` An optional parent `Logger`.  **Default:** `streams-logger.root`
-    - queueSizeLimit `<number>` Optionally specify a limit on how large (i.e., the number of logged messages) the message queue may grow while waiting for a stream to drain.
+    - queueSizeLimit `<number>` Optionally specify a limit on the number of log messages that may queue while waiting for a stream to drain.  See [Backpressure](#backpressure).
     - captureStackTrace `<boolean>` Optionally specify if stack trace capturing is enabled.  This setting can be overriden by the *Streams* configuration setting `Config.captureStackTrace`. **Default:** `true`
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
@@ -208,7 +209,8 @@ Set the log level.  Must be one of `SyslogLevel`.
 
 ### The Formatter Class
 
-**new streams-logger.Formatter(options, streamOptions)**
+**new streams-logger.Formatter\<MessageT\>(options, streamOptions)**
+- `<MessageT>` The type of the logged message. 
 - options
     - format `(record: LogRecord<string, SyslogLevelT>): Promise<string> | string` A function that will format and serialize the `LogRecord<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a serializer.
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
@@ -217,15 +219,16 @@ Use a `Formatter` in order to specify how your log message will be formatted pri
 
 ### The Filter Class
 
-**new streams-logger.Filter(options, streamOptions)**
+**new streams-logger.Filter\<MessageT\>(options, streamOptions)**
+- `<MessageT>` The type of the logged message. 
 - options
     - filter `(record: LogRecord<string, SyslogLevelT>): Promise<boolean> | boolean` A function that will filter the `LogRecord<string, SyslogLevelT>`.  Return `true` in order to permit the message through; otherwise, return `false`.
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
 ### The ConsoleHandler Class
 
-**new streams-logger.ConsoleHandler(options, streamOptions)**
-
+**new streams-logger.ConsoleHandler\<MessageT\>(options, streamOptions)**
+- `<MessageT>` The type of the logged message. 
 - options `<ConsoleHandlerTransformOtions>`
     - level `<SyslogLevel>` An optional log level.  **Default**: `SyslogLevel.WARN`
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
@@ -239,7 +242,8 @@ Set the log level.  Must be one of `SyslogLevel`.
 
 ### The RotatingFileHandler Class
 
-**new streams-logger.RotatingFileHandler(options, streamOptions)**
+**new streams-logger.RotatingFileHandler\<MessageT\>(options, streamOptions)**
+- `<MessageT>` The type of the logged message. 
 - options `<RotatingFileHandlerOptions>`
     - path `<string>` 
     - rotations `<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10>` An optional number of log rotations.
@@ -258,7 +262,8 @@ Set the log level.  Must be one of `SyslogLevel`.
 
 ### The SocketHandler Class
 
-**new streams-logger.SocketHandler(options, streamOptions)**
+**new streams-logger.SocketHandler\<MessageT\>(options, streamOptions)**
+- `<MessageT>` The type of the logged message. 
 - options `<SocketHandlerOptions>`
     - socket `<Socket>` 
     - reviver `<(this: unknown, key: string, value: unknown) => unknown>` An optional reviver for `JSON.parse`.
@@ -270,7 +275,9 @@ Use a `SocketHandler` in order to connect *Stream* graphs over the network.  Ple
 
 ### The LogRecord Class
 
-**new streams-logger.LogRecord(options)**
+**new streams-logger.LogRecord\<MessageT, SyslogLevelT\>(options)**
+- `<MessageT>` The type of the logged message.
+- `<SyslogLevelT>` The type of the Level enum.
 - options `<LoggerOptions>`
     - message `<string>` The logged message.
     - name `<string>` The name of the `Logger`.
@@ -406,13 +413,13 @@ The `format` function is passed to the constructor of a `Formatter`, which will 
 
 ```ts
 
-const logger = new Logger({ name: 'main', level: SyslogLevel.DEBUG });
-const formatter = new Formatter({
+const logger = new Logger<string>({ name: 'main', level: SyslogLevel.DEBUG });
+const formatter = new Formatter<string>({
     format: async ({ isotime, message, name, level, func, url, line, col }) => (
         `${isotime}:${level}:${func}:${line}:${col}:${message}\n`
     )
 });
-const consoleHandler = new ConsoleHandler();
+const consoleHandler = new ConsoleHandler<string>();
 
 const log = logger.connect(
     formatter.connect(
@@ -453,12 +460,12 @@ You may capture logging events from other modules (*and your own*) by connecting
 ```ts
 import * as streams from 'streams-logger';
 
-const formatter = new Formatter({
+const formatter = new Formatter<string>({
     format: async ({ isotime, message, name, level, func, url, line, col }) => (
         `${isotime}:${level}:${func}:${line}:${col}:${message}\n`
     )
 });
-const consoleHandler = new streams.ConsoleHandler({ level: streams.SyslogLevel.DEBUG });
+const consoleHandler = new streams.ConsoleHandler<string>({ level: streams.SyslogLevel.DEBUG });
 
 streams.root.connect(
     formatter.connect(
@@ -501,7 +508,7 @@ export class LogRecordToBuffer extends Node<LogRecord<string, SyslogLevelT>, Buf
     }
 }
 
-const log = new Logger();
+const log = new Logger<string>();
 const messageToHex = new LogRecordToBuffer();
 const console = new Node<Buffer, never>(process.stdout)
 
@@ -580,6 +587,6 @@ log.disconnect(streams.root);
 ## Backpressure
 *Streams* respects backpressure by queueing messages while the stream is draining.  You can set a limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.  
 
-**For typical logging applications setting a `queueSizeLimit` isn't necessary.**  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending @farar/nodes in your graph.
+**For typical logging applications setting a `queueSizeLimit` isn't necessary.**  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending Nodes in your graph.
 
 If you have a *cooperating* stream that is backpressuring, you can either set a default `highWaterMark` appropriate to your application or increase the `highWaterMark` on the specific stream in order to mitigate drain events.

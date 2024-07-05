@@ -1,6 +1,6 @@
 import { config as Config } from './config.js';
 import { LogRecord } from './log_record.js';
-import { Node, BufferToString, $write, ObjectToBuffer, BufferToObject, AnyToTest, AnyToVoid } from '@farar/nodes';
+import { Node, BufferToString, ObjectToBuffer, BufferToObject, AnyToTest, AnyToVoid, $write, $size} from '@farar/nodes';
 import { Logger, root } from './logger.js';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
 import { Formatter } from './formatter.js';
@@ -28,4 +28,5 @@ export {
     root,
     Config,
     $write,
+    $size
 };

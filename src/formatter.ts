@@ -4,19 +4,19 @@ import { Node } from '@farar/nodes';
 import { SyslogLevelT } from './syslog.js';
 import { Config } from './index.js';
 
-export interface FormatterOptions {
-    format: (record: LogRecord<string, SyslogLevelT>) => Promise<string> | string
+export interface FormatterOptions<T> {
+    format: (record: LogRecord<T, SyslogLevelT>) => Promise<T> | T
 }
 
-export class Formatter extends Node<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>> {
+export class Formatter<T> extends Node<LogRecord<T, SyslogLevelT>, LogRecord<T, SyslogLevelT>> {
 
-    constructor({ format }: FormatterOptions, streamOptions?: s.TransformOptions) {
+    constructor({ format }: FormatterOptions<T>, streamOptions?: s.TransformOptions) {
         super(new s.Transform({
             ...Config.getDuplexDefaults(true, true),
             ...streamOptions, ...{
                 writableObjectMode: true,
                 readableObjectMode: true,
-                transform: async (chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: s.TransformCallback) => {
+                transform: async (chunk: LogRecord<T, SyslogLevelT>, encoding: BufferEncoding, callback: s.TransformCallback) => {
                     chunk.message = await format(chunk);
                     callback(null, chunk);
                 }
