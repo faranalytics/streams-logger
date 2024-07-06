@@ -52,6 +52,7 @@ export class Logger<MessageT = string> extends Node<LogRecord<MessageT, SyslogLe
 
     protected log(message: MessageT, level: SyslogLevel): void {
         try {
+            const isoTime = new Date().toISOString();
             const targetObject = { stack: '' };
             if (Config.captureStackTrace && this.captureStackTrace) {
                 Error.captureStackTrace(targetObject, this.log);
@@ -61,7 +62,8 @@ export class Logger<MessageT = string> extends Node<LogRecord<MessageT, SyslogLe
                 name: this.name,
                 depth: 2,
                 level: SyslogLevel[level] as KeysUppercase<SyslogLevelT>,
-                stack: targetObject.stack
+                stack: targetObject.stack,
+                isotime: isoTime
             });
             super[$write](data).catch(() => { /* */ });
             if (this.queueSizeLimit && this[$size] > this.queueSizeLimit) {

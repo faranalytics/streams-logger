@@ -50,7 +50,7 @@ export class RotatingFileHandlerWritable<MessageT> extends stream.Writable {
             else {
                 message = JSON.stringify(chunk.message);
             }
-            if (SyslogLevel[chunk.level] <= this[$level]) {
+            if (chunk.level && SyslogLevel[chunk.level] <= this[$level]) {
                 await (this[$mutex] = (async () => {
                     await this[$mutex].catch((err) => console.error(err));
                     try {

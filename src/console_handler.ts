@@ -27,7 +27,7 @@ export class ConsoleHandlerTransform<MessageT> extends stream.Writable {
 
     async _write(chunk: LogRecord<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): Promise<void> {
         try {
-            if (SyslogLevel[chunk.level] <= this[$level] && (typeof chunk.message == 'string' || chunk.message instanceof Buffer)) {
+            if (chunk.level && SyslogLevel[chunk.level] <= this[$level] && (typeof chunk.message == 'string' || chunk.message instanceof Buffer)) {
                 if (!process.stdout.write(chunk.message)) {
                     await once(process.stdout, 'drain');
                 }

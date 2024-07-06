@@ -17,8 +17,26 @@ export class Formatter<MessageInT = string, MessageOutT = string> extends Node<L
                 writableObjectMode: true,
                 readableObjectMode: true,
                 transform: async (chunk: LogRecord<MessageInT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
-                    const message = { ...chunk, ...{ message: await format(chunk) } };
-                    callback(null, message);
+                    const logRecord = new LogRecord<MessageOutT, SyslogLevelT>({
+                        message: await format(chunk),
+                        name: chunk.name,
+                        level: chunk.level,
+                        func: chunk.func,
+                        url: chunk.url,
+                        line: chunk.line,
+                        col: chunk.col,
+                        isotime: chunk.isotime,
+                        pathname: chunk.pathname,
+                        path: chunk.path,
+                        pathdir: chunk.pathdir,
+                        pathroot: chunk.pathroot,
+                        pathbase: chunk.pathbase,
+                        pathext: chunk.pathext,
+                        pid: chunk.pid,
+                        env: chunk.env,
+                        threadid: chunk.threadid
+                    });
+                    callback(null, logRecord);
                 }
             }
         }));
