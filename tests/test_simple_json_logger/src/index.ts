@@ -1,8 +1,6 @@
 import { Logger, Formatter, ConsoleHandler, SyslogLevel } from 'streams-logger';
 
-interface Message {
-    [key: string]: string | number;
-}
+type Message = Record<string, string | number>;
 
 const logger = new Logger<Message>({ level: SyslogLevel.DEBUG });
 const formatter = new Formatter<Message, string>({

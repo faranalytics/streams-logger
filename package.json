@@ -1,6 +1,6 @@
 {
   "name": "streams-logger",
-  "version": "0.0.37",
+  "version": "0.0.38",
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
@@ -28,12 +28,12 @@
     "@farar/nodes": "~0.0.4"
   },
   "devDependencies": {
-    "@eslint/js": "^9.5.0",
+    "@eslint/js": "^9.6.0",
     "@types/eslint__js": "^8.42.3",
     "@types/node": "^20.11.28",
     "eslint": "^8.57.0",
-    "typescript": "^5.4.5",
-    "typescript-eslint": "^7.13.1"
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^7.15.0"
   },
   "keywords": [
     "logger",

@@ -60,10 +60,10 @@ export class Logger<MessageT = string> extends Node<LogRecord<MessageT, SyslogLe
                 message,
                 name: this.name,
                 depth: 2,
-                level: <KeysUppercase<SyslogLevelT>>SyslogLevel[level],
+                level: SyslogLevel[level] as KeysUppercase<SyslogLevelT>,
                 stack: targetObject.stack
             });
-            super[$write](data).catch(() => { });
+            super[$write](data).catch(() => { /* */ });
             if (this.queueSizeLimit && this[$size] > this.queueSizeLimit) {
                 throw new QueueSizeLimitExceededError(`The queue size limit, ${this.queueSizeLimit}, is exceeded.`);
             }

@@ -220,12 +220,12 @@ Set the log level.  Must be one of `SyslogLevel`.
 
 Use a `Formatter` in order to specify how your log message will be formatted prior to forwarding it to the Handler(s).  An instance of [`LogRecord`](#the-logrecord-class) is created that contains information about the environment at the time of the logging call.  The `LogRecord` is passed as the single argument to `format` function.
 
-*public* **logger.connect(...nodes)**
+*public* **formatter.connect(...nodes)**
 - nodes `<Array<Node<LogRecord<MessageOutT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
 
 Returns: `<Logger<LogRecord<MessageInT, SyslogLevelT>, LogRecord<MessageOutT, SyslogLevelT>>`
 
-*public* **logger.disconnect(...nodes)**
+*public* **formatter.disconnect(...nodes)**
 - nodes `<Array<Node<LogRecord<MessageOutT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
 
 Returns: `<Logger<LogRecord<MessageInT, SyslogLevelT>, LogRecord<MessageOutT, SyslogLevelT>>`
@@ -238,12 +238,12 @@ Returns: `<Logger<LogRecord<MessageInT, SyslogLevelT>, LogRecord<MessageOutT, Sy
     - filter `(record: LogRecord<string, SyslogLevelT>): Promise<boolean> | boolean` A function that will filter the `LogRecord<string, SyslogLevelT>`.  Return `true` in order to permit the message through; otherwise, return `false`.
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
-*public* **logger.connect(...nodes)**
+*public* **filter.connect(...nodes)**
 - nodes `<Array<Node<LogRecord<MessageT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
 
 Returns: `<Logger<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogLevelT>>`
 
-*public* **logger.disconnect(...nodes)**
+*public* **filter.disconnect(...nodes)**
 - nodes `<Array<Node<LogRecord<MessageT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
 
 Returns: `<Logger<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogLevelT>>`
@@ -296,12 +296,12 @@ Set the log level.  Must be one of `SyslogLevel`.
 
 Use a `SocketHandler` in order to connect *Stream* graphs over the network.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for instructions on how to use a `SocketHandler` in order to connect *Streams* logging graphs over the network.
 
-*public* **logger.connect(...nodes)**
+*public* **socketHandler.connect(...nodes)**
 - nodes `<Array<Node<LogRecord<MessageT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
 
 Returns: `<Logger<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogLevelT>>`
 
-*public* **logger.disconnect(...nodes)**
+*public* **socketHandler.disconnect(...nodes)**
 - nodes `<Array<Node<LogRecord<MessageT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
 
 Returns: `<Logger<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogLevelT>>`

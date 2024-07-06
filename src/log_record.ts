@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 import * as pth from 'node:path';
 import * as threads from 'node:worker_threads';
 import { KeysUppercase } from './types.js';

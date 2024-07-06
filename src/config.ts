@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 import * as stream from 'node:stream';
 
 class Config {

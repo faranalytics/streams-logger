@@ -43,38 +43,43 @@ export class RotatingFileHandlerWritable<MessageT> extends stream.Writable {
 
     async _write(chunk: LogRecord<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): Promise<void> {
         try {
-            let serialized: string;
-            if (typeof chunk.message != 'string') {
-                serialized = JSON.stringify(chunk.message);
+            let message: string | Buffer;
+            if (typeof chunk.message == 'string' || chunk.message instanceof Buffer) {
+                message = chunk.message;
             }
             else {
-                serialized = chunk.message;
+                message = JSON.stringify(chunk.message);
             }
-
             if (SyslogLevel[chunk.level] <= this[$level]) {
                 await (this[$mutex] = (async () => {
                     await this[$mutex].catch((err) => console.error(err));
-                    const message = Buffer.from(serialized, this[$encoding]);
                     try {
-                        const stats = await fsp.stat(this[$path]);
-                        if (stats.isFile()) {
-                            if (stats.size + message.length > this[$bytes]) {
-                                await this.rotate();
+                        if (this[$rotations]) {
+                            const stats = await fsp.stat(this[$path]);
+                            if (stats.isFile()) {
+                                if (stats.size + message.length > this[$bytes]) {
+                                    await this.rotate();
+                                }
+                                await fsp.appendFile(this[$path], message, { mode: this[$mode], flag: 'a', encoding: this[$encoding] });
                             }
-                            await fsp.appendFile(this[$path], message, { mode: this[$mode], flag: 'a' });
+                            else {
+                                console.error(`The path, ${this[$path]}, is not a file.`);
+                            }
                         }
                         else {
-                            console.error(`The path, ${this[$path]}, is not a file.`);
+                            await fsp.appendFile(this[$path], message, { mode: this[$mode], flag: 'a', encoding: this[$encoding] });
                         }
                     }
                     catch (err) {
-                        await fsp.appendFile(this[$path], message, { mode: this[$mode], flag: 'a' });
+                        await fsp.appendFile(this[$path], message, { mode: this[$mode], flag: 'a', encoding: this[$encoding] });
                     }
                 })());
             }
         }
         catch (err) {
-            console.error(err);
+            if (err instanceof Error) {
+                callback(err);
+            }
         }
         finally {
             callback();
