@@ -21,15 +21,15 @@ export class LogRecordToBuffer extends Node<LogRecord<string, SyslogLevelT>, Buf
     }
 }
 
-const log = new Logger();
-const messageToHex = new LogRecordToBuffer();
+const log = new Logger<string>({ name: 'main' });
+const logRecordToBuffer = new LogRecordToBuffer();
 const console = new Node<Buffer, never>(process.stdout)
 
 log.connect(
-    messageToHex.connect(
+    logRecordToBuffer.connect(
         console
     )
 );
 
-log.warn('Hello, World!\n');
+log.warn('Hello, World!');
 

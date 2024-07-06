@@ -8,7 +8,7 @@ import { Config } from './index.js';
 
 export interface LoggerOptions<T> {
     level?: SyslogLevel;
-    name: string;
+    name?: string;
     queueSizeLimit?: number;
     parent?: Logger<T> | null;
     captureStackTrace?: boolean;

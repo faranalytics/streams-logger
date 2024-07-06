@@ -12,13 +12,13 @@ import { Logger, Formatter, ConsoleHandler, SyslogLevel } from 'streams-logger';
 
 ### Create an instance of a Logger, Formatter, and ConsoleHandler.
 ```ts
-const logger = new Logger({ level: SyslogLevel.INFO });
-const formatter = new Formatter({
+const logger = new Logger<string>({ name: 'hello-logger', level: SyslogLevel.DEBUG });
+const formatter = new Formatter<string>({
     format: async ({ isotime, message, name, level, func, url, line, col }) => (
         `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
     )
 });
-const consoleHandler = new ConsoleHandler();
+const consoleHandler = new ConsoleHandler<string>({ level: SyslogLevel.DEBUG });
 ```
 
 ### Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler.
@@ -35,6 +35,8 @@ const log = logger.connect(
 function sayHello() {
     log.info('Hello, World!');
 }
+
+setInterval(sayHello, 1e3);
 
 sayHello();
 ```
@@ -65,5 +67,7 @@ npm start
 ```
 #### Output
 ```bash
-2024-06-12T00:10:15.894Z:INFO:sayHello:7:9:Hello, World!
+hello-logger:2024-07-06T00:44:46.045Z:INFO:sayHello:10:9:Hello, World!
+hello-logger:2024-07-06T00:44:47.047Z:INFO:Timeout.sayHello:10:9:Hello, World!
+...
 ```
