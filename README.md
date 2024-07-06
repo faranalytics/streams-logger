@@ -97,7 +97,7 @@ const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', lev
 ```
 
 #### 3. Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
-*Streams* uses a graph-like API pattern in order to construct a network of log Transforms.  Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, is a [Transform](https://github.com/faranalytics/@farar/nodes).
+*Streams* uses a graph-like API pattern in order to construct a network of log Nodes.  Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, is a [Node](https://github.com/faranalytics/@farar/nodes).
 ```ts
 const log = logger.connect(
     formatter.connect(
@@ -154,15 +154,15 @@ Use an instance of a Logger to propagate messages at the specified syslog level.
 
 The configured log level (e.g., `SyslogLevel.DEBUG`).
 
-*public* **logger.connect(...transforms)**
-- transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>`  Connect to an Array of `Transforms`.
+*public* **logger.connect(...nodes)**
+- nodes `<Array<Node<LogRecord<MessageT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
 
-Returns: `<Logger<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>`
+Returns: `<Logger<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogLevelT>>`
 
-*public* **logger.disconnect(...transforms)**
-- transforms `<Array<Transform<LogRecord<string, SyslogLevelT>, unknown>>` Disconnect from an Array of `Transforms`.
+*public* **logger.disconnect(...nodes)**
+- nodes `<Array<Node<LogRecord<MessageT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
 
-Returns: `<Logger<LogRecord<string, SyslogLevelT>, LogRecord<string, SyslogLevelT>>`
+Returns: `<Logger<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogLevelT>>`
 
 *public* **logger.debug(message)**
 - message `<string>` Write a DEBUG message to the `Logger`.
@@ -220,6 +220,16 @@ Set the log level.  Must be one of `SyslogLevel`.
 
 Use a `Formatter` in order to specify how your log message will be formatted prior to forwarding it to the Handler(s).  An instance of [`LogRecord`](#the-logrecord-class) is created that contains information about the environment at the time of the logging call.  The `LogRecord` is passed as the single argument to `format` function.
 
+*public* **logger.connect(...nodes)**
+- nodes `<Array<Node<LogRecord<MessageOutT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
+
+Returns: `<Logger<LogRecord<MessageInT, SyslogLevelT>, LogRecord<MessageOutT, SyslogLevelT>>`
+
+*public* **logger.disconnect(...nodes)**
+- nodes `<Array<Node<LogRecord<MessageOutT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
+
+Returns: `<Logger<LogRecord<MessageInT, SyslogLevelT>, LogRecord<MessageOutT, SyslogLevelT>>`
+
 ### The Filter Class
 
 **new streams-logger.Filter\<MessageT\>(options, streamOptions)**
@@ -227,6 +237,16 @@ Use a `Formatter` in order to specify how your log message will be formatted pri
 - options
     - filter `(record: LogRecord<string, SyslogLevelT>): Promise<boolean> | boolean` A function that will filter the `LogRecord<string, SyslogLevelT>`.  Return `true` in order to permit the message through; otherwise, return `false`.
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
+
+*public* **logger.connect(...nodes)**
+- nodes `<Array<Node<LogRecord<MessageT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
+
+Returns: `<Logger<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogLevelT>>`
+
+*public* **logger.disconnect(...nodes)**
+- nodes `<Array<Node<LogRecord<MessageT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
+
+Returns: `<Logger<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogLevelT>>`
 
 ### The ConsoleHandler Class
 
@@ -276,6 +296,16 @@ Set the log level.  Must be one of `SyslogLevel`.
 
 Use a `SocketHandler` in order to connect *Stream* graphs over the network.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for instructions on how to use a `SocketHandler` in order to connect *Streams* logging graphs over the network.
 
+*public* **logger.connect(...nodes)**
+- nodes `<Array<Node<LogRecord<MessageT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
+
+Returns: `<Logger<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogLevelT>>`
+
+*public* **logger.disconnect(...nodes)**
+- nodes `<Array<Node<LogRecord<MessageT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
+
+Returns: `<Logger<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogLevelT>>`
+
 ### The LogRecord Class
 
 **new streams-logger.LogRecord\<MessageT, LevelT\>(options)**
@@ -288,7 +318,7 @@ Use a `SocketHandler` in order to connect *Stream* graphs over the network.  Ple
     - depth `<number>` Used to specify which line of the stack trace to parse.
     - stack `<string>` An optional stack trace.
 
-A `LogRecord` is instantiated each time a message is logged at (or below) the level set on the `Logger`. It contains information about the process and environment at the time of the logging call.  All *Streams* Transforms take a `LogRecord` as an input and emit a `LogRecord` as an output.  
+A `LogRecord` is instantiated each time a message is logged at (or below) the level set on the `Logger`. It contains information about the process and environment at the time of the logging call.  All *Streams* Nodes take a `LogRecord` as an input and emit a `LogRecord` as an output.  
 
 The `LogRecord` is passed as the single argument to the [format function](#formatting) of the `Formatter`; information about the environment can be extracted from the `LogRecord` in order to format the logged message.  The following properties will be available to the `format` functioning depending on the setting of `Config.captureStackTrace`.
 
@@ -380,21 +410,21 @@ Returns: `<void>`
 
 Returns: `<stream.DuplexOptions>`
 
-Use `Config.getDuplexDefaults` when implementing a [custom *Streams* Transform](#how-to-implement-a-custom-streams-transform).
+Use `Config.getDuplexDefaults` when implementing a [custom *Streams* data transformation Node](#how-to-implement-a-custom-streams-data-transformation-node).
 
 **Config.getWritableDefaults(writableObjectMode)**
 - writableObjectMode `<boolean>` `true` for ObjectMode; `false` otherwise.
 
 Returns: `<stream.WritableOptions>`
 
-Use `Config.getWritableDefaults` when implementing a [custom *Streams* Transform](#how-to-implement-a-custom-streams-transform).
+Use `Config.getWritableDefaults` when implementing a [custom *Streams* data transformation Node](#how-to-implement-a-custom-streams-data-transformation-node).
 
 **Config.getReadableDefaults(readableObjectMode)**
 - readableObjectMode `<boolean>` `true` for ObjectMode; `false` otherwise.
 
 Returns: `<stream.ReadableOptions>`
 
-Use `Config.getReadableDefaults` when implementing a [custom *Streams* Transform](#how-to-implement-a-custom-streams-transform).
+Use `Config.getReadableDefaults` when implementing a [custom *Streams* data transformation Node](#how-to-implement-a-custom-streams-data-transformation-node).
 
 ## Formatting
 
@@ -518,7 +548,7 @@ streams.root.connect(
 
 For example, the somewhat contrived `LogRecordToBuffer` implementation transforms the `message` contained in a `LogRecord` to a `Buffer`; the graph pipeline streams the message to `process.stdout`.
 
-> NB: `writableObjectMode` is set to `true` and `readableObjectMode` is set to `false`; hence, the Node.js stream implementation will handle the input as a `object` and the output as an `Buffer`. It's important that `writableObjectMode` and `readableObjectMode` accurately reflect the input and output types of your Transform.
+> NB: `writableObjectMode` is set to `true` and `readableObjectMode` is set to `false`; hence, the Node.js stream implementation will handle the input as a `object` and the output as an `Buffer`. It's important that `writableObjectMode` and `readableObjectMode` accurately reflect the input and output types of your Node.
 
 ```ts
 import * as stream from 'node:stream';
@@ -582,7 +612,7 @@ const socketHandler = new Node<Buffer, Buffer>(socket);
 
 ### Tune the `highWaterMark`.
 
-*Streams* `Node` implementations use the native Node.js stream API for message propagation.  You have the option of tuning the Node.js stream `highWaterMark` to your specific needs - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Nodes in the *Streams* library.  Alternatively, you can pass an optional stream configuration argument to each `Transform` individually.
+*Streams* `Node` implementations use the native Node.js stream API for message propagation.  You have the option of tuning the Node.js stream `highWaterMark` to your specific needs - keeping in mind memory constraints.  You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Nodes in the *Streams* library.  Alternatively, you can pass an optional stream configuration argument to each `Node` individually.
 
 In this example, the `highWaterMark` of ObjectMode streams and Buffer streams is artificially set to `1e6` objects and `1e6` bytes.
 
