@@ -15,6 +15,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
 - A type-safe graph-like API pattern for constructing sophisticated [logging graphs](#graph-api-pattern).
 - Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
 - Error propagation and selective termination of inoperable graph components.
+- Log any type of message you choose - including [objects serialized to JSON](#object-json-logging). 
 - Import *Streams* into your Node.js project or take advantage of the TypeScript type definitions. 
 
 ## Table of Contents
@@ -37,6 +38,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [The Streams Config Settings Object](#the-streams-config-settings-object)
 - [Formatting](#formatting)
     - [Example Serializer](#example-serializer)
+- [Object (JSON) Logging](#object-json-logging)
 - [Using a Socket Handler](#using-a-socket-handler)
 - [Hierarchical Logging](#hierarchical-logging)
 - [How-Tos](#how-tos)
@@ -84,14 +86,14 @@ import { Logger, Formatter, ConsoleHandler, RotatingFileHandler, SyslogLevel } f
 - The `RotatingFileHandler` will log the message to the file `./message.log`.
 
 ```ts
-const logger = new Logger<string>({ level: SyslogLevel.DEBUG });
-const formatter = new Formatter<string, string>({
+const logger = new Logger({ level: SyslogLevel.DEBUG });
+const formatter = new Formatter({
     format: async ({ isotime, message, name, level, func, url, line, col }) => (
         `${isotime}:${level}:${func}:${line}:${col}:${message}\n`
     )
 });
-const consoleHandler = new ConsoleHandler<string>({ level: SyslogLevel.DEBUG });
-const rotatingFileHandler = new RotatingFileHandler<string>({ path: './message.log', level: SyslogLevel.DEBUG });
+const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
+const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', level: SyslogLevel.DEBUG });
 ```
 
 #### 3. Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
@@ -414,13 +416,13 @@ The `format` function is passed to the constructor of a `Formatter`, which will 
 
 ```ts
 
-const logger = new Logger<string>({ name: 'main', level: SyslogLevel.DEBUG });
-const formatter = new Formatter<string>({
+const logger = new Logger({ name: 'main', level: SyslogLevel.DEBUG });
+const formatter = new Formatter({
     format: async ({ isotime, message, name, level, func, url, line, col }) => (
         `${isotime}:${level}:${func}:${line}:${col}:${message}\n`
     )
 });
-const consoleHandler = new ConsoleHandler<string>();
+const consoleHandler = new ConsoleHandler();
 
 const log = logger.connect(
     formatter.connect(
@@ -438,6 +440,39 @@ This is an example of what a logged message will look like using the serializer 
 2024-06-12T00:10:15.894Z:INFO:sayHello:7:9:Hello, World!
 #                        ⮴level       ⮴line number
 ```
+## Object (JSON) Logging
+*Streams* logging facilities (e.g., Logger, Formatter, etc.) default to `string` messages; however, you can log any type of message you want.  In the following example, an interface is created named `Message` and messages are serialized using `JSON.stringify`.
+
+```ts
+import { Logger, Formatter, ConsoleHandler, SyslogLevel } from 'streams-logger';
+
+interface Message {
+    [key: string]: string | number;
+}
+
+const logger = new Logger<Message>({ level: SyslogLevel.DEBUG });
+const formatter = new Formatter<Message, string>({
+    format: async ({ isotime, message, level, func, line, col }) => (
+        `${isotime}:${level}:${func}:${line}:${col}:${JSON.stringify(message)}\n`
+    )
+});
+const consoleHandler = new ConsoleHandler<string>({ level: SyslogLevel.DEBUG });
+
+const log = logger.connect(
+    formatter.connect(
+        consoleHandler
+    )
+);
+
+(function sayHello() {
+    log.warn({ greeting: 'Hello, World!', prime_number: 57 });
+})();
+```
+### Output
+```bash
+2024-07-06T03:19:28.767Z:WARN:sayHello:9:9:{"greeting":"Hello, World!","prime_number":57}
+```
+
 ## Using a Socket Handler
 
 *Streams* uses Node.js streams for message propagation.  Node.js represents sockets as streams; hence, sockets are a natural extension of a *Streams* logging graph.  For example, you may choose to use a `ConsoleHandler` locally and log to a `RotatingFileHandler` on a remote server.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for a working implementation.
@@ -459,14 +494,14 @@ TLS Client Certificate Authentication may be implemented using native Node.js [T
 You may capture logging events from other modules (*and your own*) by connecting a data handler `Node` (e.g., a `ConsoleHandler`) to the `streams-logger.root` `Logger`. E.g.,
 
 ```ts
-import * as streams from 'streams-logger';
+import { Formatter, ConsoleHandler, SyslogLevel } from 'streams-logger';
 
-const formatter = new Formatter<string>({
+const formatter = new Formatter({
     format: async ({ isotime, message, name, level, func, url, line, col }) => (
         `${isotime}:${level}:${func}:${line}:${col}:${message}\n`
     )
 });
-const consoleHandler = new streams.ConsoleHandler<string>({ level: streams.SyslogLevel.DEBUG });
+const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 
 streams.root.connect(
     formatter.connect(
@@ -509,7 +544,7 @@ export class LogRecordToBuffer extends Node<LogRecord<string, SyslogLevelT>, Buf
     }
 }
 
-const log = new Logger<string>({ name: 'main' });
+const log = new Logger({ name: 'main' });
 const logRecordToBuffer = new LogRecordToBuffer();
 const console = new Node<Buffer, never>(process.stdout)
 

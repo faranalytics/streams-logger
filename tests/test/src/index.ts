@@ -58,13 +58,14 @@ const log = logger.connect(
     )
 );
 
-const streams_formatter_root = new streams.Formatter<unknown>({
-    format: async ({ isotime, message, name, level, func, url, line, col }) => {
-        return `${name}:${isotime}:${level}:${func}:${line}:${col}:${JSON.stringify(message)}\n`
-    }
+const formatter = new streams.Formatter({
+    format: async ({ isotime, message, name, level, func, url, line, col }) => (
+        `${isotime}:${level}:${func}:${line}:${col}:${message}\n`
+    )
 });
+
 streams.root.connect(
-    streams_formatter_root.connect(
+    formatter.connect(
         consoleHandler
     )
 );
