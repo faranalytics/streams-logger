@@ -131,5 +131,5 @@ export class Logger<MessageT = string> extends Node<LogRecord<MessageT, SyslogLe
     }
 }
 
-// eslint-disable-next-line prefer-const, no-var
+// eslint-disable-next-line prefer-const, no-var, @typescript-eslint/no-explicit-any
 export var root: Logger<any> = new Logger<any>({ name: 'root', parent: null });
