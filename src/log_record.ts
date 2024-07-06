@@ -1,8 +1,9 @@
 import * as pth from 'node:path';
 import * as threads from 'node:worker_threads';
 import { KeysUppercase } from './types.js';
+import { SyslogLevelT } from './syslog.js';
 
-export interface LogRecordOptions<MessageT, LevelT> {
+export interface LogRecordOptions<MessageT = string, LevelT = SyslogLevelT> {
     message: MessageT;
     name: string;
     level: KeysUppercase<LevelT>;

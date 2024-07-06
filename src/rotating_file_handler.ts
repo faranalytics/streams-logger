@@ -1,7 +1,7 @@
 /* eslint-disable quotes */
 import * as pth from 'node:path';
 import * as fsp from 'node:fs/promises';
-import * as s from 'node:stream';
+import * as stream from 'node:stream';
 import { LogRecord } from './log_record.js';
 import { Node, $stream } from '@farar/nodes';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
@@ -16,7 +16,7 @@ export const $mode = Symbol('mode');
 export const $mutex = Symbol('mutex');
 
 
-export class RotatingFileHandlerWritable<T> extends s.Writable {
+export class RotatingFileHandlerWritable<MessageT> extends stream.Writable {
 
     public [$level]: SyslogLevel;
     public [$path]: string;
@@ -27,7 +27,7 @@ export class RotatingFileHandlerWritable<T> extends s.Writable {
     private [$mutex]: Promise<void>;
 
     constructor({ level = SyslogLevel.WARN, path, rotations = 0, bytes = 1e6, encoding = 'utf8', mode = 0o666 }: RotatingFileHandlerOptions,
-        writableOptions?: s.WritableOptions) {
+        writableOptions?: stream.WritableOptions) {
         super({
             ...Config.getWritableDefaults(true),
             ...writableOptions, ...{ objectMode: true }
@@ -41,7 +41,7 @@ export class RotatingFileHandlerWritable<T> extends s.Writable {
         this[$level] = level;
     }
 
-    async _write(chunk: LogRecord<T, SyslogLevelT>, encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): Promise<void> {
+    async _write(chunk: LogRecord<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): Promise<void> {
         try {
             let serialized: string;
             if (typeof chunk.message != 'string') {
@@ -115,10 +115,10 @@ export interface RotatingFileHandlerOptions {
     level?: SyslogLevel;
 }
 
-export class RotatingFileHandler<T> extends Node<LogRecord<T, SyslogLevelT>, never> {
+export class RotatingFileHandler<MessageT = string> extends Node<LogRecord<MessageT, SyslogLevelT>, never> {
 
-    constructor(options: RotatingFileHandlerOptions, streamOptions?: s.WritableOptions) {
-        super(new RotatingFileHandlerWritable<T>(options, streamOptions));
+    constructor(options: RotatingFileHandlerOptions, streamOptions?: stream.WritableOptions) {
+        super(new RotatingFileHandlerWritable<MessageT>(options, streamOptions));
     }
 
     public setLevel(level: SyslogLevel) {

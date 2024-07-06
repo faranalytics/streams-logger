@@ -6,22 +6,22 @@ import { KeysUppercase } from './types.js';
 import { QueueSizeLimitExceededError } from './errors.js';
 import { Config } from './index.js';
 
-export interface LoggerOptions<T> {
+export interface LoggerOptions<MessageT> {
     level?: SyslogLevel;
     name?: string;
     queueSizeLimit?: number;
-    parent?: Logger<T> | null;
+    parent?: Logger<MessageT> | null;
     captureStackTrace?: boolean;
 }
 
-export class Logger<T> extends Node<LogRecord<T, SyslogLevelT>, LogRecord<T, SyslogLevelT>> {
+export class Logger<MessageT = string> extends Node<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogLevelT>> {
 
     public level: SyslogLevel;
     public name: string;
     public captureStackTrace: boolean;
     public queueSizeLimit?: number;
 
-    constructor({ name = '', level, queueSizeLimit, parent, captureStackTrace = true }: LoggerOptions<T>, streamOptions?: stream.TransformOptions) {
+    constructor({ name = '', level, queueSizeLimit, parent, captureStackTrace = true }: LoggerOptions<MessageT>, streamOptions?: stream.TransformOptions) {
         super(new stream.Transform({
             ...Config.getDuplexDefaults(true, true),
             ...streamOptions, ...{
@@ -50,13 +50,13 @@ export class Logger<T> extends Node<LogRecord<T, SyslogLevelT>, LogRecord<T, Sys
         }
     }
 
-    protected log(message: T, level: SyslogLevel): void {
+    protected log(message: MessageT, level: SyslogLevel): void {
         try {
             const targetObject = { stack: '' };
             if (Config.captureStackTrace && this.captureStackTrace) {
                 Error.captureStackTrace(targetObject, this.log);
             }
-            const data = new LogRecord<T, SyslogLevelT>({
+            const data = new LogRecord<MessageT, SyslogLevelT>({
                 message,
                 name: this.name,
                 depth: 2,
@@ -78,49 +78,49 @@ export class Logger<T> extends Node<LogRecord<T, SyslogLevelT>, LogRecord<T, Sys
         }
     }
 
-    public debug(message: T): void {
+    public debug(message: MessageT): void {
         if (this.level && this.level >= SyslogLevel.DEBUG) {
             this.log(message, SyslogLevel.DEBUG);
         }
     }
 
-    public info(message: T): void {
+    public info(message: MessageT): void {
         if (this.level && this.level >= SyslogLevel.INFO) {
             this.log(message, SyslogLevel.INFO);
         }
     }
 
-    public notice(message: T): void {
+    public notice(message: MessageT): void {
         if (this.level && this.level >= SyslogLevel.NOTICE) {
             this.log(message, SyslogLevel.NOTICE);
         }
     }
 
-    public warn(message: T): void {
+    public warn(message: MessageT): void {
         if (this.level && this.level >= SyslogLevel.WARN) {
             this.log(message, SyslogLevel.WARN);
         }
     }
 
-    public error(message: T): void {
+    public error(message: MessageT): void {
         if (this.level && this.level >= SyslogLevel.ERROR) {
             this.log(message, SyslogLevel.ERROR);
         }
     }
 
-    public crit(message: T): void {
+    public crit(message: MessageT): void {
         if (this.level && this.level >= SyslogLevel.CRIT) {
             this.log(message, SyslogLevel.CRIT);
         }
     }
 
-    public alert(message: T): void {
+    public alert(message: MessageT): void {
         if (this.level && this.level >= SyslogLevel.ALERT) {
             this.log(message, SyslogLevel.ALERT);
         }
     }
 
-    public emerg(message: T): void {
+    public emerg(message: MessageT): void {
         if (this.level && this.level >= SyslogLevel.EMERG) {
             this.log(message, SyslogLevel.EMERG);
         }

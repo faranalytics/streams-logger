@@ -85,7 +85,7 @@ import { Logger, Formatter, ConsoleHandler, RotatingFileHandler, SyslogLevel } f
 
 ```ts
 const logger = new Logger<string>({ level: SyslogLevel.DEBUG });
-const formatter = new Formatter<string>({
+const formatter = new Formatter<string, string>({
     format: async ({ isotime, message, name, level, func, url, line, col }) => (
         `${isotime}:${level}:${func}:${line}:${col}:${message}\n`
     )
@@ -136,7 +136,7 @@ The *Streams* API provides commonly used logging facilities (i.e., the [Logger](
 ### The Logger Class
 
 **new streams-logger.Logger\<MessageT\>(options, streamOptions)**
-- `<MessageT>` The type of the logged message. 
+- `<MessageT>` The type of the logged message. **Default: `<string>`**
 - options `<LoggerOptions>`
     - level `<SyslogLevel>` The syslog compliant logger level.
     - name `<string>` An optional name for the `Logger`.
@@ -209,18 +209,19 @@ Set the log level.  Must be one of `SyslogLevel`.
 
 ### The Formatter Class
 
-**new streams-logger.Formatter\<MessageT\>(options, streamOptions)**
-- `<MessageT>` The type of the logged message. 
+**new streams-logger.Formatter\<MessageInT, MessageOutT\>(options, streamOptions)**
+- `<MessageT>` The type of the logged message.  This is the type of the `message` property of the `LogRecord` that is passed to the `format` function. **Default: `<string>`**
+- `<MessageOutT>` The type of the output message.  This is the return type of the `format` function. **Default: `<string>`**
 - options
-    - format `(record: LogRecord<string, SyslogLevelT>): Promise<string> | string` A function that will format and serialize the `LogRecord<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a serializer.
+    - format `(record: LogRecord<MessageInT, SyslogLevelT>): Promise<MessageOutT> | MessageOutT` A function that will format and serialize the `LogRecord<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a format function.
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
-Use a `Formatter` in order to specify how your log message will be formatted prior to forwarding it to the Handler(s).  An instance of [`LogRecord`](#the-logrecord-class) is created that contains information about the environment at the time of the logging call.  The `LogRecord` is passed as the single argument to serializer function.
+Use a `Formatter` in order to specify how your log message will be formatted prior to forwarding it to the Handler(s).  An instance of [`LogRecord`](#the-logrecord-class) is created that contains information about the environment at the time of the logging call.  The `LogRecord` is passed as the single argument to `format` function.
 
 ### The Filter Class
 
 **new streams-logger.Filter\<MessageT\>(options, streamOptions)**
-- `<MessageT>` The type of the logged message. 
+- `<MessageT>` The type of the logged message. **Default: `<string>`**
 - options
     - filter `(record: LogRecord<string, SyslogLevelT>): Promise<boolean> | boolean` A function that will filter the `LogRecord<string, SyslogLevelT>`.  Return `true` in order to permit the message through; otherwise, return `false`.
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
@@ -228,7 +229,7 @@ Use a `Formatter` in order to specify how your log message will be formatted pri
 ### The ConsoleHandler Class
 
 **new streams-logger.ConsoleHandler\<MessageT\>(options, streamOptions)**
-- `<MessageT>` The type of the logged message. 
+- `<MessageT>` The type of the logged message. **Default: `<string>`**
 - options `<ConsoleHandlerTransformOtions>`
     - level `<SyslogLevel>` An optional log level.  **Default**: `SyslogLevel.WARN`
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
@@ -243,7 +244,7 @@ Set the log level.  Must be one of `SyslogLevel`.
 ### The RotatingFileHandler Class
 
 **new streams-logger.RotatingFileHandler\<MessageT\>(options, streamOptions)**
-- `<MessageT>` The type of the logged message. 
+- `<MessageT>` The type of the logged message. **Default: `<string>`**
 - options `<RotatingFileHandlerOptions>`
     - path `<string>` 
     - rotations `<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10>` An optional number of log rotations.
@@ -263,7 +264,7 @@ Set the log level.  Must be one of `SyslogLevel`.
 ### The SocketHandler Class
 
 **new streams-logger.SocketHandler\<MessageT\>(options, streamOptions)**
-- `<MessageT>` The type of the logged message. 
+- `<MessageT>` The type of the logged message. **Default: `<string>`**
 - options `<SocketHandlerOptions>`
     - socket `<Socket>` 
     - reviver `<(this: unknown, key: string, value: unknown) => unknown>` An optional reviver for `JSON.parse`.
@@ -275,9 +276,9 @@ Use a `SocketHandler` in order to connect *Stream* graphs over the network.  Ple
 
 ### The LogRecord Class
 
-**new streams-logger.LogRecord\<MessageT, SyslogLevelT\>(options)**
-- `<MessageT>` The type of the logged message.
-- `<SyslogLevelT>` The type of the Level enum.
+**new streams-logger.LogRecord\<MessageT, LevelT\>(options)**
+- `<MessageT>` The type of the logged message. **Default: `<string>`**
+- `<LevelT>` The type of the Level enum. **Default: `<SyslogLevelT>`**
 - options `<LoggerOptions>`
     - message `<string>` The logged message.
     - name `<string>` The name of the `Logger`.

@@ -1,24 +1,24 @@
-import * as s from 'node:stream';
+import * as stream from 'node:stream';
 import { LogRecord } from './log_record.js';
 import { Node } from '@farar/nodes';
 import { SyslogLevelT } from './syslog.js';
 import { Config } from './index.js';
 
-export interface FormatterOptions<T> {
-    format: (record: LogRecord<T, SyslogLevelT>) => Promise<T> | T
+export interface FormatterOptions<MessageInT, MessageOutT> {
+    format: (record: LogRecord<MessageInT, SyslogLevelT>) => Promise<MessageOutT> | MessageOutT
 }
 
-export class Formatter<T> extends Node<LogRecord<T, SyslogLevelT>, LogRecord<T, SyslogLevelT>> {
+export class Formatter<MessageInT = string, MessageOutT = string> extends Node<LogRecord<MessageInT, SyslogLevelT>, LogRecord<MessageOutT, SyslogLevelT>> {
 
-    constructor({ format }: FormatterOptions<T>, streamOptions?: s.TransformOptions) {
-        super(new s.Transform({
+    constructor({ format }: FormatterOptions<MessageInT, MessageOutT>, streamOptions?: stream.TransformOptions) {
+        super(new stream.Transform({
             ...Config.getDuplexDefaults(true, true),
             ...streamOptions, ...{
                 writableObjectMode: true,
                 readableObjectMode: true,
-                transform: async (chunk: LogRecord<T, SyslogLevelT>, encoding: BufferEncoding, callback: s.TransformCallback) => {
-                    chunk.message = await format(chunk);
-                    callback(null, chunk);
+                transform: async (chunk: LogRecord<MessageInT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
+                    const message = { ...chunk, ...{ message: await format(chunk) } };
+                    callback(null, message);
                 }
             }
         }));
