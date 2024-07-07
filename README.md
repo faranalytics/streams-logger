@@ -11,7 +11,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
 ### Features
 
 - A library of commonly used logging components: [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class).
-- A rich selection of [contextual data](#the-logrecord-class) (e.g., module name, function name, line number, etc.) for augmenting log messages.
+- A rich selection of [contextual data](#log-context-data) (e.g., module name, function name, line number, etc.) for augmenting log messages.
 - A type-safe graph-like API pattern for constructing sophisticated [logging graphs](#graph-api-pattern).
 - Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
 - Error propagation and selective termination of inoperable graph components.
@@ -23,10 +23,12 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
 - [Installation](#installation)
 - [Concepts](#concepts)
 - [Usage](#usage)
-    - [Log to the Console and a File](#log-to-the-console-and-to-a-file)
+    - [Log to a File and the Console](#log-to-a-file-and-the-console)
 - [Examples](#examples)
     - [*An Instance of Logging "Hello, World!"*](#an-instance-of-logging-hello-world-example)
+    - [*Log to a File and the Console*](#log-to-a-file-and-the-console-example)
     - [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example)
+- [Log Context Data](#log-context-data)
 - [API](#api)
     - [The Logger Class](#the-logger-class)
     - [The Formatter Class](#the-formatter-class)
@@ -34,7 +36,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [The ConsoleHandler Class](#the-consolehandler-class)
     - [The RotatingFileHandler Class](#the-rotatingfilehandler-class)
     - [The SocketHandler Class](#the-sockethandler-class)
-    - [The LogRecord Class](#the-logrecord-class)
+    - [The LogContext Class](#the-LogContext-class)
     - [The Streams Config Settings Object](#the-streams-config-settings-object)
 - [Formatting](#formatting)
     - [Example Serializer](#example-serializer)
@@ -49,6 +51,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [Disable the stack trace capture.](#disable-the-stack-trace-capture)
     - [Disconnect from root.](#disconnect-from-root)
 - [Backpressure](#backpressure)
+- [Performance](#performance)
 
 ## Installation
 
@@ -70,7 +73,7 @@ Logging is essentially a data transformation task.  When a string is logged to t
 
 In this hypothetical example you will log "Hello, World!" to the console and to a file.
 
-### Log to the Console and to a File
+### Log to a File and the Console
 
 #### 1. Import the Logger, Formatter, ConsoleHandler and RotatingFileHandler, and SyslogLevel enum.
 
@@ -81,7 +84,7 @@ import { Logger, Formatter, ConsoleHandler, RotatingFileHandler, SyslogLevel } f
 #### 2. Create an instance of a Logger, Formatter, ConsoleHandler and RotatingFileHandler.
 
 - The `Logger` is set to log at level `SyslogLevel.DEBUG`.  
-- The `Formatter` constructor is passed a `format` function that will serialize data contained in the `LogRecord` to a string containing the ISO time, the log level, the function name, the line number, the column number, and the log message.
+- The `Formatter` constructor is passed a `format` function that will serialize data contained in the `LogContext` to a string containing the ISO time, the log level, the function name, the line number, the column number, and the log message.
 - The `ConsoleHandler` will log the message to `process.stdout`.
 - The `RotatingFileHandler` will log the message to the file `./message.log`.
 
@@ -125,12 +128,38 @@ sayHello();
 ```
 ## Examples
 
-### *An Instance of Logging "Hello, World!"* <sup><sup>(example)</sup></sup>
+### *An Instance of Logging "Hello, World!"* <sup><sup>\</example\></sup></sup>
 Please see the [Usage](#usage) section above or the ["Hello, World!"](https://github.com/faranalytics/streams-logger/tree/main/examples/hello_world) example for a working implementation.
 
-### *A Network Connected **Streams** Logging Graph* <sup><sup>(example)</sup></sup>
+### *Log to a File and the Console* <sup><sup>\</example\></sup></sup>
+Please see the [*Log to a File and the Console*](https://github.com/faranalytics/streams-logger/tree/main/examples/log_to_a_file_and_the_console) example that demonstrates how to log to a file and the console using different `Formatters`.
+
+### *A Network Connected **Streams** Logging Graph* <sup><sup>\</example\></sup></sup>
 Please see the [*Network Connected **Streams** Logging Graph*](https://github.com/faranalytics/streams-logger/tree/main/examples/network_connected_logging_graph) example that demonstrates how to connect *Streams* logging graphs over the network.
 
+## Log Context Data
+*Streams* optionally provides a rich selection of contextual information with each logging call.  This information is provided to a `Formatter` as a `LogContext` object.  You can disable generation of some contextual information by setting `Config.captureStackTrace` and `Config.captureISOTime` to `false`.  Please see [Formatting](#formatting) for instructions on how to incorporate contextual information into your logged message.
+|Property|Desciption|Prerequisite|
+|---|---|---|
+|col| The column number of the logging call.|Config.captureStackTrace = `true`|
+|depth| The line of the stack capture used for parsing||
+|env| The process [environment](https://nodejs.org/dist/latest-v8.x/docs/api/process.html#process_process_env).||
+|func| The name of the function where the logging call took place.||
+|isotime| The ISO 8601 [representation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) of the time at which the logging call took place.|Config.captureISOTime = `true`|
+|level| The `SyslogLevel` of the logging call.||
+|line| The line number of the logging call.|Config.captureStackTrace = `true`|
+|message| The message of the logging call.||
+|name| The name of the logger.||
+|path| The module path.|Config.captureStackTrace = `true`|
+|pathbase| The module filename.|Config.captureStackTrace = `true`|
+|pathdir| The directory part of the module path.|Config.captureStackTrace = `true`|
+|pathext| The extension of the module.|Config.captureStackTrace = `true`|
+|pathname| The name of the module.|Config.captureStackTrace = `true`|
+|pathroot| The root of the module.|Config.captureStackTrace = `true`|
+|pid| The process identifier.||
+|stack| The complete stack trace.|Config.captureStackTrace = `true`|
+|threadid| The thread identifier.||
+|url| The URL of the module.|Config.captureStackTrace = `true`|
 ## API
 
 The *Streams* API provides commonly used logging facilities (i.e., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)).  However, you can [consume any Node.js stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream) and add it to your logging graph.
@@ -145,6 +174,7 @@ The *Streams* API provides commonly used logging facilities (i.e., the [Logger](
     - parent `<Logger>` An optional parent `Logger`.  **Default:** `streams-logger.root`
     - queueSizeLimit `<number>` Optionally specify a limit on the number of log messages that may queue while waiting for a stream to drain.  See [Backpressure](#backpressure).
     - captureStackTrace `<boolean>` Optionally specify if stack trace capturing is enabled.  This setting can be overriden by the *Streams* configuration setting `Config.captureStackTrace`. **Default:** `true`
+    - captureISOTime `<boolean>` Optionally specify if capturing ISO time is enabled. This setting can be overriden by the *Streams* configuration setting `Config.captureISOTime`. **Default:** `true`
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
 Use an instance of a Logger to propagate messages at the specified syslog level.
@@ -155,14 +185,14 @@ Use an instance of a Logger to propagate messages at the specified syslog level.
 The configured log level (e.g., `SyslogLevel.DEBUG`).
 
 *public* **logger.connect(...nodes)**
-- nodes `<Array<Node<LogRecord<MessageT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
+- nodes `<Array<Node<LogContext<MessageT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
 
-Returns: `<Logger<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogLevelT>>`
+Returns: `<Logger<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>>`
 
 *public* **logger.disconnect(...nodes)**
-- nodes `<Array<Node<LogRecord<MessageT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
+- nodes `<Array<Node<LogContext<MessageT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
 
-Returns: `<Logger<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogLevelT>>`
+Returns: `<Logger<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>>`
 
 *public* **logger.debug(message)**
 - message `<string>` Write a DEBUG message to the `Logger`.
@@ -212,41 +242,41 @@ Set the log level.  Must be one of `SyslogLevel`.
 ### The Formatter Class
 
 **new streams-logger.Formatter\<MessageInT, MessageOutT\>(options, streamOptions)**
-- `<MessageT>` The type of the logged message.  This is the type of the `message` property of the `LogRecord` that is passed to the `format` function. **Default: `<string>`**
+- `<MessageT>` The type of the logged message.  This is the type of the `message` property of the `LogContext` that is passed to the `format` function. **Default: `<string>`**
 - `<MessageOutT>` The type of the output message.  This is the return type of the `format` function. **Default: `<string>`**
 - options
-    - format `(record: LogRecord<MessageInT, SyslogLevelT>): Promise<MessageOutT> | MessageOutT` A function that will format and serialize the `LogRecord<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a format function.
+    - format `(record: LogContext<MessageInT, SyslogLevelT>): Promise<MessageOutT> | MessageOutT` A function that will format and serialize the `LogContext<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a format function.
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
-Use a `Formatter` in order to specify how your log message will be formatted prior to forwarding it to the Handler(s).  An instance of [`LogRecord`](#the-logrecord-class) is created that contains information about the environment at the time of the logging call.  The `LogRecord` is passed as the single argument to `format` function.
+Use a `Formatter` in order to specify how your log message will be formatted prior to forwarding it to the Handler(s).  An instance of [`LogContext`](#the-LogContext-class) is created that contains information about the environment at the time of the logging call.  The `LogContext` is passed as the single argument to `format` function.
 
 *public* **formatter.connect(...nodes)**
-- nodes `<Array<Node<LogRecord<MessageOutT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
+- nodes `<Array<Node<LogContext<MessageOutT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
 
-Returns: `<Logger<LogRecord<MessageInT, SyslogLevelT>, LogRecord<MessageOutT, SyslogLevelT>>`
+Returns: `<Logger<LogContext<MessageInT, SyslogLevelT>, LogContext<MessageOutT, SyslogLevelT>>`
 
 *public* **formatter.disconnect(...nodes)**
-- nodes `<Array<Node<LogRecord<MessageOutT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
+- nodes `<Array<Node<LogContext<MessageOutT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
 
-Returns: `<Logger<LogRecord<MessageInT, SyslogLevelT>, LogRecord<MessageOutT, SyslogLevelT>>`
+Returns: `<Logger<LogContext<MessageInT, SyslogLevelT>, LogContext<MessageOutT, SyslogLevelT>>`
 
 ### The Filter Class
 
 **new streams-logger.Filter\<MessageT\>(options, streamOptions)**
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
 - options
-    - filter `(record: LogRecord<string, SyslogLevelT>): Promise<boolean> | boolean` A function that will filter the `LogRecord<string, SyslogLevelT>`.  Return `true` in order to permit the message through; otherwise, return `false`.
+    - filter `(record: LogContext<string, SyslogLevelT>): Promise<boolean> | boolean` A function that will filter the `LogContext<string, SyslogLevelT>`.  Return `true` in order to permit the message through; otherwise, return `false`.
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
 *public* **filter.connect(...nodes)**
-- nodes `<Array<Node<LogRecord<MessageT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
+- nodes `<Array<Node<LogContext<MessageT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
 
-Returns: `<Logger<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogLevelT>>`
+Returns: `<Logger<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>>`
 
 *public* **filter.disconnect(...nodes)**
-- nodes `<Array<Node<LogRecord<MessageT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
+- nodes `<Array<Node<LogContext<MessageT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
 
-Returns: `<Logger<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogLevelT>>`
+Returns: `<Logger<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>>`
 
 ### The ConsoleHandler Class
 
@@ -297,18 +327,18 @@ Set the log level.  Must be one of `SyslogLevel`.
 Use a `SocketHandler` in order to connect *Stream* graphs over the network.  Please see the [*A Network Connected **Streams** Logging Graph*](#a-network-connected-streams-logging-graph-example) example for instructions on how to use a `SocketHandler` in order to connect *Streams* logging graphs over the network.
 
 *public* **socketHandler.connect(...nodes)**
-- nodes `<Array<Node<LogRecord<MessageT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
+- nodes `<Array<Node<LogContext<MessageT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
 
-Returns: `<Logger<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogLevelT>>`
+Returns: `<Logger<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>>`
 
 *public* **socketHandler.disconnect(...nodes)**
-- nodes `<Array<Node<LogRecord<MessageT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
+- nodes `<Array<Node<LogContext<MessageT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
 
-Returns: `<Logger<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogLevelT>>`
+Returns: `<Logger<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>>`
 
-### The LogRecord Class
+### The LogContext Class
 
-**new streams-logger.LogRecord\<MessageT, LevelT\>(options)**
+**new streams-logger.LogContext\<MessageT, LevelT\>(options)**
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
 - `<LevelT>` The type of the Level enum. **Default: `<SyslogLevelT>`**
 - options `<LoggerOptions>`
@@ -318,71 +348,71 @@ Returns: `<Logger<LogRecord<MessageT, SyslogLevelT>, LogRecord<MessageT, SyslogL
     - depth `<number>` Used to specify which line of the stack trace to parse.
     - stack `<string>` An optional stack trace.
 
-A `LogRecord` is instantiated each time a message is logged at (or below) the level set on the `Logger`. It contains information about the process and environment at the time of the logging call.  All *Streams* Nodes take a `LogRecord` as an input and emit a `LogRecord` as an output.  
+A `LogContext` is instantiated each time a message is logged at (or below) the level set on the `Logger`. It contains information about the process and environment at the time of the logging call.  All *Streams* Nodes take a `LogContext` as an input and emit a `LogContext` as an output.  
 
-The `LogRecord` is passed as the single argument to the [format function](#formatting) of the `Formatter`; information about the environment can be extracted from the `LogRecord` in order to format the logged message.  The following properties will be available to the `format` functioning depending on the setting of `Config.captureStackTrace`.
+The `LogContext` is passed as the single argument to the [format function](#formatting) of the `Formatter`; information about the environment can be extracted from the `LogContext` in order to format the logged message.  The following properties will be available to the `format` functioning depending on the setting of `Config.captureStackTrace`.
 
-*public* **logRecord.message**
+*public* **LogContext.message**
 - `<string>`
 The logged message.
 
-*public* **logRecord.name**
+*public* **LogContext.name**
 - `<string>`
 The name of the `Logger`.
 
-*public* **logRecord.level**
+*public* **LogContext.level**
 - `<DEBUG | INFO | NOTICE | WARN | ERROR | CRIT | ALERT | EMERG>`
 An uppercase string representation of the level.
 
-*public* **logRecord.func**
+*public* **LogContext.func**
 - `<string>`
 The name of the function where the logging call took place.  Available if `Config.captureStackTrace` is set to `true`.
 
-*public* **logRecord.line**
+*public* **LogContext.line**
 - `<string>`
 The line number of the logging call.  Available if `Config.captureStackTrace` is set to `true`.
 
-*public* **logRecord.col**
+*public* **LogContext.col**
 - `<string>`
 The column of the logging call.  Available if `Config.captureStackTrace` is set to `true`.
 
-*public* **logRecord.isotime**
+*public* **LogContext.isotime**
 - `<string>`
 The date and time in ISO format at the time of the logging call.
 
-*public* **logRecord.pathname**
+*public* **LogContext.pathname**
 - `<string>`
 The name of the module.  Available if `Config.captureStackTrace` is set to `true`.
 
-*public* **logRecord.path**
+*public* **LogContext.path**
 - `<string>`
 The complete path of the module.  Available if `Config.captureStackTrace` is set to `true`.
 
-*public* **logRecord.pathdir**
+*public* **LogContext.pathdir**
 - `<string>`
-The directory part of the path.  Available if `Config.captureStackTrace` is set to `true`.
+The directory part of the module path.  Available if `Config.captureStackTrace` is set to `true`.
 
-*public* **logRecord.pathroot**
+*public* **LogContext.pathroot**
 - `<string>`
 The root of the path.  Available if `Config.captureStackTrace` is set to `true`.
 
-*public* **logRecord.pathbase**
+*public* **LogContext.pathbase**
 - `<string>`
 The module filename.  Available if `Config.captureStackTrace` is set to `true`.
 
-*public* **logRecord.pathext**
+*public* **LogContext.pathext**
 - `<string>`
 The extension of the module.  Available if `Config.captureStackTrace` is set to `true`.
 
-*public* **logRecord.pid**
+*public* **LogContext.pid**
 - `<string>`
 The process identifier.
 
-*public* **logRecord.env**
+*public* **LogContext.env**
 - `<NodeJS.ProcessEnv>`
 The process environment.
 
-*public* **logRecord.threadid**
+*public* **LogContext.threadid**
 - `<string>`
 The thread identifier.
 
@@ -428,7 +458,7 @@ Use `Config.getReadableDefaults` when implementing a [custom *Streams* data tran
 
 ## Formatting
 
-The `Logger` constructs and emits a `LogRecord<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the properties of a `LogRecord` *may* undergo formatting and serialization.  This can be accomplished by passing a `FormatterOptions` object, to the constructor of a `Formatter`, with its `format` property set to a custom [serialization function](#example-serializer) that accepts a `LogRecord` as its single argument.  The serialization function can construct a log message from the `LogRecord` [properties](#the-logrecord-class).  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
+The `Logger` constructs and emits a `LogContext<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the properties of a `LogContext` *may* undergo formatting and serialization.  This can be accomplished by passing a `FormatterOptions` object, to the constructor of a `Formatter`, with its `format` property set to a custom [serialization function](#example-serializer) that accepts a `LogContext` as its single argument.  The serialization function can construct a log message from the `LogContext` [properties](#the-LogContext-class).  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
 
 ### Example Serializer
 
@@ -442,7 +472,7 @@ In the following code excerpt, a serializer is implemented that logs:
 6. The log message
 7. A newline
 
-The `format` function is passed to the constructor of a `Formatter`, which will serialize the data contained in the `LogRecord` to a string.  The `Logger` is connected to the `Formatter`.  The `Formatter` is connected to the `ConsoleHandler`.
+The `format` function is passed to the constructor of a `Formatter`, which will serialize the data contained in the `LogContext` to a string.  The `Logger` is connected to the `Formatter`.  The `Formatter` is connected to the `ConsoleHandler`.
 
 ```ts
 
@@ -471,7 +501,7 @@ This is an example of what a logged message will look like using the serializer 
 #                        ⮴level       ⮴line number
 ```
 ## Object (JSON) Logging
-*Streams* logging facilities (e.g., Logger, Formatter, etc.) default to `string` messages; however, you can log any type of message you want.  In the following example, an interface is created named `Message` and messages are serialized using `JSON.stringify`.
+*Streams* logging facilities (e.g., Logger, Formatter, etc.) default to `string` messages; however, you can log any type of message you want.  In the following example, a permissive interface is created named `Message` and messages are serialized using `JSON.stringify`.
 
 ```ts
 import { Logger, Formatter, ConsoleHandler, SyslogLevel } from 'streams-logger';
@@ -546,15 +576,15 @@ streams.root.connect(
 
 *Streams* is built on the type-safe Nodes graph API framework.  This means that any Nodes `Node` may be incorporated into your logging graph given that it meets the contextual type requirements.  In order to implement a *Streams* data transformation `Node`, subclass the `Node` class, and provide the appropriate *Streams* defaults to the stream constructor.
 
-For example, the somewhat contrived `LogRecordToBuffer` implementation transforms the `message` contained in a `LogRecord` to a `Buffer`; the graph pipeline streams the message to `process.stdout`.
+For example, the somewhat contrived `LogContextToBuffer` implementation transforms the `message` contained in a `LogContext` to a `Buffer`; the graph pipeline streams the message to `process.stdout`.
 
 > NB: `writableObjectMode` is set to `true` and `readableObjectMode` is set to `false`; hence, the Node.js stream implementation will handle the input as a `object` and the output as an `Buffer`. It's important that `writableObjectMode` and `readableObjectMode` accurately reflect the input and output types of your Node.
 
 ```ts
 import * as stream from 'node:stream';
-import { Logger, Node, Config, LogRecord, SyslogLevelT } from 'streams-logger';
+import { Logger, Node, Config, LogContext, SyslogLevelT } from 'streams-logger';
 
-export class LogRecordToBuffer extends Node<LogRecord<string, SyslogLevelT>, Buffer> {
+export class LogContextToBuffer extends Node<LogContext<string, SyslogLevelT>, Buffer> {
 
     public encoding: NodeJS.BufferEncoding = 'utf-8';
 
@@ -565,7 +595,7 @@ export class LogRecordToBuffer extends Node<LogRecord<string, SyslogLevelT>, Buf
             ...{
                 writableObjectMode: true,
                 readableObjectMode: false,
-                transform: (chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
+                transform: (chunk: LogContext<string, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
                     callback(null, Buffer.from(chunk.message, this.encoding));
                 }
             }
@@ -575,11 +605,11 @@ export class LogRecordToBuffer extends Node<LogRecord<string, SyslogLevelT>, Buf
 }
 
 const log = new Logger({ name: 'main' });
-const logRecordToBuffer = new LogRecordToBuffer();
+const LogContextToBuffer = new LogContextToBuffer();
 const console = new Node<Buffer, never>(process.stdout)
 
 log.connect(
-    logRecordToBuffer.connect(
+    LogContextToBuffer.connect(
         console
     )
 );
@@ -625,9 +655,9 @@ streams.Config.setDefaultHighWaterMark(false, 1e6);
 
 ### Disable the stack trace capture.
 
-Another optional setting that you can take advantage of is to turn off the stack trace capture.  Stack trace capture can be disabled globally using the *Streams* configuration settings object.  Alternatively, you may turn off stach trace capture in a specific `Logger` by setting the `stackTraceCapture` property of the `LoggerOptions` to `false`. 
+Another optional setting that you can take advantage of is to turn off the stack trace capture.  Stack trace capture can be disabled globally using the *Streams* configuration settings object.  Alternatively, you may disable stack trace capturing in a specific `Logger` by setting the `stackTraceCapture` property of the `LoggerOptions` to `false`. 
 
-Turning off stack trace capture will disable some of the information (e.g., function name and line number) that is normally contained in the `LogRecord` object that is passed to the `format` function of a `Formatter`.
+Turning off stack trace capture will disable some of the information (e.g., function name and line number) that is normally contained in the `LogContext` object that is passed to the `format` function of a `Formatter`.
 
 ```ts
 import * as streams from 'streams-logger';
@@ -656,3 +686,6 @@ log.disconnect(streams.root);
 **For typical logging applications setting a `queueSizeLimit` isn't necessary.**  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending Nodes in your graph.
 
 If you have a *cooperating* stream that is backpressuring, you can either set a default `highWaterMark` appropriate to your application or increase the `highWaterMark` on the specific stream in order to mitigate drain events.
+
+## Performance
+*Streams* performs well in real-world logging applications where logging is typically a highly asynchronous task.  Each `Node` in a *Streams* logging graph operates as a Node.js stream; hence, each write to the logger will be processed asynchronously from each subsequent write.  This model works well in real-world scenarios where it is preferable to break up blocking operations into asynchronous parts.

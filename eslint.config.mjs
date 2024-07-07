@@ -1,4 +1,3 @@
-
 // @ts-check
 
 import eslint from '@eslint/js';
@@ -6,21 +5,21 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   eslint.configs.recommended,
-  ...tseslint.configs.strict,
-  ...tseslint.configs.stylistic,
+  ...tseslint.configs.recommended,
   {
-    ignores: ['**/dist']
-  },
-  {
-    files: ['**/*.js'],
+    files: ["**/*.ts"],
+    plugins: {
+      '@typescript-eslint': tseslint.plugin,
+    },
     languageOptions: {
-      sourceType: 'commonjs'
-    }
-  },
-  {
+      parser: tseslint.parser,
+      parserOptions: {
+        project: true,
+      },
+    },
     rules: {
-      semi: 'error',
-      quotes: ['error', 'single']
-    }
-  }
-);
+      '@typescript-eslint/no-floating-promises': 'error',
+      'semi': 'error',
+      'quotes': ['error', 'single']
+    },
+  });

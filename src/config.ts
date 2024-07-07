@@ -6,13 +6,19 @@ class Config {
     public defaultHighWaterMark?: number;
     public defaultHighWaterMarkObjectMode?: number;
     public captureStackTrace: boolean;
+    public captureISOTime:boolean;
 
     constructor() {
         this.captureStackTrace = true;
+        this.captureISOTime = true;
     }
 
     setCaptureStackTrace(value: boolean) {
         this.captureStackTrace = value;
+    }
+
+    setCaptureISOTime(value: boolean) {
+        this.captureISOTime = value;
     }
 
     getDefaultHighWaterMark(objectMode: boolean): number {

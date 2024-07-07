@@ -2,7 +2,7 @@
 import * as pth from 'node:path';
 import * as fsp from 'node:fs/promises';
 import * as stream from 'node:stream';
-import { LogRecord } from './log_record.js';
+import { LogContext } from './log_context.js';
 import { Node, $stream } from '@farar/nodes';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
 import { Config } from "./index.js";
@@ -41,7 +41,7 @@ export class RotatingFileHandlerWritable<MessageT> extends stream.Writable {
         this[$level] = level;
     }
 
-    async _write(chunk: LogRecord<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): Promise<void> {
+    async _write(chunk: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): Promise<void> {
         try {
             let message: string | Buffer;
             if (typeof chunk.message == 'string' || chunk.message instanceof Buffer) {
@@ -120,7 +120,7 @@ export interface RotatingFileHandlerOptions {
     level?: SyslogLevel;
 }
 
-export class RotatingFileHandler<MessageT = string> extends Node<LogRecord<MessageT, SyslogLevelT>, never> {
+export class RotatingFileHandler<MessageT = string> extends Node<LogContext<MessageT, SyslogLevelT>, never> {
 
     constructor(options: RotatingFileHandlerOptions, streamOptions?: stream.WritableOptions) {
         super(new RotatingFileHandlerWritable<MessageT>(options, streamOptions));

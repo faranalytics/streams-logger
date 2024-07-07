@@ -1,5 +1,5 @@
 import { config as Config } from './config.js';
-import { LogRecord } from './log_record.js';
+import { LogContext } from './log_context.js';
 import { Node, BufferToString, ObjectToBuffer, BufferToObject, AnyToTest, AnyToVoid, $write, $size } from '@farar/nodes';
 import { Logger, root } from './logger.js';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
@@ -11,7 +11,7 @@ import { SocketHandler } from './socket_handler.js';
 
 export {
     Node,
-    LogRecord,
+    LogContext,
     Logger,
     SyslogLevel,
     SyslogLevelT,

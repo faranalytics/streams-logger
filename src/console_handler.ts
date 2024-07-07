@@ -2,7 +2,7 @@
 import * as stream from 'node:stream';
 import { once } from 'node:events';
 import { Node, $stream } from '@farar/nodes';
-import { LogRecord } from './log_record.js';
+import { LogContext } from './log_context.js';
 import { SyslogLevel, SyslogLevelT } from './syslog.js';
 import { Config } from './index.js';
 
@@ -25,7 +25,7 @@ export class ConsoleHandlerTransform<MessageT> extends stream.Writable {
         this[$level] = level;
     }
 
-    async _write(chunk: LogRecord<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): Promise<void> {
+    async _write(chunk: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): Promise<void> {
         try {
             if (chunk.level && SyslogLevel[chunk.level] <= this[$level] && (typeof chunk.message == 'string' || chunk.message instanceof Buffer)) {
                 if (!process.stdout.write(chunk.message)) {
@@ -46,7 +46,7 @@ export interface ConsoleHandlerOptions {
     level: SyslogLevel;
 }
 
-export class ConsoleHandler<MessageT = string> extends Node<LogRecord<MessageT, SyslogLevelT>, never> {
+export class ConsoleHandler<MessageT = string> extends Node<LogContext<MessageT, SyslogLevelT>, never> {
 
     constructor({ level }: ConsoleHandlerOptions = { level: SyslogLevel.WARN }, streamOptions?: stream.WritableOptions) {
         super(new ConsoleHandlerTransform<MessageT>({ level }, streamOptions));

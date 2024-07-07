@@ -4,26 +4,28 @@ import * as fs from 'node:fs';
 import * as streams from 'streams-logger';
 import { describe, test } from 'node:test';
 import * as assert from 'node:assert';
-import { LogRecord, SyslogLevelT, Filter, SocketHandler, AnyToTest } from 'streams-logger';
+import {LogContext, SyslogLevelT, Filter, SocketHandler, AnyToTest } from 'streams-logger';
 
 // // streams.Config.setDefaultHighWaterMark(true, 1e6);
 // // streams.Config.setDefaultHighWaterMark(false, 1e6);
 
+// const logContext = new LogContext({});
+// console.log(Object.keys(logContext).sort().reduce((curr, prev)=> curr + '\n' + prev,''));
 const MESSAGE = 'Hello, World!'.repeat(1);
 const suite = async (
-    chunk: LogRecord<string, SyslogLevelT>,
+    chunk: LogContext<string, SyslogLevelT>,
     encoding: BufferEncoding,
     callback: (error?: Error | null | undefined) => void
 ) => {
     await describe('Test.', async () => {
         await test('Assert that `chunk.message` matches `regExp`.', async () => {
-            assert.match(chunk.message, /Hello, World!/);
+            assert.match(chunk.message ?? '', /Hello, World!/);
         });
     });
     callback();
 };
 
-const anyToTest = new AnyToTest<LogRecord<string, SyslogLevelT>>({ suite });
+const anyToTest = new AnyToTest<LogContext<string, SyslogLevelT>>({ suite });
 
 net.createServer((socket: net.Socket) => {
     const socketHandler = new SocketHandler({ socket });
@@ -40,7 +42,7 @@ const streams_formatter = new streams.Formatter({
     )
 });
 const streams_filter = new streams.Filter({
-    filter: (record: LogRecord<string, SyslogLevelT>) => {
+    filter: (record: LogContext<string, SyslogLevelT>) => {
         return record.name == 'test';
     }
 });

@@ -4,7 +4,7 @@ import * as threads from 'node:worker_threads';
 import { KeysUppercase } from './types.js';
 import { SyslogLevelT } from './syslog.js';
 
-export interface LogRecordOptions<MessageT = string, LevelT = SyslogLevelT> {
+export interface LogContextOptions<MessageT = string, LevelT = SyslogLevelT> {
     message?: MessageT;
     name?: string;
     level?: KeysUppercase<LevelT>;
@@ -26,7 +26,7 @@ export interface LogRecordOptions<MessageT = string, LevelT = SyslogLevelT> {
     threadid?: number;
 }
 
-export class LogRecord<MessageT, LevelT> implements LogRecordOptions<MessageT, LevelT> {
+export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT, LevelT> {
     public message?: MessageT;
     public name?: string;
     public level?: KeysUppercase<LevelT>;
@@ -49,7 +49,7 @@ export class LogRecord<MessageT, LevelT> implements LogRecordOptions<MessageT, L
 
     private regex?: RegExp;
 
-    constructor(options: LogRecordOptions<MessageT, LevelT>) {
+    constructor(options: LogContextOptions<MessageT, LevelT>) {
         Object.assign(this, options);
         this.threadid = threads.threadId;
         this.pid = process.pid;
