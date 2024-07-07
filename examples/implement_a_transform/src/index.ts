@@ -1,7 +1,7 @@
 import * as stream from 'node:stream';
-import { Logger, Node, Config, LogRecord, SyslogLevelT } from 'streams-logger';
+import { Logger, Node, Config, LogContext, SyslogLevelT } from 'streams-logger';
 
-export class LogRecordToBuffer extends Node<LogRecord<string, SyslogLevelT>, Buffer> {
+export class LogContextToBuffer extends Node<LogContext<string, SyslogLevelT>, Buffer> {
 
     public encoding: NodeJS.BufferEncoding = 'utf-8';
 
@@ -12,8 +12,13 @@ export class LogRecordToBuffer extends Node<LogRecord<string, SyslogLevelT>, Buf
             ...{
                 writableObjectMode: true,
                 readableObjectMode: false,
-                transform: (chunk: LogRecord<string, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
-                    callback(null, Buffer.from(chunk.message, this.encoding));
+                transform: (chunk: LogContext<string, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
+                    if (chunk.message) {
+                        callback(null, Buffer.from(chunk.message, this.encoding));
+                    }
+                    else {
+                        callback();
+                    }
                 }
             }
         })
@@ -22,11 +27,11 @@ export class LogRecordToBuffer extends Node<LogRecord<string, SyslogLevelT>, Buf
 }
 
 const log = new Logger<string>({ name: 'main' });
-const logRecordToBuffer = new LogRecordToBuffer();
+const logContextToBuffer = new LogContextToBuffer();
 const console = new Node<Buffer, never>(process.stdout);
 
 log.connect(
-    logRecordToBuffer.connect(
+    logContextToBuffer.connect(
         console
     )
 );

@@ -10,7 +10,7 @@ import { Config } from "./index.js";
 export const $level = Symbol('level');
 export const $path = Symbol('path');
 export const $rotations = Symbol('rotations');
-export const $bytes = Symbol('bytes');
+export const $maxBytes = Symbol('bytes');
 export const $encoding = Symbol('encoding');
 export const $mode = Symbol('mode');
 export const $mutex = Symbol('mutex');
@@ -21,12 +21,12 @@ export class RotatingFileHandlerWritable<MessageT> extends stream.Writable {
     public [$level]: SyslogLevel;
     public [$path]: string;
     public [$rotations]: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
-    public [$bytes]: number;
+    public [$maxBytes]: number;
     public [$encoding]: BufferEncoding;
     public [$mode]: number;
     private [$mutex]: Promise<void>;
 
-    constructor({ level = SyslogLevel.WARN, path, rotations = 0, bytes = 1e6, encoding = 'utf8', mode = 0o666 }: RotatingFileHandlerOptions,
+    constructor({ level = SyslogLevel.WARN, path, rotations = 0, maxBytes = 1e6, encoding = 'utf8', mode = 0o666 }: RotatingFileHandlerOptions,
         writableOptions?: stream.WritableOptions) {
         super({
             ...Config.getWritableDefaults(true),
@@ -34,7 +34,7 @@ export class RotatingFileHandlerWritable<MessageT> extends stream.Writable {
         });
         this[$path] = pth.resolve(pth.normalize(path));
         this[$rotations] = rotations;
-        this[$bytes] = bytes;
+        this[$maxBytes] = maxBytes;
         this[$encoding] = encoding;
         this[$mode] = mode;
         this[$mutex] = Promise.resolve();
@@ -57,21 +57,21 @@ export class RotatingFileHandlerWritable<MessageT> extends stream.Writable {
                         if (this[$rotations]) {
                             const stats = await fsp.stat(this[$path]);
                             if (stats.isFile()) {
-                                if (stats.size + message.length > this[$bytes]) {
+                                if (stats.size + message.length > this[$maxBytes]) {
                                     await this.rotate();
                                 }
-                                await fsp.appendFile(this[$path], message, { mode: this[$mode], flag: 'a', encoding: this[$encoding] });
+                                await fsp.appendFile(this[$path], message, { mode: this[$mode], flag: 'a', encoding: this[$encoding], flush: true });
                             }
                             else {
                                 console.error(`The path, ${this[$path]}, is not a file.`);
                             }
                         }
                         else {
-                            await fsp.appendFile(this[$path], message, { mode: this[$mode], flag: 'a', encoding: this[$encoding] });
+                            await fsp.appendFile(this[$path], message, { mode: this[$mode], flag: 'a', encoding: this[$encoding], flush: true });
                         }
                     }
                     catch (err) {
-                        await fsp.appendFile(this[$path], message, { mode: this[$mode], flag: 'a', encoding: this[$encoding] });
+                        await fsp.appendFile(this[$path], message, { mode: this[$mode], flag: 'a', encoding: this[$encoding], flush: true });
                     }
                 })());
             }
@@ -114,7 +114,7 @@ export class RotatingFileHandlerWritable<MessageT> extends stream.Writable {
 export interface RotatingFileHandlerOptions {
     path: string;
     rotations?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
-    bytes?: number;
+    maxBytes?: number;
     encoding?: BufferEncoding;
     mode?: number;
     level?: SyslogLevel;

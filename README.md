@@ -42,6 +42,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [Example Serializer](#example-serializer)
 - [Object (JSON) Logging](#object-json-logging)
 - [Using a Socket Handler](#using-a-socket-handler)
+    - [Security](#security)
 - [Hierarchical Logging](#hierarchical-logging)
 - [How-Tos](#how-tos)
     - [How to implement a custom *Streams* data transformation Node.](#how-to-implement-a-custom-streams-data-transformation-node)
@@ -144,7 +145,7 @@ Please see the [*Network Connected **Streams** Logging Graph*](https://github.co
 |col| The column number of the logging call.|Config.captureStackTrace = `true`|
 |depth| The line of the stack capture used for parsing||
 |env| The process [environment](https://nodejs.org/dist/latest-v8.x/docs/api/process.html#process_process_env).||
-|func| The name of the function where the logging call took place.||
+|func| The name of the function where the logging call took place.|Config.captureStackTrace = `true`|
 |isotime| The ISO 8601 [representation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) of the time at which the logging call took place.|Config.captureISOTime = `true`|
 |level| The `SyslogLevel` of the logging call.||
 |line| The line number of the logging call.|Config.captureStackTrace = `true`|
@@ -245,7 +246,7 @@ Set the log level.  Must be one of `SyslogLevel`.
 - `<MessageT>` The type of the logged message.  This is the type of the `message` property of the `LogContext` that is passed to the `format` function. **Default: `<string>`**
 - `<MessageOutT>` The type of the output message.  This is the return type of the `format` function. **Default: `<string>`**
 - options
-    - format `(record: LogContext<MessageInT, SyslogLevelT>): Promise<MessageOutT> | MessageOutT` A function that will format and serialize the `LogContext<string, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a format function.
+    - format `(record: LogContext<MessageInT, SyslogLevelT>): Promise<MessageOutT> | MessageOutT` A function that will format and serialize the `LogContext<MessageInT, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a format function.
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
 Use a `Formatter` in order to specify how your log message will be formatted prior to forwarding it to the Handler(s).  An instance of [`LogContext`](#the-LogContext-class) is created that contains information about the environment at the time of the logging call.  The `LogContext` is passed as the single argument to `format` function.
@@ -253,30 +254,30 @@ Use a `Formatter` in order to specify how your log message will be formatted pri
 *public* **formatter.connect(...nodes)**
 - nodes `<Array<Node<LogContext<MessageOutT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
 
-Returns: `<Logger<LogContext<MessageInT, SyslogLevelT>, LogContext<MessageOutT, SyslogLevelT>>`
+Returns: `<Formatter<LogContext<MessageInT, SyslogLevelT>, LogContext<MessageOutT, SyslogLevelT>>`
 
 *public* **formatter.disconnect(...nodes)**
 - nodes `<Array<Node<LogContext<MessageOutT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
 
-Returns: `<Logger<LogContext<MessageInT, SyslogLevelT>, LogContext<MessageOutT, SyslogLevelT>>`
+Returns: `<Formatter<LogContext<MessageInT, SyslogLevelT>, LogContext<MessageOutT, SyslogLevelT>>`
 
 ### The Filter Class
 
 **new streams-logger.Filter\<MessageT\>(options, streamOptions)**
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
 - options
-    - filter `(record: LogContext<string, SyslogLevelT>): Promise<boolean> | boolean` A function that will filter the `LogContext<string, SyslogLevelT>`.  Return `true` in order to permit the message through; otherwise, return `false`.
+    - filter `(record: LogContext<MessageT, SyslogLevelT>): Promise<boolean> | boolean` A function that will filter the `LogContext<MessageT, SyslogLevelT>`.  Return `true` in order to permit the message through; otherwise, return `false`.
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
 *public* **filter.connect(...nodes)**
 - nodes `<Array<Node<LogContext<MessageT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
 
-Returns: `<Logger<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>>`
+Returns: `<Filter<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>>`
 
 *public* **filter.disconnect(...nodes)**
 - nodes `<Array<Node<LogContext<MessageT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
 
-Returns: `<Logger<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>>`
+Returns: `<Filter<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>>`
 
 ### The ConsoleHandler Class
 
@@ -300,13 +301,13 @@ Set the log level.  Must be one of `SyslogLevel`.
 - options `<RotatingFileHandlerOptions>`
     - path `<string>` 
     - rotations `<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10>` An optional number of log rotations.
-    - bytes `<number>` The size of the log file in MB. **Default**: `1e6`
+    - maxBytes `<number>` The size of the log file in bytes. **Default**: `1e6`
     - encoding `<BufferEncoding>` An optional encoding. **Default**: `utf8`
     - mode `<number>` An optional mode. **Deafult**:`0o666`
     - level `<SyslogLevel>` An optional log level.  **Default**: `SyslogLevel.WARN`
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
-Use a `RotatingFileHandler` in order to write your log messages to a file.
+Use a `RotatingFileHandler` in order to write your log messages to a file.  The `RotatingFileHandler` is thread safe.
 
 *public* **rotatingFileHandler.setLevel(level)**
 - level `<SyslogLevel>` A log level.
@@ -329,12 +330,12 @@ Use a `SocketHandler` in order to connect *Stream* graphs over the network.  Ple
 *public* **socketHandler.connect(...nodes)**
 - nodes `<Array<Node<LogContext<MessageT, SyslogLevelT>, unknown>>`  Connect to an Array of `Nodes`.
 
-Returns: `<Logger<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>>`
+Returns: `<SocketHandler<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>>`
 
 *public* **socketHandler.disconnect(...nodes)**
 - nodes `<Array<Node<LogContext<MessageT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
 
-Returns: `<Logger<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>>`
+Returns: `<SocketHandler<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>>`
 
 ### The LogContext Class
 
@@ -350,7 +351,7 @@ Returns: `<Logger<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, Syslo
 
 A `LogContext` is instantiated each time a message is logged at (or below) the level set on the `Logger`. It contains information about the process and environment at the time of the logging call.  All *Streams* Nodes take a `LogContext` as an input and emit a `LogContext` as an output.  
 
-The `LogContext` is passed as the single argument to the [format function](#formatting) of the `Formatter`; information about the environment can be extracted from the `LogContext` in order to format the logged message.  The following properties will be available to the `format` functioning depending on the setting of `Config.captureStackTrace`.
+The `LogContext` is passed as the single argument to the [format function](#formatting) of the `Formatter`; information about the environment can be extracted from the `LogContext` in order to format the logged message.  The following properties will be available to the `format` function depending on the setting of `Config.captureStackTrace` and `Config.captureISOTime`.  Please see the [Log Context Data](#log-context-data) table for details.
 
 *public* **LogContext.message**
 - `<string>`
@@ -378,7 +379,7 @@ The column of the logging call.  Available if `Config.captureStackTrace` is set 
 
 *public* **LogContext.isotime**
 - `<string>`
-The date and time in ISO format at the time of the logging call.
+The date and time in ISO format at the time of the logging call. Available if `Config.captureISOTime` is set to `true`.
 
 *public* **LogContext.pathname**
 - `<string>`
@@ -430,7 +431,12 @@ Returns: `<void>`
 Returns: `<number>` The default `highWaterMark`.
 
 **Config.setCaptureStackTrace(value)**
-- value `<boolean>` Set this to `true` in order to capture a stack trace on each logging call.  Default: `true`
+- value `<boolean>` Set this to `false` in order to disable stack trace capture on each logging call.  **Default: `true`**
+
+Returns: `<void>`
+
+**Config.setCaptureISOTime(value)**
+- value `<boolean>` Set this to `false` in order to disable capturing the ISO time on each logging call.  **Default: `true`**
 
 Returns: `<void>`
 
@@ -456,9 +462,23 @@ Returns: `<stream.ReadableOptions>`
 
 Use `Config.getReadableDefaults` when implementing a [custom *Streams* data transformation Node](#how-to-implement-a-custom-streams-data-transformation-node).
 
+### The SyslogLevel Enum
+**streams-logger.SyslogLevel\[Level\]**
+- Level
+    - EMERG = 0
+    - ALERT = 1
+    - CRIT = 2
+    - ERROR = 3
+    - WARN = 4
+    - NOTICE = 5
+    - INFO = 6
+    - DEBUG = 7
+
+Use `SyslogLevel` to set the level in `Logger`, `Filter`, and `Handler` instances.
+
 ## Formatting
 
-The `Logger` constructs and emits a `LogContext<string, SyslogLevelT>` on each logged message.  At some point in a logging graph the properties of a `LogContext` *may* undergo formatting and serialization.  This can be accomplished by passing a `FormatterOptions` object, to the constructor of a `Formatter`, with its `format` property set to a custom [serialization function](#example-serializer) that accepts a `LogContext` as its single argument.  The serialization function can construct a log message from the `LogContext` [properties](#the-LogContext-class).  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
+The `Logger` constructs and emits a `LogContext<MessageT, SyslogLevelT>` on each logged message.  At some point in a logging graph the properties of a `LogContext` *may* undergo formatting and serialization.  This can be accomplished by passing a `FormatterOptions` object, to the constructor of a `Formatter`, with its `format` property set to a custom [serialization function](#example-serializer) that accepts a `LogContext` as its single argument.  The serialization function can construct a log message from the `LogContext` [properties](#the-LogContext-class).  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
 
 ### Example Serializer
 
@@ -554,7 +574,7 @@ TLS Client Certificate Authentication may be implemented using native Node.js [T
 You may capture logging events from other modules (*and your own*) by connecting a data handler `Node` (e.g., a `ConsoleHandler`) to the `streams-logger.root` `Logger`. E.g.,
 
 ```ts
-import { Formatter, ConsoleHandler, SyslogLevel } from 'streams-logger';
+import { Formatter, ConsoleHandler, SyslogLevel, root } from 'streams-logger';
 
 const formatter = new Formatter({
     format: async ({ isotime, message, name, level, func, url, line, col }) => (
@@ -563,7 +583,7 @@ const formatter = new Formatter({
 });
 const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 
-streams.root.connect(
+root.connect(
     formatter.connect(
         consoleHandler
     )

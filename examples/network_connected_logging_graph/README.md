@@ -3,12 +3,12 @@
 In this example you will contruct two *Streams* logging graphs that are connected by a `SocketHandler` at each end of the network socket.  The log message will be logged to the console on the client side and to a file on the server side.
 
 ## Step by Step
-A `Logger` is used in order to log a `Hello, World!` message.  The message undergoes the following trasnformations:
+A `Logger` is used in order to log a `Hello, World!` message.  The message undergoes the following transformations:
 
 - The message is formatted and serialized; the serialized message contains the `Logger` name, ISO time, log `Level`, function name, line number, column number, and the message.
 - The message is logged to the console using a `ConsoleHandler`.
 - The message is sent over a socket to a server using a `SocketHandler`.  
-- The message is deserialized to a `LogRecord` using a `SocketHandler`.
+- The message is deserialized to a `LogContext` using a `SocketHandler`.
 - A server timestamp is prepended to the message using a `Formatter`.
 - The message is logged to a file named `server.log` using a `RotatingFileHandler`.
 - The message is sent over a socket back to the client using the same `SocketHandler`.
