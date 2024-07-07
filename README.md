@@ -62,13 +62,15 @@ npm install streams-logger
 
 ## Concepts
 
+Logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed.  Likewise, when data is written to a file or the console additional data transformations may take place e.g., serialization and representational transformation.  *Streams* accomplishes these data transformation tasks by means of a network of [`Node`](#node) instances (i.e., a data transformation graph) that is constructed using a [graph-like API pattern](#graph-api-pattern).
+
 ### Node
 
-Logging is essentially a data transformation task.  When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed.  Each data transformation step in a *Streams* logging graph is realized through a `Node` implementation.  Each `Node` in a data transformation graph consumes an input, transforms or filters the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Filters, Handlers, etc.) in a *Streams* logging graph *is a* `Node`.
+ Each data transformation step in a *Streams* logging graph is realized through a `Node` implementation.  Each `Node` in a data transformation graph consumes an input, transforms or filters the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Filters, Handlers, etc.) in a *Streams* logging graph *is a* `Node`.
 
 ### Graph API Pattern
 
-*Streams* uses a [graph-like API pattern](#connect-the-logger-to-the-formatter-and-connect-the-formatter-to-the-consolehandler-and-rotatingfilehandler) for constructing a logging graph. Each graph consists of a network of `Node` instances that together comprise a graph logging pipeline.
+*Streams* uses a graph-like API pattern for constructing a logging graph. Each graph consists of a network of `Node` instances that together comprise a graph logging pipeline. Please see the [Usage](#usage) or [Examples](#examples) for instructions on how to construct a *Streams* data transformation graph.
 
 ## Usage
 
@@ -171,12 +173,12 @@ The *Streams* API provides commonly used logging facilities (i.e., the [Logger](
 **new streams-logger.Logger\<MessageT\>(options, streamOptions)**
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
 - options `<LoggerOptions>`
-    - level `<SyslogLevel>` The syslog compliant logger level.
-    - name `<string>` An optional name for the `Logger`. **Default: `''`**
+    - level `<SyslogLevel>` The syslog compliant logger level. **Default: `SyslogLevel.WARN`**
+    - name `<string>` An optional name for the `Logger`.
     - parent `<Logger>` An optional parent `Logger`.  **Default: `streams-logger.root`**
     - queueSizeLimit `<number>` Optionally specify a limit on the number of log messages that may queue while waiting for a stream to drain.  See [Backpressure](#backpressure).
-    - captureStackTrace `<boolean>` Optionally specify if stack trace capturing is enabled.  This setting can be overriden by the *Streams* configuration setting `Config.captureStackTrace`. **Default: `true`**
-    - captureISOTime `<boolean>` Optionally specify if capturing ISO time is enabled. This setting can be overriden by the *Streams* configuration setting `Config.captureISOTime`. **Default: `true`**
+    - captureStackTrace `<boolean>` Optionally specify if stack trace capturing is enabled.  This setting can be overridden by the *Streams* configuration setting `Config.captureStackTrace`. **Default: `true`**
+    - captureISOTime `<boolean>` Optionally specify if capturing ISO time is enabled. This setting can be overridden by the *Streams* configuration setting `Config.captureISOTime`. **Default: `true`**
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
 Use an instance of a Logger to propagate messages at the specified syslog level.
@@ -196,43 +198,51 @@ Returns: `<Logger<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, Syslo
 
 Returns: `<Logger<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>>`
 
-*public* **logger.debug(message)**
-- message `<string>` Write a DEBUG message to the `Logger`.
+*public* **logger.debug(message, label)**
+- message `<MessageT>` Write a DEBUG message to the `Logger`.
+- label: `<string>` An optional label.
 
 Returns: `<void>`
 
 *public* **logger.info(message)**
-- message `<string>` Write a INFO message to the `Logger`.
+- message `<MessageT>` Write a INFO message to the `Logger`.
+- label: `<string>` An optional label.
 
 Returns: `<void>`
 
 *public* **logger.notice(message)**
-- message `<string>` Write a NOTICE message to the `Logger`.
+- message `<MessageT>` Write a NOTICE message to the `Logger`.
+- label: `<string>` An optional label.
 
 Returns: `<void>`
 
 *public* **logger.warn(message)**
-- message `<string>` Write a WARN message to the `Logger`.
+- message `<MessageT>` Write a WARN message to the `Logger`.
+- label: `<string>` An optional label.
 
 Returns: `<void>`
 
 *public* **logger.error(message)**
-- message `<string>` Write a ERROR message to the `Logger`.
+- message `<MessageT>` Write a ERROR message to the `Logger`.
+- label: `<string>` An optional label.
 
 Returns: `<void>`
 
 *public* **logger.crit(message)**
-- message `<string>` Write a CRIT message to the `Logger`.
+- message `<MessageT>` Write a CRIT message to the `Logger`.
+- label: `<string>` An optional label.
 
 Returns: `<void>`
 
 *public* **logger.alert(message)**
-- message `<string>` Write a ALERT message to the `Logger`.
+- message `<MessageT>` Write a ALERT message to the `Logger`.
+- label: `<string>` An optional label.
 
 Returns: `<void>`
 
 *public* **logger.emerg(message)**
-- message `<string>` Write a EMERG message to the `Logger`.
+- message `<MessageT>` Write a EMERG message to the `Logger`.
+- label: `<string>` An optional label.
 
 Returns: `<void>`
 
@@ -285,7 +295,7 @@ Returns: `<Filter<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, Syslo
 **new streams-logger.ConsoleHandler\<MessageT\>(options, streamOptions)**
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
 - options `<ConsoleHandlerTransformOtions>`
-    - level `<SyslogLevel>` An optional log level.  **Default**: `SyslogLevel.WARN`
+    - level `<SyslogLevel>` An optional log level.  **Default: `SyslogLevel.WARN`**
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
 Use a `ConsoleHandler` in order to stream your messages to the console.
@@ -344,7 +354,7 @@ Returns: `<SocketHandler<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
 - `<LevelT>` The type of the Level enum. **Default: `<SyslogLevelT>`**
 - options `<LoggerOptions>`
-    - message `<string>` The logged message.
+    - message `<MessageT>` The logged message.
     - name `<string>` The name of the `Logger`.
     - level `<KeysUppercase<LevelT>` An uppercase string representing the log level.
     - depth `<number>` Used to specify which line of the stack trace to parse.
@@ -715,4 +725,4 @@ log.disconnect(streams.root);
 If you have a *cooperating* stream that is backpressuring, you can either set a default `highWaterMark` appropriate to your application or increase the `highWaterMark` on the specific stream in order to mitigate drain events.
 
 ## Performance
-*Streams* performs well in real-world logging applications.  Each `Node` in a *Streams* logging graph operates as a Node.js stream; hence, each write to the logger will be processed asynchronously.  This model works well in real-world scenarios where asynchronous opertations are preferred.
+*Streams* performs well in real-world logging applications.  Each `Node` in a *Streams* logging graph operates as a Node.js stream; hence, each write to the logger will be processed asynchronously.  This model works well in real-world scenarios where asynchronous operations are preferred.

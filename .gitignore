@@ -129,6 +129,4 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-/working
-/archive
-graph.svg
+/_working

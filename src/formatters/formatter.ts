@@ -4,13 +4,13 @@ import { Node } from '@farar/nodes';
 import { SyslogLevelT } from '../commons/syslog.js';
 import { Config } from '../index.js';
 
-export interface FormatterOptions<MessageInT, MessageOutT> {
+export interface FormatterConstructorOptions<MessageInT, MessageOutT> {
     format: (record: LogContext<MessageInT, SyslogLevelT>) => Promise<MessageOutT> | MessageOutT
 }
 
 export class Formatter<MessageInT = string, MessageOutT = string> extends Node<LogContext<MessageInT, SyslogLevelT>, LogContext<MessageOutT, SyslogLevelT>> {
 
-    constructor({ format }: FormatterOptions<MessageInT, MessageOutT>, streamOptions?: stream.TransformOptions) {
+    constructor({ format }: FormatterConstructorOptions<MessageInT, MessageOutT>, streamOptions?: stream.TransformOptions) {
         super(new stream.Transform({
             ...Config.getDuplexDefaults(true, true),
             ...streamOptions, ...{
