@@ -2,10 +2,10 @@
 import * as pth from 'node:path';
 import * as fsp from 'node:fs/promises';
 import * as stream from 'node:stream';
-import { LogContext } from './log_context.js';
+import { LogContext } from '../commons/log_context.js';
 import { Node, $stream } from '@farar/nodes';
-import { SyslogLevel, SyslogLevelT } from './syslog.js';
-import { Config } from "./index.js";
+import { SyslogLevel, SyslogLevelT } from '../commons/syslog.js';
+import { Config } from "../index.js";
 
 export const $level = Symbol('level');
 export const $path = Symbol('path');

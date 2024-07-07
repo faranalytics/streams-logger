@@ -1,10 +1,10 @@
 import * as stream from 'node:stream';
-import { LogContext } from './log_context.js';
+import { LogContext } from '../commons/log_context.js';
 import { Node, $write, $outs, $size } from '@farar/nodes';
-import { SyslogLevel, SyslogLevelT } from './syslog.js';
-import { KeysUppercase } from './types.js';
-import { QueueSizeLimitExceededError } from './errors.js';
-import { Config } from './index.js';
+import { SyslogLevel, SyslogLevelT } from '../commons/syslog.js';
+import { KeysUppercase } from '../commons/types.js';
+import { QueueSizeLimitExceededError } from '../commons/errors.js';
+import { Config } from '../index.js';
 
 export interface LoggerOptions<MessageT> {
     level?: SyslogLevel;

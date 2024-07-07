@@ -1,8 +1,8 @@
 import * as stream from 'node:stream';
-import { LogContext } from './log_context.js';
+import { LogContext } from '../commons/log_context.js';
 import { Node } from '@farar/nodes';
-import { SyslogLevelT } from './syslog.js';
-import { Config } from './index.js';
+import { SyslogLevelT } from '../commons/syslog.js';
+import { Config } from '../index.js';
 
 export interface FormatterOptions<MessageInT, MessageOutT> {
     format: (record: LogContext<MessageInT, SyslogLevelT>) => Promise<MessageOutT> | MessageOutT
@@ -34,7 +34,8 @@ export class Formatter<MessageInT = string, MessageOutT = string> extends Node<L
                         pathext: chunk.pathext,
                         pid: chunk.pid,
                         env: chunk.env,
-                        threadid: chunk.threadid
+                        threadid: chunk.threadid,
+                        regex: chunk.regex
                     });
                     callback(null, logContext);
                 }

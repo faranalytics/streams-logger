@@ -139,17 +139,17 @@ Please see the [*Log to a File and the Console*](https://github.com/faranalytics
 Please see the [*Network Connected **Streams** Logging Graph*](https://github.com/faranalytics/streams-logger/tree/main/examples/network_connected_logging_graph) example that demonstrates how to connect *Streams* logging graphs over the network.
 
 ## Log Context Data
-*Streams* optionally provides a rich selection of contextual information with each logging call.  This information is provided to a `Formatter` as a `LogContext` object.  You can disable generation of some contextual information by setting `Config.captureStackTrace` and `Config.captureISOTime` to `false`.  Please see [Formatting](#formatting) for instructions on how to incorporate contextual information into your logged message.
-|Property|Desciption|Prerequisite|
+*Streams* optionally provides a rich selection of contextual information with each logging call.  This information is provided in a `LogContext` object that is passed as a single argument to the `format` function of the options of the `Formatter` constructor.  You can disable generation of some contextual information by setting `Config.captureStackTrace` and `Config.captureISOTime` to `false`.  Please see [Formatting](#formatting) for instructions on how to incorporate contextual information into your logged message.
+|Property|Description|Prerequisite|
 |---|---|---|
 |col| The column number of the logging call.|Config.captureStackTrace = `true`|
-|depth| The line of the stack capture used for parsing||
 |env| The process [environment](https://nodejs.org/dist/latest-v8.x/docs/api/process.html#process_process_env).||
 |func| The name of the function where the logging call took place.|Config.captureStackTrace = `true`|
 |isotime| The ISO 8601 [representation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) of the time at which the logging call took place.|Config.captureISOTime = `true`|
 |level| The `SyslogLevel` of the logging call.||
 |line| The line number of the logging call.|Config.captureStackTrace = `true`|
 |message| The message of the logging call.||
+|metadata| Optional user specified data.||
 |name| The name of the logger.||
 |path| The module path.|Config.captureStackTrace = `true`|
 |pathbase| The module filename.|Config.captureStackTrace = `true`|
@@ -163,7 +163,7 @@ Please see the [*Network Connected **Streams** Logging Graph*](https://github.co
 |url| The URL of the module.|Config.captureStackTrace = `true`|
 ## API
 
-The *Streams* API provides commonly used logging facilities (i.e., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)).  However, you can [consume any Node.js stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream) and add it to your logging graph.
+The *Streams* API provides commonly used logging facilities (i.e., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)).  However, you can [consume any Node.js stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream) and add it to your logging graph.
 
 ### The Logger Class
 
@@ -171,11 +171,11 @@ The *Streams* API provides commonly used logging facilities (i.e., the [Logger](
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
 - options `<LoggerOptions>`
     - level `<SyslogLevel>` The syslog compliant logger level.
-    - name `<string>` An optional name for the `Logger`.
-    - parent `<Logger>` An optional parent `Logger`.  **Default:** `streams-logger.root`
+    - name `<string>` An optional name for the `Logger`. **Default: `''`**
+    - parent `<Logger>` An optional parent `Logger`.  **Default: `streams-logger.root`**
     - queueSizeLimit `<number>` Optionally specify a limit on the number of log messages that may queue while waiting for a stream to drain.  See [Backpressure](#backpressure).
-    - captureStackTrace `<boolean>` Optionally specify if stack trace capturing is enabled.  This setting can be overriden by the *Streams* configuration setting `Config.captureStackTrace`. **Default:** `true`
-    - captureISOTime `<boolean>` Optionally specify if capturing ISO time is enabled. This setting can be overriden by the *Streams* configuration setting `Config.captureISOTime`. **Default:** `true`
+    - captureStackTrace `<boolean>` Optionally specify if stack trace capturing is enabled.  This setting can be overriden by the *Streams* configuration setting `Config.captureStackTrace`. **Default: `true`**
+    - captureISOTime `<boolean>` Optionally specify if capturing ISO time is enabled. This setting can be overriden by the *Streams* configuration setting `Config.captureISOTime`. **Default: `true`**
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
 Use an instance of a Logger to propagate messages at the specified syslog level.
@@ -299,12 +299,12 @@ Set the log level.  Must be one of `SyslogLevel`.
 **new streams-logger.RotatingFileHandler\<MessageT\>(options, streamOptions)**
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
 - options `<RotatingFileHandlerOptions>`
-    - path `<string>` 
-    - rotations `<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10>` An optional number of log rotations.
-    - maxBytes `<number>` The size of the log file in bytes. **Default**: `1e6`
-    - encoding `<BufferEncoding>` An optional encoding. **Default**: `utf8`
-    - mode `<number>` An optional mode. **Deafult**:`0o666`
-    - level `<SyslogLevel>` An optional log level.  **Default**: `SyslogLevel.WARN`
+    - path `<string>` The path of the log file.
+    - rotations `<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10>` An optional number of log rotations. **Default: `0`**
+    - maxBytes `<number>` The size of the log file in bytes that will initiate a rotation. **Default: `1e6`**
+    - encoding `<BufferEncoding>` An optional encoding. **Default: `utf8`**
+    - mode `<number>` An optional mode. **Deafult: `0o666`**
+    - level `<SyslogLevel>` An optional log level.  **Default: `SyslogLevel.WARN`**
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
 Use a `RotatingFileHandler` in order to write your log messages to a file.  The `RotatingFileHandler` is thread safe.
@@ -417,6 +417,10 @@ The process environment.
 - `<string>`
 The thread identifier.
 
+*public* **LogContext.metadata**
+- `<unknown>`
+Optional user specified data.
+
 ### The Streams Config Settings Object
 
 **Config.setDefaultHighWaterMark(objectMode, value)**
@@ -474,11 +478,11 @@ Use `Config.getReadableDefaults` when implementing a [custom *Streams* data tran
     - INFO = 6
     - DEBUG = 7
 
-Use `SyslogLevel` to set the level in `Logger`, `Filter`, and `Handler` instances.
+Use `SyslogLevel` to set the level in the options passed to `Logger`, `Filter`, and Handler constructors.
 
 ## Formatting
 
-The `Logger` constructs and emits a `LogContext<MessageT, SyslogLevelT>` on each logged message.  At some point in a logging graph the properties of a `LogContext` *may* undergo formatting and serialization.  This can be accomplished by passing a `FormatterOptions` object, to the constructor of a `Formatter`, with its `format` property set to a custom [serialization function](#example-serializer) that accepts a `LogContext` as its single argument.  The serialization function can construct a log message from the `LogContext` [properties](#the-LogContext-class).  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
+The `Logger` constructs and emits a `LogContext<MessageT, SyslogLevelT>` on each logged message.  The properties of a `LogContext` *may* undergo formatting and serialization using a `Formatter`.  This can be accomplished by passing a `FormatterOptions` object, to the constructor of a `Formatter`, with its `format` property set to a custom [serialization function](#example-serializer) that accepts a `LogContext` as its single argument.  The serialization function can construct a log message from the `LogContext` [properties](#the-LogContext-class).  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
 
 ### Example Serializer
 
@@ -492,7 +496,9 @@ In the following code excerpt, a serializer is implemented that logs:
 6. The log message
 7. A newline
 
-The `format` function is passed to the constructor of a `Formatter`, which will serialize the data contained in the `LogContext` to a string.  The `Logger` is connected to the `Formatter`.  The `Formatter` is connected to the `ConsoleHandler`.
+The `format` function is passed in a `FormatterOptions` object to the constructor of a `Formatter`, which will serialize the data contained in the `LogContext` to a string.
+
+The `Logger` is connected to the `Formatter`.  The `Formatter` is connected to the `ConsoleHandler`.
 
 ```ts
 
@@ -708,4 +714,4 @@ log.disconnect(streams.root);
 If you have a *cooperating* stream that is backpressuring, you can either set a default `highWaterMark` appropriate to your application or increase the `highWaterMark` on the specific stream in order to mitigate drain events.
 
 ## Performance
-*Streams* performs well in real-world logging applications where logging is typically a highly asynchronous task.  Each `Node` in a *Streams* logging graph operates as a Node.js stream; hence, each write to the logger will be processed asynchronously from each subsequent write.  This model works well in real-world scenarios where it is preferable to break up blocking operations into asynchronous parts.
+*Streams* performs well in real-world logging applications.  Each `Node` in a *Streams* logging graph operates as a Node.js stream; hence, each write to the logger will be processed asynchronously.  This model works well in real-world scenarios where asynchronous opertations are preferred.

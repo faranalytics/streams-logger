@@ -1,8 +1,8 @@
 import * as stream from 'node:stream';
-import { LogContext } from './log_context.js';
+import { LogContext } from '../commons/log_context.js';
 import { Node } from '@farar/nodes';
-import { SyslogLevelT } from './syslog.js';
-import { Config } from './index.js';
+import { SyslogLevelT } from '../commons/syslog.js';
+import { Config } from '../index.js';
 
 export interface FilterOptions<MessageT> {
     filter: (record: LogContext<MessageT, SyslogLevelT>) => Promise<boolean> | boolean

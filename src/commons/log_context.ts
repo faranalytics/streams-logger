@@ -24,6 +24,8 @@ export interface LogContextOptions<MessageT = string, LevelT = SyslogLevelT> {
     pid?: number;
     env?: NodeJS.ProcessEnv;
     threadid?: number;
+    metadata?: unknown;
+    regex?: string;
 }
 
 export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT, LevelT> {
@@ -46,17 +48,18 @@ export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT,
     public threadid?: number;
     public stack?: string;
     public depth?: number;
-
-    private regex?: RegExp;
-
+    public metadata?: unknown;
+    public regex?: string;
+    
     constructor(options: LogContextOptions<MessageT, LevelT>) {
         Object.assign(this, options);
-        this.threadid = threads.threadId;
-        this.pid = process.pid;
-        this.env = process.env;
-        if (this.stack && this.depth) {
-            this.regex = new RegExp(`^${'[^\\n]*\\n'.repeat(this.depth)}\\s+at (?<func>[^\\s]+)?.*?(?<url>file://(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)`, 'is');
-            const match = this.stack?.match(this.regex);
+        this.threadid = options.threadid ?? threads.threadId;
+        this.pid = options.pid ?? process.pid;
+        this.env = options.env ?? process.env;
+        if (!this.regex && this.stack && this.depth) {
+            this.regex = `^${'[^\\n]*\\n'.repeat(this.depth)}\\s+at (?<func>[^\\s]+)?.*?(?<url>file://(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)`;
+            const regex = new RegExp(this.regex, 'is');
+            const match = this.stack?.match(regex);
             const groups = match?.groups;
             if (groups) {
                 this.func = groups['func'];
