@@ -25,6 +25,7 @@ export interface LogContextOptions<MessageT = string, LevelT = SyslogLevelT> {
     env?: NodeJS.ProcessEnv;
     threadid?: number;
     metadata?: unknown;
+    label?: string;
     regex?: string;
 }
 
@@ -49,8 +50,9 @@ export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT,
     public stack?: string;
     public depth?: number;
     public metadata?: unknown;
+    public label?: string;
     public regex?: string;
-    
+
     constructor(options: LogContextOptions<MessageT, LevelT>) {
         Object.assign(this, options);
         this.threadid = options.threadid ?? threads.threadId;

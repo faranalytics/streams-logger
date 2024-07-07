@@ -139,13 +139,14 @@ Please see the [*Log to a File and the Console*](https://github.com/faranalytics
 Please see the [*Network Connected **Streams** Logging Graph*](https://github.com/faranalytics/streams-logger/tree/main/examples/network_connected_logging_graph) example that demonstrates how to connect *Streams* logging graphs over the network.
 
 ## Log Context Data
-*Streams* optionally provides a rich selection of contextual information with each logging call.  This information is provided in a `LogContext` object that is passed as a single argument to the `format` function of the options of the `Formatter` constructor.  You can disable generation of some contextual information by setting `Config.captureStackTrace` and `Config.captureISOTime` to `false`.  Please see [Formatting](#formatting) for instructions on how to incorporate contextual information into your logged message.
+*Streams* provides a rich selection of contextual information with each logging call.  This information is provided in a `LogContext` object that is passed as a single argument to the function assigned to the `format` property of the `FormatterOptions` object that is passed to the `Formatter` constructor.  You can disable generation of some contextual information by setting `Config.captureStackTrace` and `Config.captureISOTime` to `false`.  Please see [Formatting](#formatting) for instructions on how to incorporate contextual information into your logged message.
 |Property|Description|Prerequisite|
 |---|---|---|
 |col| The column number of the logging call.|Config.captureStackTrace = `true`|
 |env| The process [environment](https://nodejs.org/dist/latest-v8.x/docs/api/process.html#process_process_env).||
 |func| The name of the function where the logging call took place.|Config.captureStackTrace = `true`|
 |isotime| The ISO 8601 [representation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) of the time at which the logging call took place.|Config.captureISOTime = `true`|
+|label| Optional user specified label.||
 |level| The `SyslogLevel` of the logging call.||
 |line| The line number of the logging call.|Config.captureStackTrace = `true`|
 |message| The message of the logging call.||

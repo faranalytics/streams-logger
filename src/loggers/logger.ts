@@ -53,7 +53,7 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
         }
     }
 
-    protected log(message: MessageT, level: SyslogLevel): void {
+    protected log(message: MessageT, label: string | undefined, level: SyslogLevel): void {
         try {
             const isoTime = Config.captureISOTime && this.captureISOTime ? new Date().toISOString() : undefined;
             const targetObject = { stack: '' };
@@ -66,7 +66,8 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
                 depth: 2,
                 level: SyslogLevel[level] as KeysUppercase<SyslogLevelT>,
                 stack: targetObject.stack,
-                isotime: isoTime
+                isotime: isoTime,
+                label: label
             });
             super[$write](data).catch(() => { /* */ });
             if (this.queueSizeLimit && this[$size] > this.queueSizeLimit) {
@@ -83,51 +84,51 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
         }
     }
 
-    public debug(message: MessageT): void {
+    public debug(message: MessageT, label?: string): void {
         if (this.level && this.level >= SyslogLevel.DEBUG) {
-            this.log(message, SyslogLevel.DEBUG);
+            this.log(message, label, SyslogLevel.DEBUG);
         }
     }
 
-    public info(message: MessageT): void {
+    public info(message: MessageT, label?: string): void {
         if (this.level && this.level >= SyslogLevel.INFO) {
-            this.log(message, SyslogLevel.INFO);
+            this.log(message, label, SyslogLevel.INFO);
         }
     }
 
-    public notice(message: MessageT): void {
+    public notice(message: MessageT, label?: string): void {
         if (this.level && this.level >= SyslogLevel.NOTICE) {
-            this.log(message, SyslogLevel.NOTICE);
+            this.log(message, label, SyslogLevel.NOTICE);
         }
     }
 
-    public warn(message: MessageT): void {
+    public warn(message: MessageT, label?: string): void {
         if (this.level && this.level >= SyslogLevel.WARN) {
-            this.log(message, SyslogLevel.WARN);
+            this.log(message, label, SyslogLevel.WARN);
         }
     }
 
-    public error(message: MessageT): void {
+    public error(message: MessageT, label?: string): void {
         if (this.level && this.level >= SyslogLevel.ERROR) {
-            this.log(message, SyslogLevel.ERROR);
+            this.log(message, label, SyslogLevel.ERROR);
         }
     }
 
-    public crit(message: MessageT): void {
+    public crit(message: MessageT, label?: string): void {
         if (this.level && this.level >= SyslogLevel.CRIT) {
-            this.log(message, SyslogLevel.CRIT);
+            this.log(message, label, SyslogLevel.CRIT);
         }
     }
 
-    public alert(message: MessageT): void {
+    public alert(message: MessageT, label?: string): void {
         if (this.level && this.level >= SyslogLevel.ALERT) {
-            this.log(message, SyslogLevel.ALERT);
+            this.log(message, label, SyslogLevel.ALERT);
         }
     }
 
-    public emerg(message: MessageT): void {
+    public emerg(message: MessageT, label?: string): void {
         if (this.level && this.level >= SyslogLevel.EMERG) {
-            this.log(message, SyslogLevel.EMERG);
+            this.log(message, label, SyslogLevel.EMERG);
         }
     }
 
