@@ -51,13 +51,13 @@ class Config {
 
     getWritableDefaults(objectMode: boolean = true): stream.WritableOptions {
         return {
-            highWaterMark: objectMode ? this.defaultHighWaterMarkObjectMode : this.defaultHighWaterMark
+            highWaterMark: this.getDefaultHighWaterMark(objectMode)
         };
     }
 
     getReadableDefaults(objectMode: boolean = true): stream.ReadableOptions {
         return {
-            highWaterMark: objectMode ? this.defaultHighWaterMarkObjectMode : this.defaultHighWaterMark
+            highWaterMark: this.getDefaultHighWaterMark(objectMode)
         };
     }
 

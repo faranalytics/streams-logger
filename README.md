@@ -38,6 +38,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [The SocketHandler Class](#the-sockethandler-class)
     - [The LogContext Class](#the-LogContext-class)
     - [The Streams Config Settings Object](#the-streams-config-settings-object)
+    - [The SyslogLevel Enum](#the-sysloglevel-enum)
 - [Formatting](#formatting)
     - [Example Serializer](#example-serializer)
 - [Object (JSON) Logging](#object-json-logging)
@@ -52,7 +53,6 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [Disable the stack trace capture.](#disable-the-stack-trace-capture)
     - [Disconnect from root.](#disconnect-from-root)
 - [Backpressure](#backpressure)
-- [Performance](#performance)
 
 ## Installation
 
@@ -142,28 +142,28 @@ Please see the [*Network Connected **Streams** Logging Graph*](https://github.co
 
 ## Log Context Data
 *Streams* provides a rich selection of contextual information with each logging call.  This information is provided in a `LogContext` object that is passed as a single argument to the function assigned to the `format` property of the `FormatterOptions` object that is passed to the `Formatter` constructor.  You can disable generation of some contextual information by setting `Config.captureStackTrace` and `Config.captureISOTime` to `false`.  Please see [Formatting](#formatting) for instructions on how to incorporate contextual information into your logged message.
-|Property|Description|Prerequisite|
+|Property|Description|Config Prerequisite|
 |---|---|---|
-|col| The column number of the logging call.|Config.captureStackTrace = `true`|
-|env| The process [environment](https://nodejs.org/dist/latest-v8.x/docs/api/process.html#process_process_env).||
-|func| The name of the function where the logging call took place.|Config.captureStackTrace = `true`|
-|isotime| The ISO 8601 [representation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) of the time at which the logging call took place.|Config.captureISOTime = `true`|
-|label| Optional user specified label.||
-|level| The `SyslogLevel` of the logging call.||
-|line| The line number of the logging call.|Config.captureStackTrace = `true`|
-|message| The message of the logging call.||
-|metadata| Optional user specified data.||
-|name| The name of the logger.||
-|path| The module path.|Config.captureStackTrace = `true`|
-|pathbase| The module filename.|Config.captureStackTrace = `true`|
-|pathdir| The directory part of the module path.|Config.captureStackTrace = `true`|
-|pathext| The extension of the module.|Config.captureStackTrace = `true`|
-|pathname| The name of the module.|Config.captureStackTrace = `true`|
-|pathroot| The root of the module.|Config.captureStackTrace = `true`|
-|pid| The process identifier.||
-|stack| The complete stack trace.|Config.captureStackTrace = `true`|
-|threadid| The thread identifier.||
-|url| The URL of the module.|Config.captureStackTrace = `true`|
+|`col`| The column number of the logging call.|`captureStackTrace=true`|
+|`env`| The process [environment](https://nodejs.org/dist/latest-v8.x/docs/api/process.html#process_process_env).||
+|`func`| The name of the function where the logging call took place.|`captureStackTrace=true`|
+|`isotime`| The ISO 8601 [representation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) of the time at which the logging call took place.|`captureISOTime=true`|
+|`label`| Optional user specified label.||
+|`level`| The `SyslogLevel` of the logging call.||
+|`line`| The line number of the logging call.|`captureStackTrace=true`|
+|`message`| The message of the logging call.||
+|`metadata`| Optional user specified data.||
+|`name`| The name of the logger.||
+|`path`| The module path.|`captureStackTrace=true`|
+|`pathbase`| The module filename.|`captureStackTrace=true`|
+|`pathdir`| The directory part of the module path.|`captureStackTrace=true`|
+|`pathext`| The extension of the module.|`captureStackTrace=true`|
+|`pathname`| The name of the module.|`captureStackTrace=true`|
+|`pathroot`| The root of the module.|`captureStackTrace=true`|
+|`pid`| The process identifier.||
+|`stack`| The complete stack trace.|`captureStackTrace=true`|
+|`threadid`| The thread identifier.||
+|`url`| The URL of the module.|`captureStackTrace=true`|
 ## API
 
 The *Streams* API provides commonly used logging facilities (i.e., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)).  However, you can [consume any Node.js stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream) and add it to your logging graph.
@@ -173,7 +173,7 @@ The *Streams* API provides commonly used logging facilities (i.e., the [Logger](
 **new streams-logger.Logger\<MessageT\>(options, streamOptions)**
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
 - options `<LoggerOptions>`
-    - level `<SyslogLevel>` The syslog compliant logger level. **Default: `SyslogLevel.WARN`**
+    - level `<SyslogLevel>` The syslog logger level. **Default: `SyslogLevel.WARN`**
     - name `<string>` An optional name for the `Logger`.
     - parent `<Logger>` An optional parent `Logger`.  **Default: `streams-logger.root`**
     - queueSizeLimit `<number>` Optionally specify a limit on the number of log messages that may queue while waiting for a stream to drain.  See [Backpressure](#backpressure).
@@ -254,7 +254,7 @@ Set the log level.  Must be one of `SyslogLevel`.
 ### The Formatter Class
 
 **new streams-logger.Formatter\<MessageInT, MessageOutT\>(options, streamOptions)**
-- `<MessageT>` The type of the logged message.  This is the type of the `message` property of the `LogContext` that is passed to the `format` function. **Default: `<string>`**
+- `<MessageInT>` The type of the logged message.  This is the type of the `message` property of the `LogContext` that is passed to the `format` function. **Default: `<string>`**
 - `<MessageOutT>` The type of the output message.  This is the return type of the `format` function. **Default: `<string>`**
 - options
     - format `(record: LogContext<MessageInT, SyslogLevelT>): Promise<MessageOutT> | MessageOutT` A function that will format and serialize the `LogContext<MessageInT, SyslogLevelT>`.  Please see [Formatting](#formatting) for how to implement a format function.
@@ -330,7 +330,7 @@ Set the log level.  Must be one of `SyslogLevel`.
 **new streams-logger.SocketHandler\<MessageT\>(options, streamOptions)**
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
 - options `<SocketHandlerOptions>`
-    - socket `<Socket>` 
+    - socket `<Socket>` A `net.Socket` that will serve as a communication channel between this `SocketHandler` and the remote `SocketHandler`.
     - reviver `<(this: unknown, key: string, value: unknown) => unknown>` An optional reviver for `JSON.parse`.
     - replacer `<(this: unknown, key: string, value: unknown) => unknown>` An optional replacer for `JSON.stringify`.
     - space `<string | number>` An optional space specification for `JSON.stringify`. 
@@ -364,49 +364,45 @@ A `LogContext` is instantiated each time a message is logged at (or below) the l
 
 The `LogContext` is passed as the single argument to the [format function](#formatting) of the `Formatter`; information about the environment can be extracted from the `LogContext` in order to format the logged message.  The following properties will be available to the `format` function depending on the setting of `Config.captureStackTrace` and `Config.captureISOTime`.  Please see the [Log Context Data](#log-context-data) table for details.
 
-*public* **LogContext.message**
+*public* **LogContext.col**
 - `<string>`
-The logged message.
+The column of the logging call.  Available if `Config.captureStackTrace` is set to `true`.
 
-*public* **LogContext.name**
-- `<string>`
-The name of the `Logger`.
-
-*public* **LogContext.level**
-- `<DEBUG | INFO | NOTICE | WARN | ERROR | CRIT | ALERT | EMERG>`
-An uppercase string representation of the level.
+*public* **LogContext.env**
+- `<NodeJS.ProcessEnv>`
+The process environment.
 
 *public* **LogContext.func**
 - `<string>`
 The name of the function where the logging call took place.  Available if `Config.captureStackTrace` is set to `true`.
 
-*public* **LogContext.line**
-- `<string>`
-The line number of the logging call.  Available if `Config.captureStackTrace` is set to `true`.
-
-*public* **LogContext.col**
-- `<string>`
-The column of the logging call.  Available if `Config.captureStackTrace` is set to `true`.
-
 *public* **LogContext.isotime**
 - `<string>`
 The date and time in ISO format at the time of the logging call. Available if `Config.captureISOTime` is set to `true`.
 
-*public* **LogContext.pathname**
+*public* **LogContext.level**
+- `<DEBUG | INFO | NOTICE | WARN | ERROR | CRIT | ALERT | EMERG>`
+An uppercase string representation of the level.
+
+*public* **LogContext.line**
 - `<string>`
-The name of the module.  Available if `Config.captureStackTrace` is set to `true`.
+The line number of the logging call.  Available if `Config.captureStackTrace` is set to `true`.
+
+*public* **LogContext.message**
+- `<string>`
+The logged message.
+
+*public* **LogContext.metadata**
+- `<unknown>`
+Optional user specified data.
+
+*public* **LogContext.name**
+- `<string>`
+The name of the `Logger`.
 
 *public* **LogContext.path**
 - `<string>`
 The complete path of the module.  Available if `Config.captureStackTrace` is set to `true`.
-
-*public* **LogContext.pathdir**
-- `<string>`
-The directory part of the module path.  Available if `Config.captureStackTrace` is set to `true`.
-
-*public* **LogContext.pathroot**
-- `<string>`
-The root of the path.  Available if `Config.captureStackTrace` is set to `true`.
 
 *public* **LogContext.pathbase**
 - `<string>`
@@ -416,44 +412,32 @@ The module filename.  Available if `Config.captureStackTrace` is set to `true`.
 - `<string>`
 The extension of the module.  Available if `Config.captureStackTrace` is set to `true`.
 
+*public* **LogContext.pathdir**
+- `<string>`
+The directory part of the module path.  Available if `Config.captureStackTrace` is set to `true`.
+
+*public* **LogContext.pathname**
+- `<string>`
+The name of the module.  Available if `Config.captureStackTrace` is set to `true`.
+
+*public* **LogContext.pathroot**
+- `<string>`
+The root of the path.  Available if `Config.captureStackTrace` is set to `true`.
+
 *public* **LogContext.pid**
 - `<string>`
 The process identifier.
-
-*public* **LogContext.env**
-- `<NodeJS.ProcessEnv>`
-The process environment.
 
 *public* **LogContext.threadid**
 - `<string>`
 The thread identifier.
 
-*public* **LogContext.metadata**
-- `<unknown>`
-Optional user specified data.
-
 ### The Streams Config Settings Object
-
-**Config.setDefaultHighWaterMark(objectMode, value)**
-- objectMode `<boolean>` `true` if setting the ObjectMode `highWaterMark`; `false`, otherwise.
-- value `number` The `highWaterMark` value.
-
-Returns: `<void>`
 
 **Config.getDefaultHighWaterMark(objectMode)**
 - objectMode `<boolean>` `true` if getting the ObjectMode `highWaterMark`; `false`, otherwise.
 
 Returns: `<number>` The default `highWaterMark`.
-
-**Config.setCaptureStackTrace(value)**
-- value `<boolean>` Set this to `false` in order to disable stack trace capture on each logging call.  **Default: `true`**
-
-Returns: `<void>`
-
-**Config.setCaptureISOTime(value)**
-- value `<boolean>` Set this to `false` in order to disable capturing the ISO time on each logging call.  **Default: `true`**
-
-Returns: `<void>`
 
 **Config.getDuplexDefaults(writableObjectMode, readableObjectMode)**
 - writableObjectMode `<boolean>` `true` for ObjectMode; `false` otherwise.
@@ -463,6 +447,13 @@ Returns: `<stream.DuplexOptions>`
 
 Use `Config.getDuplexDefaults` when implementing a [custom *Streams* data transformation Node](#how-to-implement-a-custom-streams-data-transformation-node).
 
+**Config.getReadableDefaults(readableObjectMode)**
+- readableObjectMode `<boolean>` `true` for ObjectMode; `false` otherwise.
+
+Returns: `<stream.ReadableOptions>`
+
+Use `Config.getReadableDefaults` when implementing a [custom *Streams* data transformation Node](#how-to-implement-a-custom-streams-data-transformation-node).
+
 **Config.getWritableDefaults(writableObjectMode)**
 - writableObjectMode `<boolean>` `true` for ObjectMode; `false` otherwise.
 
@@ -470,12 +461,21 @@ Returns: `<stream.WritableOptions>`
 
 Use `Config.getWritableDefaults` when implementing a [custom *Streams* data transformation Node](#how-to-implement-a-custom-streams-data-transformation-node).
 
-**Config.getReadableDefaults(readableObjectMode)**
-- readableObjectMode `<boolean>` `true` for ObjectMode; `false` otherwise.
+**Config.setCaptureISOTime(value)**
+- value `<boolean>` Set this to `false` in order to disable capturing the ISO time on each logging call.  **Default: `true`**
 
-Returns: `<stream.ReadableOptions>`
+Returns: `<void>`
 
-Use `Config.getReadableDefaults` when implementing a [custom *Streams* data transformation Node](#how-to-implement-a-custom-streams-data-transformation-node).
+**Config.setCaptureStackTrace(value)**
+- value `<boolean>` Set this to `false` in order to disable stack trace capture on each logging call.  **Default: `true`**
+
+Returns: `<void>`
+
+**Config.setDefaultHighWaterMark(objectMode, value)**
+- objectMode `<boolean>` `true` if setting the ObjectMode `highWaterMark`; `false`, otherwise.
+- value `number` The `highWaterMark` value.
+
+Returns: `<void>`
 
 ### The SyslogLevel Enum
 **streams-logger.SyslogLevel\[Level\]**
@@ -493,25 +493,24 @@ Use `SyslogLevel` to set the level in the options passed to `Logger`, `Filter`, 
 
 ## Formatting
 
-The `Logger` constructs and emits a `LogContext<MessageT, SyslogLevelT>` on each logged message.  The properties of a `LogContext` *may* undergo formatting and serialization using a `Formatter`.  This can be accomplished by passing a `FormatterOptions` object, to the constructor of a `Formatter`, with its `format` property set to a custom [serialization function](#example-serializer) that accepts a `LogContext` as its single argument.  The serialization function can construct a log message from the `LogContext` [properties](#the-LogContext-class).  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
+The `Logger` constructs and emits a `LogContext<MessageT, SyslogLevelT>` on each logged message.  The properties of a `LogContext` *may* undergo formatting and serialization using a `Formatter`.  This can be accomplished by passing a `FormatterOptions` object, to the constructor of a `Formatter`, with its `format` property set to a custom [serialization](#example-serializer) or transformation function that accepts a `LogContext` as its single argument.  The serialization function can construct a log message from the `LogContext` [properties](#the-LogContext-class).  In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
 
 ### Example Serializer
 
 In the following code excerpt, a serializer is implemented that logs:
 
-1. The current time
+1. The time of the logging call in ISO format
 2. The log level
 3. The name of the function where the log event originated
-4. The line number of the logging event
-5. The column number of the logging event
+4. The line number of the log event
+5. The column number of the log event
 6. The log message
 7. A newline
 
-The `format` function is passed in a `FormatterOptions` object to the constructor of a `Formatter`, which will serialize the data contained in the `LogContext` to a string.
-
-The `Logger` is connected to the `Formatter`.  The `Formatter` is connected to the `ConsoleHandler`.
+The `format` function is passed in a `FormatterOptions` object to the constructor of a `Formatter`.  The `Logger` is connected to the `Formatter`.  The `Formatter` is connected to the `ConsoleHandler`.
 
 ```ts
+import { Logger, Formatter, ConsoleHandler, SyslogLevel } from 'streams-logger';
 
 const logger = new Logger({ name: 'main', level: SyslogLevel.DEBUG });
 const formatter = new Formatter({
@@ -525,7 +524,7 @@ const log = logger.connect(
     formatter.connect(
         consoleHandler
     )
-)
+);
 
 log.info('Hello, World!');
 ```
@@ -562,12 +561,12 @@ const log = logger.connect(
 );
 
 (function sayHello() {
-    log.warn({ greeting: 'Hello, World!', prime_number: 57 });
+    log.warn({ greeting: 'Hello, World!', prime: 57 });
 })();
 ```
 ### Output
 ```bash
-2024-07-06T03:19:28.767Z:WARN:sayHello:9:9:{"greeting":"Hello, World!","prime_number":57}
+2024-07-06T03:19:28.767Z:WARN:sayHello:9:9:{"greeting":"Hello, World!","prime":57}
 ```
 
 ## Using a Socket Handler
@@ -642,11 +641,11 @@ export class LogContextToBuffer extends Node<LogContext<string, SyslogLevelT>, B
 }
 
 const log = new Logger({ name: 'main' });
-const LogContextToBuffer = new LogContextToBuffer();
+const logContextToBuffer = new LogContextToBuffer();
 const console = new Node<Buffer, never>(process.stdout)
 
 log.connect(
-    LogContextToBuffer.connect(
+    logContextToBuffer.connect(
         console
     )
 );
@@ -690,9 +689,9 @@ streams.Config.setDefaultHighWaterMark(true, 1e6);
 streams.Config.setDefaultHighWaterMark(false, 1e6);
 ```
 
-### Disable the stack trace capture.
+### Disable stack trace capture.
 
-Another optional setting that you can take advantage of is to turn off the stack trace capture.  Stack trace capture can be disabled globally using the *Streams* configuration settings object.  Alternatively, you may disable stack trace capturing in a specific `Logger` by setting the `stackTraceCapture` property of the `LoggerOptions` to `false`. 
+Another optional setting that you can take advantage of is to turn off stack trace capture.  Stack trace capture can be disabled globally using the *Streams* configuration settings object i.e., `Config.setCaptureStackTrace`.  Alternatively, you may disable stack trace capturing in a specific `Logger` by setting the `stackTraceCapture` property of the `LoggerOptions` to `false`. 
 
 Turning off stack trace capture will disable some of the information (e.g., function name and line number) that is normally contained in the `LogContext` object that is passed to the `format` function of a `Formatter`.
 
@@ -723,6 +722,3 @@ log.disconnect(streams.root);
 **For typical logging applications setting a `queueSizeLimit` isn't necessary.**  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending Nodes in your graph.
 
 If you have a *cooperating* stream that is backpressuring, you can either set a default `highWaterMark` appropriate to your application or increase the `highWaterMark` on the specific stream in order to mitigate drain events.
-
-## Performance
-*Streams* performs well in real-world logging applications.  Each `Node` in a *Streams* logging graph operates as a Node.js stream; hence, each write to the logger will be processed asynchronously.  This model works well in real-world scenarios where asynchronous operations are preferred.

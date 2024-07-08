@@ -1,4 +1,5 @@
 import * as stream from 'node:stream';
+import * as threads from 'node:worker_threads';
 import { LogContext } from '../commons/log_context.js';
 import { Node, $write, $outs, $size } from '@farar/nodes';
 import { SyslogLevel, SyslogLevelT } from '../commons/syslog.js';
@@ -53,21 +54,22 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
 
     protected log(message: MessageT, label: string | undefined, level: SyslogLevel): void {
         try {
-            const isoTime = Config.captureISOTime && this.option.captureISOTime ? new Date().toISOString() : undefined;
-            const targetObject = { stack: '' };
-            if (Config.captureStackTrace && this.option.captureStackTrace) {
-                Error.captureStackTrace(targetObject, this.log);
-            }
-            const data = new LogContext<MessageT, SyslogLevelT>({
+            const logContext = new LogContext<MessageT, SyslogLevelT>({
                 message,
                 name: this.option.name,
                 depth: 2,
                 level: SyslogLevel[level] as KeysUppercase<SyslogLevelT>,
-                stack: targetObject.stack,
-                isotime: isoTime,
-                label: label
+                isotime: Config.captureISOTime && this.option.captureISOTime ? new Date().toISOString() : undefined,
+                label: label,
+                threadid: threads.threadId,
+                pid: process.pid,
+                env: process.env
             });
-            super[$write](data).catch(() => { /* */ });
+            if (Config.captureStackTrace && this.option.captureStackTrace) {
+                Error.captureStackTrace(logContext, this.log);
+                logContext.parseStackTrace();
+            }
+            super[$write](logContext).catch(() => { /* */ });
             if (this.option.queueSizeLimit && this[$size] > this.option.queueSizeLimit) {
                 throw new QueueSizeLimitExceededError(`The queue size limit, ${this.option.queueSizeLimit}, is exceeded.`);
             }

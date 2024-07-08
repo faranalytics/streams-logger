@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import * as pth from 'node:path';
-import * as threads from 'node:worker_threads';
 import { KeysUppercase } from './types.js';
 import { SyslogLevelT } from './syslog.js';
 
@@ -55,9 +55,9 @@ export class LogContext<MessageT, LevelT> implements LogContextConstructorOption
 
     constructor(options: LogContextConstructorOptions<MessageT, LevelT>) {
         Object.assign(this, options);
-        this.threadid = options.threadid ?? threads.threadId;
-        this.pid = options.pid ?? process.pid;
-        this.env = options.env ?? process.env;
+    }
+
+    parseStackTrace() {
         if (!this.regex && this.stack && this.depth) {
             this.regex = `^${'[^\\n]*\\n'.repeat(this.depth)}\\s+at (?<func>[^\\s]+)?.*?(?<url>file://(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)`;
             const regex = new RegExp(this.regex, 'is');
