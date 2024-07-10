@@ -2,12 +2,12 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import * as pth from 'node:path';
 import { KeysUppercase } from './types.js';
-import { SyslogLevelT } from './syslog.js';
+import { SyslogLevel, SyslogLevelT } from './syslog.js';
 
 export interface LogContextConstructorOptions<MessageT = string, LevelT = SyslogLevelT> {
-    message?: MessageT;
+    message: MessageT;
     name?: string;
-    level?: KeysUppercase<LevelT>;
+    level: KeysUppercase<LevelT>;
     depth?: number;
     stack?: string;
     func?: string;
@@ -30,9 +30,9 @@ export interface LogContextConstructorOptions<MessageT = string, LevelT = Syslog
 }
 
 export class LogContext<MessageT, LevelT> implements LogContextConstructorOptions<MessageT, LevelT> {
-    public message?: MessageT;
+    public message: MessageT;
     public name?: string;
-    public level?: KeysUppercase<LevelT>;
+    public level: KeysUppercase<LevelT>;
     public func?: string;
     public url?: string;
     public line?: string;
@@ -54,7 +54,28 @@ export class LogContext<MessageT, LevelT> implements LogContextConstructorOption
     public regex?: string;
 
     constructor(options: LogContextConstructorOptions<MessageT, LevelT>) {
-        Object.assign(this, options);
+        this.message = options.message;
+        this.name = options.name;
+        this.level = options.level;
+        this.depth = options.depth;
+        this.stack = options.stack;
+        this.func = options.func;
+        this.url = options.url;
+        this.line = options.line;
+        this.col = options.col;
+        this.isotime = options.isotime;
+        this.pathname = options.pathname;
+        this.path = options.path;
+        this.pathdir = options.pathdir;
+        this.pathroot = options.pathroot;
+        this.pathbase = options.pathbase;
+        this.pathext = options.pathext;
+        this.pid = options.pid;
+        this.env = options.env;
+        this.threadid = options.threadid;
+        this.metadata = options.metadata;
+        this.label = options.label;
+        this.regex = options.regex;
     }
 
     parseStackTrace() {

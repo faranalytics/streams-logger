@@ -11,7 +11,7 @@ export interface ConsoleHandlerWritableOptions {
     level: SyslogLevel;
 }
 
-export class ConsoleHandlerWritable<MessageT> extends stream.Writable {
+export class ConsoleHandlerWritable<MessageT> extends stream.Transform {
 
     public level: SyslogLevel;
 
@@ -22,16 +22,18 @@ export class ConsoleHandlerWritable<MessageT> extends stream.Writable {
             ...{ objectMode: true }
         });
         this.level = level ?? SyslogLevel.WARN;
+        this.once('error', () => this.unpipe(process.stdout)).pipe(process.stdout);
     }
 
-    async _write(chunk: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback): Promise<void> {
+    async _transform(chunk: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback): Promise<void> {
         try {
-            if (chunk.level && SyslogLevel[chunk.level] <= this.level && (typeof chunk.message == 'string' || chunk.message instanceof Buffer)) {
-                if (!process.stdout.write(chunk.message)) {
-                    await once(process.stdout, 'drain');
-                }
+            if (SyslogLevel[chunk.level] <= this.level) {
+                const message: string | Buffer = (typeof chunk.message == 'string' || chunk.message instanceof Buffer) ? chunk.message : JSON.stringify(chunk.message);
+                callback(null, chunk.message);
             }
-            callback();
+            else {
+                callback();
+            }
         }
         catch (err) {
             if (err instanceof Error) {

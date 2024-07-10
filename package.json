@@ -1,6 +1,6 @@
 {
   "name": "streams-logger",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
@@ -25,7 +25,7 @@
     "node": ">=18.18.0"
   },
   "dependencies": {
-    "@farar/nodes": "~0.0.6"
+    "@farar/nodes": "^0.0.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.6.0",

@@ -11,8 +11,6 @@ import { LogContext, SyslogLevelT, Filter, SocketHandler, AnyToTest } from 'stre
 // streams.Config.setDefaultHighWaterMark(true, 1e6);
 // streams.Config.setDefaultHighWaterMark(false, 1e6);
 
-const logContext = new LogContext({});
-console.log(Object.keys(logContext).sort().reduce((curr, prev)=> curr + '\n' + prev,''));
 const MESSAGE = 'Hello, World!'.repeat(1);
 const suite = async (
     chunk: LogContext<string, SyslogLevelT>,
@@ -55,8 +53,8 @@ const log = logger.connect(
     streams_formatter.connect(
         streams_filter.connect(
             socketHandler.connect(
-                anyToTest,
-                consoleHandler
+                consoleHandler,
+                anyToTest
             )
         )
     )
@@ -82,7 +80,7 @@ function sayHello() {
 
 sayHello();
 
-setInterval(sayHello, 1e2);
+setInterval(sayHello, 1e3);
 
 
 // const t1 = new stream.Transform({

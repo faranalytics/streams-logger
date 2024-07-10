@@ -39,12 +39,12 @@ await new Promise((r, e) => socket.once('connect', r).once('error', e));
 const socketHandler = new SocketHandler<string>({ socket });
 
 const logger = new streams.Logger<Message>({ level: streams.SyslogLevel.DEBUG, name: 'test' });
-const streams_formatter = new streams.Formatter<Message, string>({
+const formatter = new streams.Formatter<Message, string>({
     format: async ({ isotime, message, name, level, func, url, line, col }) => (
         `${name}:${isotime}:${level}:${func}:${line}:${col}:${JSON.stringify(message)}\n`
     )
 });
-const streams_filter = new streams.Filter<string>({
+const filter = new streams.Filter<string>({
     filter: (record: LogContext<string, SyslogLevelT>) => {
         return record.name == 'test';
     }
@@ -53,8 +53,8 @@ const streams_filter = new streams.Filter<string>({
 const consoleHandler = new streams.ConsoleHandler<string>({ level: streams.SyslogLevel.DEBUG });
 
 const log = logger.connect(
-    streams_formatter.connect(
-        streams_filter.connect(
+    formatter.connect(
+        filter.connect(
             socketHandler.connect(
                 anyToTest,
                 consoleHandler
