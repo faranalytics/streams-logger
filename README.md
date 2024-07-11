@@ -311,8 +311,8 @@ Set the log level.  Must be one of `SyslogLevel`.
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
 - options `<RotatingFileHandlerOptions>`
     - path `<string>` The path of the log file.
-    - rotations `<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10>` An optional number of log rotations. **Default: `0`**
-    - maxBytes `<number>` The size of the log file in bytes that will initiate a rotation. **Default: `1e6`**
+    - rotationCount `<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10>` An optional number of log rotations. **Default: `0`**
+    - maxSize `<number>` The size of the log file in bytes that will initiate a rotation. **Default: `1e6`**
     - encoding `<BufferEncoding>` An optional encoding. **Default: `utf8`**
     - mode `<number>` An optional mode. **Deafult: `0o666`**
     - level `<SyslogLevel>` An optional log level.  **Default: `SyslogLevel.WARN`**
@@ -717,6 +717,7 @@ log.disconnect(streams.root);
 ```
 
 ## Backpressure
+
 *Streams* respects backpressure by queueing messages while the stream is draining.  You can set a limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options.  If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.  
 
 **For typical logging applications setting a `queueSizeLimit` isn't necessary.**  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending Nodes in your graph.

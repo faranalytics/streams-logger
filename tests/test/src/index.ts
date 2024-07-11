@@ -80,7 +80,7 @@ function sayHello() {
 
 sayHello();
 
-setInterval(sayHello, 1e3);
+setInterval(sayHello, 1e2);
 
 
 // const t1 = new stream.Transform({
