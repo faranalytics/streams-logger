@@ -53,6 +53,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
     - [Disable the stack trace capture.](#disable-the-stack-trace-capture)
     - [Disconnect from root.](#disconnect-from-root)
 - [Backpressure](#backpressure)
+- [Performance](#performance)
 
 ## Installation
 
@@ -727,4 +728,6 @@ log.disconnect(streams.root);
 If you have a *cooperating* stream that is backpressuring, you can either set a default `highWaterMark` appropriate to your application or increase the `highWaterMark` on the specific stream in order to mitigate drain events.
 
 ## Performance
-*Streams* performs well in real-world logging applications.  *Streams* strictly adheres to Node's public API contract and conventions.  This approach comes with trade-offs; however, it ensures stability and portability while still delivering a performant logging experience.
+*Streams* is a highly customizable Logger that performs well on a wide range of logging tasks.  It is a sound choice for both error logging and high-throughput logging.  
+
+*Streams* strictly adheres to Node's public API contract and common conventions.  This approach comes with trade-offs; however, it ensures stability and portability while still delivering a performant logging experience.

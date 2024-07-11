@@ -26,9 +26,9 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
             ...streamOptions, ...{
                 readableObjectMode: true,
                 writableObjectMode: true,
-                transform: (chunk: LogContext<string, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
+                transform: (logContext: LogContext<string, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
                     if (this[$outs]?.length) {
-                        callback(null, chunk);
+                        callback(null, logContext);
                     }
                     else {
                         callback();
@@ -43,7 +43,6 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
             captureISOTime: captureISOTime ?? true,
             captureStackTrace: captureStackTrace ?? true
         };
-
         if (parent !== null) {
             parent = parent ?? root;
             if (parent) {

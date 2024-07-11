@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import * as stream from 'node:stream';
-import { once } from 'node:events';
 import { Node, $stream } from '@farar/nodes';
 import { LogContext } from '../commons/log_context.js';
 import { SyslogLevel, SyslogLevelT } from '../commons/syslog.js';
 import { Config } from '../index.js';
+
+const $option = Symbol('option');
 
 export interface ConsoleHandlerWritableOptions {
     level: SyslogLevel;
@@ -13,7 +12,7 @@ export interface ConsoleHandlerWritableOptions {
 
 export class ConsoleHandlerWritable<MessageT> extends stream.Transform {
 
-    public level: SyslogLevel;
+    public [$option]: ConsoleHandlerWritableOptions;
 
     constructor({ level }: ConsoleHandlerConstructorOptions, streamOptions?: stream.WritableOptions) {
         super({
@@ -21,15 +20,20 @@ export class ConsoleHandlerWritable<MessageT> extends stream.Transform {
             ...streamOptions,
             ...{ objectMode: true }
         });
-        this.level = level ?? SyslogLevel.WARN;
+        this[$option] = {
+            level: level ?? SyslogLevel.WARN
+        };
         this.once('error', () => this.unpipe(process.stdout)).pipe(process.stdout);
     }
 
-    async _transform(chunk: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback): Promise<void> {
+    public async _transform(logContext: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback): Promise<void> {
         try {
-            if (SyslogLevel[chunk.level] <= this.level) {
-                const message: string | Buffer = (typeof chunk.message == 'string' || chunk.message instanceof Buffer) ? chunk.message : JSON.stringify(chunk.message);
-                callback(null, chunk.message);
+            if (SyslogLevel[logContext.level] <= this[$option].level) {
+                const message: string | Buffer = (
+                    (typeof logContext.message == 'string' || logContext.message instanceof Buffer) ? logContext.message :
+                        JSON.stringify(logContext.message)
+                );
+                callback(null, message);
             }
             else {
                 callback();
@@ -49,13 +53,17 @@ export interface ConsoleHandlerConstructorOptions {
 
 export class ConsoleHandler<MessageT = string> extends Node<LogContext<MessageT, SyslogLevelT>, never> {
 
+    public option: ConsoleHandlerWritableOptions;
+
     constructor(options: ConsoleHandlerConstructorOptions, streamOptions?: stream.WritableOptions) {
-        super(new ConsoleHandlerWritable<MessageT>(options, streamOptions));
+        const consoleHandlerWritable = new ConsoleHandlerWritable<MessageT>(options, streamOptions);
+        super(consoleHandlerWritable);
+        this.option = consoleHandlerWritable[$option];
     }
 
-    setLevel(level: SyslogLevel): void {
+    public setLevel(level: SyslogLevel): void {
         if (this[$stream] instanceof ConsoleHandlerWritable) {
-            this[$stream].level = level;
+            this[$stream][$option].level = level;
         }
     }
 }

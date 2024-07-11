@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-inferrable-types */
 import * as pth from 'node:path';
 import { KeysUppercase } from './types.js';
-import { SyslogLevel, SyslogLevelT } from './syslog.js';
+import { SyslogLevelT } from './syslog.js';
 
 export interface LogContextConstructorOptions<MessageT = string, LevelT = SyslogLevelT> {
     message: MessageT;
@@ -78,7 +76,7 @@ export class LogContext<MessageT, LevelT> implements LogContextConstructorOption
         this.regex = options.regex;
     }
 
-    parseStackTrace() {
+    public parseStackTrace() {
         if (!this.regex && this.stack && this.depth) {
             this.regex = `^${'[^\\n]*\\n'.repeat(this.depth)}\\s+at (?<func>[^\\s]+)?.*?(?<url>file://(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)`;
             const regex = new RegExp(this.regex, 'is');

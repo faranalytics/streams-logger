@@ -16,9 +16,9 @@ export class Filter<MessageT = string> extends Node<LogContext<MessageT, SyslogL
             ...streamOptions, ...{
                 writableObjectMode: true,
                 readableObjectMode: true,
-                transform: async (chunk: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
-                    if (await filter(chunk)) {
-                        callback(null, chunk);
+                transform: async (logContext: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
+                    if (await filter(logContext)) {
+                        callback(null, logContext);
                     }
                     else {
                         callback();

@@ -16,28 +16,28 @@ export class Formatter<MessageInT = string, MessageOutT = string> extends Node<L
             ...streamOptions, ...{
                 writableObjectMode: true,
                 readableObjectMode: true,
-                transform: async (chunk: LogContext<MessageInT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
-                    const logContext = new LogContext<MessageOutT, SyslogLevelT>({
-                        message: await format(chunk),
-                        name: chunk.name,
-                        level: chunk.level,
-                        func: chunk.func,
-                        url: chunk.url,
-                        line: chunk.line,
-                        col: chunk.col,
-                        isotime: chunk.isotime,
-                        pathname: chunk.pathname,
-                        path: chunk.path,
-                        pathdir: chunk.pathdir,
-                        pathroot: chunk.pathroot,
-                        pathbase: chunk.pathbase,
-                        pathext: chunk.pathext,
-                        pid: chunk.pid,
-                        env: chunk.env,
-                        threadid: chunk.threadid,
-                        regex: chunk.regex
+                transform: async (logContext: LogContext<MessageInT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
+                    const logContextOut = new LogContext<MessageOutT, SyslogLevelT>({
+                        message: await format(logContext),
+                        name: logContext.name,
+                        level: logContext.level,
+                        func: logContext.func,
+                        url: logContext.url,
+                        line: logContext.line,
+                        col: logContext.col,
+                        isotime: logContext.isotime,
+                        pathname: logContext.pathname,
+                        path: logContext.path,
+                        pathdir: logContext.pathdir,
+                        pathroot: logContext.pathroot,
+                        pathbase: logContext.pathbase,
+                        pathext: logContext.pathext,
+                        pid: logContext.pid,
+                        env: logContext.env,
+                        threadid: logContext.threadid,
+                        regex: logContext.regex
                     });
-                    callback(null, logContext);
+                    callback(null, logContextOut);
                 }
             }
         }));

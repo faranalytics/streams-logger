@@ -1,47 +1,47 @@
 {
-  "name": "streams-logger",
-  "version": "0.2.0",
-  "description": "",
-  "main": "./dist/index.js",
-  "scripts": {
-    "test": "cd ./tests/test && npm install && npm run clean:build && npm start",
-    "clean": "rm -rf ./dist/*",
-    "build": "tsc --build .",
-    "clean:build": "npm run clean && npm run build",
-    "watch": "tsc --watch"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/faranalytics/streams-logger.git"
-  },
-  "author": "FAR",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/faranalytics/streams-logger/issues"
-  },
-  "homepage": "https://github.com/faranalytics/streams-logger#readme",
-  "engines": {
-    "npm": ">=10.2.3",
-    "node": ">=18.18.0"
-  },
-  "dependencies": {
-    "@farar/nodes": "^0.0.7"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.6.0",
-    "@types/eslint__js": "^8.42.3",
-    "@types/node": "^20.11.28",
-    "eslint": "^8.57.0",
-    "typescript": "^5.5.3",
-    "typescript-eslint": "^7.15.0"
-  },
-  "keywords": [
-    "logger",
-    "logging",
-    "logs",
-    "pino",
-    "stream",
-    "streams-logger",
-    "winston"
-  ]
+    "name": "streams-logger",
+    "version": "0.2.1",
+    "description": "",
+    "main": "./dist/index.js",
+    "scripts": {
+        "test": "cd ./tests/test && npm install && npm run clean:build && npm start",
+        "clean": "rm -rf ./dist/*",
+        "build": "tsc --build .",
+        "clean:build": "npm run clean && npm run build",
+        "watch": "tsc --watch"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/faranalytics/streams-logger.git"
+    },
+    "author": "FAR",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/faranalytics/streams-logger/issues"
+    },
+    "homepage": "https://github.com/faranalytics/streams-logger#readme",
+    "engines": {
+        "npm": ">=10.2.3",
+        "node": ">=18.18.0"
+    },
+    "dependencies": {
+        "@farar/nodes": "^0.0.7"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.6.0",
+        "@types/eslint__js": "^8.42.3",
+        "@types/node": "^20.11.28",
+        "eslint": "^8.57.0",
+        "typescript": "^5.5.3",
+        "typescript-eslint": "^7.15.0"
+    },
+    "keywords": [
+        "logger",
+        "logging",
+        "logs",
+        "pino",
+        "stream",
+        "streams-logger",
+        "winston"
+    ]
 }
