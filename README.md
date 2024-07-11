@@ -318,7 +318,9 @@ Set the log level.  Must be one of `SyslogLevel`.
     - level `<SyslogLevel>` An optional log level.  **Default: `SyslogLevel.WARN`**
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
 
-Use a `RotatingFileHandler` in order to write your log messages to a file.  The `RotatingFileHandler` is thread safe.
+Use a `RotatingFileHandler` in order to write your log messages to a file.
+
+> **NB** For improved performance, the `RotatingFileHandler` maintains its own accounting of the log file size for purposes of file rotation; hence, it's important that out-of-band writes are not permitted on the same log file while it is operating on it.
 
 *public* **rotatingFileHandler.setLevel(level)**
 - level `<SyslogLevel>` A log level.
@@ -537,7 +539,7 @@ This is an example of what a logged message will look like using the serializer 
 #                        ⮴level       ⮴line number
 ```
 ## Object (JSON) Logging
-*Streams* logging facilities (e.g., Logger, Formatter, etc.) default to `string` messages; however, you can log any type of message you want.  In the following example, a permissive interface is created named `Message` and messages are serialized using `JSON.stringify`.
+*Streams* logging facilities (e.g., Logger, Formatter, etc.) default to logging `string` messages; however, you can log any type of message you want by specifying your message type in the type parameter of the constructor.  In the following example, a permissive interface is created named `Message`. The `Message` type is specified in the type parameter of the constructor of each `Node` (i.e., the Logger, Formatter, and ConsoleHandler).  The `Formatter` is configured to input a `Message` and output a `string`; `Message` objects are serialized using `JSON.stringify`. 
 
 ```ts
 import { Logger, Formatter, ConsoleHandler, SyslogLevel } from 'streams-logger';
@@ -723,3 +725,6 @@ log.disconnect(streams.root);
 **For typical logging applications setting a `queueSizeLimit` isn't necessary.**  However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted.  By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending Nodes in your graph.
 
 If you have a *cooperating* stream that is backpressuring, you can either set a default `highWaterMark` appropriate to your application or increase the `highWaterMark` on the specific stream in order to mitigate drain events.
+
+## Performance
+*Streams* performs well in real-world logging applications.  *Streams* strictly adheres to Node's public API contract and conventions.  This approach comes with trade-offs; however, it ensures stability and portability while still delivering a performant logging experience.

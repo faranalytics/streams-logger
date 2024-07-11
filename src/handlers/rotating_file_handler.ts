@@ -16,7 +16,7 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
     public maxSize: number;
     public encoding: BufferEncoding;
     public mode: number;
-    public fsStream: fs.WriteStream;
+    public writeStream: fs.WriteStream;
     public size: number;
 
     constructor({ level, path, rotationCount, maxSize, encoding, mode }: RotatingFileHandlerConstructorOptions, writableOptions?: stream.WritableOptions) {
@@ -31,16 +31,16 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
         this.mode = mode ?? 0o666;
         this.level = level ?? SyslogLevel.WARN;
         this.size = 0;
-
-        if(fs.existsSync(this.path)){
+        if (fs.existsSync(this.path)) {
             this.size = fs.statSync(this.path).size;
         }
-
-        this.fsStream = fs.createWriteStream(path, { mode, encoding });
-
+        this.writeStream = fs.createWriteStream(path, { mode, encoding });
         this.once('error', () => {
-            this.unpipe(this.fsStream);
-        }).pipe(this.fsStream);
+            this.unpipe(this.writeStream);
+            this.writeStream.close();
+        });
+        this.writeStream.once('error', (err: Error) => this.emit('error', err));
+        this.pipe(this.writeStream);
     }
 
     async _transform(chunk: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback): Promise<void> {
@@ -64,8 +64,9 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
     }
 
     protected async rotate() {
-        this.unpipe(this.fsStream);
-        this.fsStream.close();
+        this.unpipe(this.writeStream);
+        this.writeStream.close();
+        this.writeStream.removeAllListeners('error');
         if (this.rotationCount === 0) {
             await fsp.rm(this.path);
         }
@@ -76,19 +77,20 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
                     path = this.path;
                 }
                 else {
-                    path = `${this.path}.${i} `;
+                    path = `${this.path}.${i}`;
                 }
                 try {
                     const stats = await fsp.stat(path);
                     if (stats.isFile()) {
-                        await fsp.rename(path, `${this.path}.${i + 1} `);
+                        await fsp.rename(path, `${this.path}.${i + 1}`);
                     }
                 }
                 catch (e) { /* flow-control */ }
             }
         }
-        this.fsStream = fs.createWriteStream(this.path, { mode: this.mode, encoding: this.encoding });
-        this.once('error', () => this.unpipe(this.fsStream)).pipe(this.fsStream);
+        this.writeStream = fs.createWriteStream(this.path, { mode: this.mode, encoding: this.encoding });
+        this.writeStream.once('error', (err: Error) => this.emit('error', err));
+        this.pipe(this.writeStream);
         this.size = 0;
     }
 }
