@@ -4,7 +4,7 @@ import { LogContext } from '../commons/log_context.js';
 import { SyslogLevel, SyslogLevelT } from '../commons/syslog.js';
 import { Config } from '../index.js';
 
-const $option = Symbol('option');
+export const $option = Symbol('option');
 
 export interface ConsoleHandlerWritableOptions {
     level: SyslogLevel;

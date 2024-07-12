@@ -7,11 +7,11 @@ import { Node, $stream } from '@farar/nodes';
 import { SyslogLevel, SyslogLevelT } from '../commons/syslog.js';
 import { Config } from '../index.js';
 
-const $rotate = Symbol('rotate');
-const $option = Symbol('option');
-const $path = Symbol('path');
-const $writeStream = Symbol('writeStream');
-const $size = Symbol('size');
+export const $rotate = Symbol('rotate');
+export const $option = Symbol('option');
+export const $path = Symbol('path');
+export const $writeStream = Symbol('writeStream');
+export const $size = Symbol('size');
 
 export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
 
@@ -97,7 +97,7 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
             }
         }
         this[$writeStream] = fs.createWriteStream(this[$path], { mode: this[$option].mode, encoding: this[$option].encoding });
-        this[$writeStream].once('error', (err: Error) => this.emit('error', err));
+        this[$writeStream].once('error', this.propagateError);
         this.pipe(this[$writeStream]);
         this[$size] = 0;
     }

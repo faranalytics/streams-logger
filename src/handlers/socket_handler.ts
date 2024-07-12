@@ -30,19 +30,26 @@ export class SocketHandler<MessageT = string> extends Node<LogContext<MessageT, 
                     this.push();
                 },
                 write: (logContext: LogContext<MessageT, SyslogLevelT>, _encoding: BufferEncoding, callback: stream.TransformCallback) => {
-                    if (SyslogLevel[logContext.level] <= this.option.level) {
-                        const data = this.serializeMessage(logContext);
-                        const size = Buffer.alloc(6, 0);
-                        size.writeUIntBE(data.length + 6, 0, 6);
-                        const buf = Buffer.concat([size, data]);
-                        if (!this.socket.write(buf)) {
-                            this.socket.once('drain', callback);
-                        }
-                        else {
+                    try {
+                        if (SyslogLevel[logContext.level] <= this.option.level) {
+                            const data = this.serializeMessage(logContext);
+                            const size = Buffer.alloc(6, 0);
+                            size.writeUIntBE(data.length + 6, 0, 6);
+                            const buf = Buffer.concat([size, data]);
+                            if (!this.socket.write(buf)) {
+                                this.socket.once('drain', callback);
+                            }
+                            else {
+                                callback();
+                            }
+                        } else {
                             callback();
                         }
-                    } else {
-                        callback();
+                    }
+                    catch (err) {
+                        if (err instanceof Error) {
+                            callback(err);
+                        }
                     }
                 }
             }

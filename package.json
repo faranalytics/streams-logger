@@ -1,10 +1,10 @@
 {
     "name": "streams-logger",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "description": "",
     "main": "./dist/index.js",
     "scripts": {
-        "test": "cd ./tests/test && npm install && npm run clean:build && npm start",
+        "test": "npm run clean:build && npm update --prefix ./tests/test && npm run clean:build --prefix ./tests/test && npm start --prefix ./tests/test",
         "clean": "rm -rf ./dist/*",
         "build": "tsc --build .",
         "clean:build": "npm run clean && npm run build",
@@ -22,10 +22,10 @@
     "homepage": "https://github.com/faranalytics/streams-logger#readme",
     "engines": {
         "npm": ">=10.2.3",
-        "node": ">=18.18.0"
+        "node": ">=18.20.4"
     },
     "dependencies": {
-        "@farar/nodes": "^0.0.7"
+        "@farar/nodes": "^0.1.0"
     },
     "devDependencies": {
         "@eslint/js": "^9.6.0",

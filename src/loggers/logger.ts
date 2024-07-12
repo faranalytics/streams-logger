@@ -27,11 +27,18 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
                 readableObjectMode: true,
                 writableObjectMode: true,
                 transform: (logContext: LogContext<string, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
-                    if (this[$outs]?.length) {
-                        callback(null, logContext);
+                    try {
+                        if (this[$outs]?.length) {
+                            callback(null, logContext);
+                        }
+                        else {
+                            callback();
+                        }
                     }
-                    else {
-                        callback();
+                    catch (err) {
+                        if (err instanceof Error) {
+                            callback(err);
+                        }
                     }
                 }
             }

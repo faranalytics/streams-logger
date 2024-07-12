@@ -5,7 +5,7 @@ import { SyslogLevelT } from '../commons/syslog.js';
 import { Config } from '../index.js';
 
 export interface FilterConstructorOptions<MessageT> {
-    filter: (record: LogContext<MessageT, SyslogLevelT>) => Promise<boolean> | boolean
+    filter: (logContext: LogContext<MessageT, SyslogLevelT>) => Promise<boolean> | boolean
 }
 
 export class Filter<MessageT = string> extends Node<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>> {
@@ -17,11 +17,18 @@ export class Filter<MessageT = string> extends Node<LogContext<MessageT, SyslogL
                 writableObjectMode: true,
                 readableObjectMode: true,
                 transform: async (logContext: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
-                    if (await filter(logContext)) {
-                        callback(null, logContext);
+                    try {
+                        if (await filter(logContext)) {
+                            callback(null, logContext);
+                        }
+                        else {
+                            callback();
+                        }
                     }
-                    else {
-                        callback();
+                    catch (err) {
+                        if (err instanceof Error) {
+                            callback(err);
+                        }
                     }
                 }
             }

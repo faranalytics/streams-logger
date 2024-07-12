@@ -13,11 +13,18 @@ export class LogContextToBuffer extends Node<LogContext<string, SyslogLevelT>, B
                 writableObjectMode: true,
                 readableObjectMode: false,
                 transform: (chunk: LogContext<string, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
-                    if (chunk.message) {
-                        callback(null, Buffer.from(chunk.message, this.encoding));
+                    try {
+                        if (chunk.message) {
+                            callback(null, Buffer.from(chunk.message, this.encoding));
+                        }
+                        else {
+                            callback();
+                        }
                     }
-                    else {
-                        callback();
+                    catch (err) {
+                        if (err instanceof Error) {
+                            callback(err);
+                        }
                     }
                 }
             }
