@@ -22,7 +22,7 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
 
     constructor({ name, level, queueSizeLimit, parent, captureStackTrace, captureISOTime }: LoggerConstructorOptions<MessageT>, streamOptions?: stream.TransformOptions) {
         super(new stream.Transform({
-            ...Config.getDuplexDefaults(true, true),
+            ...Config.getDuplexOptions(true, true),
             ...streamOptions, ...{
                 readableObjectMode: true,
                 writableObjectMode: true,
@@ -75,7 +75,7 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
                 Error.captureStackTrace(logContext, this.log);
                 logContext.parseStackTrace();
             }
-            super[$write](logContext).catch(() => { /* */ });
+            super[$write](logContext).catch((err: Error) => Config.errorHandler(err));
             if (this.option.queueSizeLimit && this[$size] > this.option.queueSizeLimit) {
                 throw new QueueSizeLimitExceededError(`The queue size limit, ${this.option.queueSizeLimit}, is exceeded.`);
             }
@@ -85,7 +85,9 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
                 throw err;
             }
             else {
-                console.error(err);
+                if (err instanceof Error) {
+                    Config.errorHandler(err);
+                }
             }
         }
     }

@@ -12,7 +12,7 @@ export class Formatter<MessageInT = string, MessageOutT = string> extends Node<L
 
     constructor({ format }: FormatterConstructorOptions<MessageInT, MessageOutT>, streamOptions?: stream.TransformOptions) {
         super(new stream.Transform({
-            ...Config.getDuplexDefaults(true, true),
+            ...Config.getDuplexOptions(true, true),
             ...streamOptions, ...{
                 writableObjectMode: true,
                 readableObjectMode: true,
@@ -43,6 +43,7 @@ export class Formatter<MessageInT = string, MessageOutT = string> extends Node<L
                     catch (err) {
                         if (err instanceof Error) {
                             callback(err);
+                            Config.errorHandler(err);
                         }
                     }
                 }

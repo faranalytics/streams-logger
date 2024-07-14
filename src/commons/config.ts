@@ -1,71 +1,39 @@
 import * as stream from 'node:stream';
 
+export type ErrorHandler = (err: Error, ...params: Array<unknown>) => void;
+
 class Config {
 
-    public defaultHighWaterMark?: number;
-    public defaultHighWaterMarkObjectMode?: number;
+    public highWaterMark: number;
+    public highWaterMarkObjectMode: number;
     public captureStackTrace: boolean;
     public captureISOTime: boolean;
+    public errorHandler: ErrorHandler;
 
     constructor() {
+        this.highWaterMark = stream.getDefaultHighWaterMark(false);
+        this.highWaterMarkObjectMode = stream.getDefaultHighWaterMark(true);
         this.captureStackTrace = true;
         this.captureISOTime = true;
+        this.errorHandler = console.error;
     }
 
-    public setCaptureStackTrace(value: boolean) {
-        this.captureStackTrace = value;
-    }
-
-    public setCaptureISOTime(value: boolean) {
-        this.captureISOTime = value;
-    }
-
-    public getDefaultHighWaterMark(objectMode: boolean): number {
-        if (objectMode) {
-            if (this.defaultHighWaterMarkObjectMode) {
-                return this.defaultHighWaterMarkObjectMode;
-            }
-            else {
-                return stream.getDefaultHighWaterMark(true);
-            }
-        }
-        else {
-            if (this.defaultHighWaterMark) {
-                return this.defaultHighWaterMark;
-            }
-            else {
-                return stream.getDefaultHighWaterMark(false);
-            }
-        }
-    }
-
-    public setDefaultHighWaterMark(objectMode: boolean, value: number): void {
-        if (objectMode) {
-            this.defaultHighWaterMarkObjectMode = value;
-        }
-        else {
-            this.defaultHighWaterMark = value;
-        }
-    }
-
-    public getWritableDefaults(objectMode: boolean = true): stream.WritableOptions {
+    public getWritableOptions(objectMode: boolean = true): stream.WritableOptions {
         return {
-            highWaterMark: this.getDefaultHighWaterMark(objectMode)
+            highWaterMark: objectMode ? this.highWaterMarkObjectMode : this.highWaterMark
         };
     }
 
-    public getReadableDefaults(objectMode: boolean = true): stream.ReadableOptions {
+    public getReadableOptions(objectMode: boolean = true): stream.WritableOptions {
         return {
-            highWaterMark: this.getDefaultHighWaterMark(objectMode)
+            highWaterMark: objectMode ? this.highWaterMarkObjectMode : this.highWaterMark
         };
     }
 
-    public getDuplexDefaults(writableObjectMode: boolean = true, readableObjectMode: boolean = true): stream.DuplexOptions {
-        const writableDefaults = this.getWritableDefaults(writableObjectMode);
-        const readableDefaults = this.getReadableDefaults(readableObjectMode);
+    public getDuplexOptions(writableObjectMode: boolean = true, readableObjectMode: boolean = true): stream.DuplexOptions {
         return {
-            writableHighWaterMark: writableDefaults.highWaterMark,
-            readableHighWaterMark: readableDefaults.highWaterMark
+            writableHighWaterMark: writableObjectMode ? this.highWaterMarkObjectMode : this.highWaterMark,
+            readableHighWaterMark: readableObjectMode ? this.highWaterMarkObjectMode : this.highWaterMark
         };
     }
 }

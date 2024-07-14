@@ -500,55 +500,40 @@ _public_ **LogContext.threadid**
 
 ### The Streams Config Settings Object
 
-**Config.getDefaultHighWaterMark(objectMode)**
+**Config.errorHandler** `<(err: Error, ...params: Array<unknown>) => void>` Set an error handler.  **Default: `console.error`**
 
-- objectMode `<boolean>` `true` if getting the ObjectMode `highWaterMark`; `false`, otherwise.
+**Config.captureISOTime** `<boolean>` Set this to `false` in order to disable capturing ISO time on each logging call.. **Default: `true`**
 
-Returns: `<number>` The default `highWaterMark`.
+**Config.captureStackTrace** `<boolean>` Set this to `false` in order to disable stack trace capture on each logging call. **Default: `true`**
 
-**Config.getDuplexDefaults(writableObjectMode, readableObjectMode)**
+**Config.highWaterMark** `<number>` Set the `highWaterMark` for streams in buffer mode. **Default: `node:stream.getDefaultHighWaterMark(false)`**
+
+**Config.highWaterMarkObjectMode** `<number>` Set the `highWaterMark` for streams in objectMode. **Default: `node:stream.getDefaultHighWaterMark(true)`**
+
+**Config.getDuplexOptions(writableObjectMode, readableObjectMode)**
 
 - writableObjectMode `<boolean>` `true` for ObjectMode; `false` otherwise.
 - readableObjectMode `<boolean>` `true` for ObjectMode; `false` otherwise.
 
 Returns: `<stream.DuplexOptions>`
 
-Use `Config.getDuplexDefaults` when implementing a [custom _Streams_ data transformation Node](#how-to-implement-a-custom-streams-data-transformation-node).
+Use `Config.getDuplexOptions` when implementing a [custom _Streams_ data transformation Node](#how-to-implement-a-custom-streams-data-transformation-node).
 
-**Config.getReadableDefaults(readableObjectMode)**
+**Config.getReadableOptions(readableObjectMode)**
 
 - readableObjectMode `<boolean>` `true` for ObjectMode; `false` otherwise.
 
 Returns: `<stream.ReadableOptions>`
 
-Use `Config.getReadableDefaults` when implementing a [custom _Streams_ data transformation Node](#how-to-implement-a-custom-streams-data-transformation-node).
+Use `Config.getReadableOptions` when implementing a [custom _Streams_ data transformation Node](#how-to-implement-a-custom-streams-data-transformation-node).
 
-**Config.getWritableDefaults(writableObjectMode)**
+**Config.getWritableOptions(writableObjectMode)**
 
 - writableObjectMode `<boolean>` `true` for ObjectMode; `false` otherwise.
 
 Returns: `<stream.WritableOptions>`
 
-Use `Config.getWritableDefaults` when implementing a [custom _Streams_ data transformation Node](#how-to-implement-a-custom-streams-data-transformation-node).
-
-**Config.setCaptureISOTime(value)**
-
-- value `<boolean>` Set this to `false` in order to disable capturing the ISO time on each logging call. **Default: `true`**
-
-Returns: `<void>`
-
-**Config.setCaptureStackTrace(value)**
-
-- value `<boolean>` Set this to `false` in order to disable stack trace capture on each logging call. **Default: `true`**
-
-Returns: `<void>`
-
-**Config.setDefaultHighWaterMark(objectMode, value)**
-
-- objectMode `<boolean>` `true` if setting the ObjectMode `highWaterMark`; `false`, otherwise.
-- value `number` The `highWaterMark` value.
-
-Returns: `<void>`
+Use `Config.getWritableOptions` when implementing a [custom _Streams_ data transformation Node](#how-to-implement-a-custom-streams-data-transformation-node).
 
 ### The SyslogLevel Enum
 
@@ -820,7 +805,7 @@ If you have a _cooperating_ stream that is backpressuring, you can either set a 
 
 ## Performance
 
-_Streams_ is a highly customizable Logger that performs well on a wide range of logging tasks. It is a good choice for both error logging and high-throughput logging. It strictly adheres to Node's public API contract and common conventions. This approach comes with trade-offs; however, it ensures stability and portability while still delivering a performant logging experience.
+_Streams_ is a highly customizable Logger that performs well on a wide range of logging tasks. It is a good choice for both error logging and high-throughput logging. It strictly adheres to the Node.js public API contract and common conventions. This approach comes with trade-offs; however, it ensures stability and portability while still delivering a performant logging experience.
 
 ## Test
 
@@ -833,5 +818,5 @@ npm install && npm update
 ### Run tests.
 
 ```bash
-npm test
+npm test verbose=false
 ```

@@ -3,10 +3,13 @@ import { once } from 'node:events';
 import { test, after, describe } from 'node:test';
 import * as assert from 'node:assert';
 import { Logger, LogContext, Filter, SocketHandler, RotatingFileHandler, Formatter, SyslogLevel, SyslogLevelT } from 'streams-logger';
-import { AnyToAnyEmitter, AnyTransformToAny, AnyToVoid } from '@farar/nodes';
+import { Config, AnyToAnyEmitter, AnyToEmitter, AnyTransformToAny, AnyToVoid } from '@farar/nodes';
 
 // streams.Config.setDefaultHighWaterMark(true, 1e6);
 // streams.Config.setDefaultHighWaterMark(false, 1e6);
+
+const arg:Record<string, string> = process.argv.slice(2).reduce((prev: Record<string, string>, curr: string) => ({ ...prev, ...Object.fromEntries([curr.trim().split('=')]) }), {});
+Config.debug = JSON.parse(arg['verbose']);
 
 await describe('Log a string that passes through a SocketHandler.', async () => {
     after(() => {
@@ -25,7 +28,7 @@ await describe('Log a string that passes through a SocketHandler.', async () => 
         );
     }).listen(3000);
     const socket = net.createConnection({ port: 3000 });
-    const anyToAnyEmitter = new AnyToAnyEmitter();
+    const anyToEmitter = new AnyToEmitter();
     const logger = new Logger({ name: 'main', level: SyslogLevel.DEBUG });
     const formatter = new Formatter({
         format: async ({ isotime, message, name, level, func, line, col }: LogContext<string, SyslogLevelT>) => (
@@ -39,23 +42,35 @@ await describe('Log a string that passes through a SocketHandler.', async () => 
         formatter.connect(
             filter.connect(
                 socketHandler.connect(
-                    anyToAnyEmitter
+                    anyToEmitter
                 )
             )
         )
     );
+
     void test('Log `Hello, World!` and assert that it passed through the graph unscathed.', async () => {
         const greeting = 'Hello, World!';
-        const result = once(anyToAnyEmitter.emitter, 'data');
+        const result = once(anyToEmitter.emitter, 'data');
         log.warn(greeting);
         assert.match((await result)[0].message, new RegExp(`${greeting}\n$`));
     });
-    void test('Log `Hello, World!` * 1e6  and assert that it passed through the graph unscathed.', async () => {
+
+    void test('Log `"Hello, World!".repeat(1e6)` and assert that it passed through the graph unscathed.', async () => {
         const greeting = 'Hello, World!'.repeat(1e6);
-        const result = once(anyToAnyEmitter.emitter, 'data');
+        const result = once(anyToEmitter.emitter, 'data');
         log.warn(greeting);
         const message = (await result)[0].message;
         assert.strictEqual(message.slice(65).trim(), greeting);
+    });
+
+    void test('Log `Hello, World!` 1e4 iterations and assert that each iteration passed through the graph unscathed.', async () => {
+        for (let i = 0; i < 1e4; i++) {
+            const greeting = 'Hello, World!';
+            const result = once(anyToEmitter.emitter, 'data');
+            log.warn(greeting);
+            const message = (await result)[0].message;
+            assert.strictEqual(message.slice(65).trim(), greeting);
+        }
     });
 
     await describe('Test error handling.', () => {
@@ -78,7 +93,7 @@ await describe('Log a string that passes through a SocketHandler.', async () => 
 
         void test('Test selective termination of inoperable graph components.', async () => {
             const greeting = 'Hello, World!';
-            const anyToThrow = new AnyTransformToAny({ transform: () => { throw Error('Error'); } });
+            const anyToThrow = new AnyTransformToAny({ transform: () => { throw Error('AnyToThrow Error'); } });
             const anyToThrowChild = new AnyToVoid();
             anyToThrow.connect(anyToThrowChild);
             formatter.connect(anyToThrow);
@@ -96,7 +111,6 @@ await describe('Log a string that passes through a SocketHandler.', async () => 
             log.warn(greeting);
             assert.match((await result)[0].message, new RegExp(`${greeting}\n$`));
         });
-
     });
 });
 
@@ -153,6 +167,7 @@ await describe('Log an object that passes through a SocketHandler.', async () =>
             )
         )
     );
+
     void test('Log `Greeter` object and assert that it passed through the graph unscathed.', async () => {
         const result = once(anyToAnyEmitter.emitter, 'data');
         (function sayHello() {
@@ -160,6 +175,7 @@ await describe('Log an object that passes through a SocketHandler.', async () =>
         }());
         assert.strictEqual((await result)[0].message.greeting, greeter.greeting);
     });
+
     void test('Log `Greeter` object and assert that function name was captured.', async () => {
         const result = once(anyToAnyEmitter.emitter, 'data');
         (function sayHello() {

@@ -12,7 +12,7 @@ export class Filter<MessageT = string> extends Node<LogContext<MessageT, SyslogL
 
     constructor({ filter }: FilterConstructorOptions<MessageT>, streamOptions?: stream.TransformOptions) {
         super(new stream.Transform({
-            ...Config.getDuplexDefaults(true, true),
+            ...Config.getDuplexOptions(true, true),
             ...streamOptions, ...{
                 writableObjectMode: true,
                 readableObjectMode: true,
@@ -28,6 +28,7 @@ export class Filter<MessageT = string> extends Node<LogContext<MessageT, SyslogL
                     catch (err) {
                         if (err instanceof Error) {
                             callback(err);
+                            Config.errorHandler(err);
                         }
                     }
                 }

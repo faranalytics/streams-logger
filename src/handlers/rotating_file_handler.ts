@@ -22,7 +22,7 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
 
     constructor({ level, path, rotationCount, maxSize = 1e6, encoding, mode }: RotatingFileHandlerConstructorOptions, writableOptions?: stream.WritableOptions) {
         super({
-            ...Config.getWritableDefaults(true),
+            ...Config.getWritableOptions(true),
             ...writableOptions, ...{ objectMode: true }
         });
         this.propagateError = this.propagateError.bind(this);
@@ -67,6 +67,7 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
         catch (err) {
             if (err instanceof Error) {
                 callback(err);
+                Config.errorHandler(err);
             }
         }
     }

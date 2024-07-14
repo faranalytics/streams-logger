@@ -16,7 +16,7 @@ export class ConsoleHandlerWritable<MessageT> extends stream.Transform {
 
     constructor({ level }: ConsoleHandlerConstructorOptions, streamOptions?: stream.WritableOptions) {
         super({
-            ...Config.getWritableDefaults(true),
+            ...Config.getWritableOptions(true),
             ...streamOptions,
             ...{ objectMode: true }
         });
@@ -42,6 +42,7 @@ export class ConsoleHandlerWritable<MessageT> extends stream.Transform {
         catch (err) {
             if (err instanceof Error) {
                 callback(err);
+                Config.errorHandler(err);
             }
         }
     }

@@ -3,6 +3,7 @@ import * as stream from 'node:stream';
 import { LogContext } from '../commons/log_context.js';
 import { SyslogLevel, SyslogLevelT } from '../commons/syslog.js';
 import { Node, $stream } from '@farar/nodes';
+import { Config } from '../index.js';
 
 export interface SocketHandlerConstructorOptions {
     socket: net.Socket;
@@ -49,6 +50,7 @@ export class SocketHandler<MessageT = string> extends Node<LogContext<MessageT, 
                     catch (err) {
                         if (err instanceof Error) {
                             callback(err);
+                            Config.errorHandler(err);
                         }
                     }
                 }

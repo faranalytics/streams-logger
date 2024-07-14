@@ -1,6 +1,6 @@
 {
     "name": "streams-logger",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "description": "",
     "main": "./dist/index.js",
     "scripts": {
@@ -25,7 +25,7 @@
         "node": ">=18.20.4"
     },
     "dependencies": {
-        "@farar/nodes": "^0.1.0"
+        "@farar/nodes": "^0.3.0"
     },
     "devDependencies": {
         "@eslint/js": "^9.6.0",
@@ -41,6 +41,7 @@
         "logs",
         "pino",
         "stream",
+        "streams",
         "streams-logger",
         "winston"
     ]
