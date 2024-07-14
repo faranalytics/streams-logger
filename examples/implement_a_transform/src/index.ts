@@ -7,7 +7,7 @@ export class LogContextToBuffer extends Node<LogContext<string, SyslogLevelT>, B
 
     constructor(streamOptions?: stream.TransformOptions) {
         super(new stream.Transform({
-            ...Config.getDuplexDefaults(true, false),
+            ...Config.getDuplexOptions(true, false),
             ...streamOptions,
             ...{
                 writableObjectMode: true,

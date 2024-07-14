@@ -7,9 +7,11 @@ import { Config, AnyToAnyEmitter, AnyToEmitter, AnyTransformToAny, AnyToVoid } f
 
 // streams.Config.setDefaultHighWaterMark(true, 1e6);
 // streams.Config.setDefaultHighWaterMark(false, 1e6);
-
-const arg:Record<string, string> = process.argv.slice(2).reduce((prev: Record<string, string>, curr: string) => ({ ...prev, ...Object.fromEntries([curr.trim().split('=')]) }), {});
-Config.debug = JSON.parse(arg['verbose']);
+try {
+    const arg: Record<string, string> = process.argv.slice(2).reduce((prev: Record<string, string>, curr: string) => ({ ...prev, ...Object.fromEntries([curr.trim().split('=')]) }), {});
+    Config.debug = JSON.parse(arg['verbose']);
+}
+catch (err) { Config.debug = false; }
 
 await describe('Log a string that passes through a SocketHandler.', async () => {
     after(() => {
