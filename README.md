@@ -198,9 +198,9 @@ The _Streams_ API provides commonly used logging facilities (i.e., the [Logger](
   - name `<string>` An optional name for the `Logger`.
   - parent `<Logger>` An optional parent `Logger`. **Default: `streams-logger.root`**
   - queueSizeLimit `<number>` Optionally specify a limit on the number of log messages that may queue while waiting for a stream to drain. See [Backpressure](#backpressure).
-  - captureStackTrace `<boolean>` Optionally specify if stack trace capturing is enabled. This setting can be overridden by the _Streams_ configuration setting `Config.captureStackTrace`. **Default: `true`**
-  - captureISOTime `<boolean>` Optionally specify if capturing ISO time is enabled. This setting can be overridden by the _Streams_ configuration setting `Config.captureISOTime`. **Default: `true`**
-- streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
+  - captureStackTrace `<boolean>` Optionally specify if stack trace capturing is enabled. This setting will override the default.  **Default: `Config.captureStackTrace`**
+  - captureISOTime `<boolean>` Optionally specify if capturing ISO time is enabled.  This setting will override the default.  **Default: `Config.captureISOTime`**
+- streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.  You can use `TransformOptions` to set a `highWaterMark` on the `Logger`.
 
 Use an instance of a Logger to propagate messages at the specified syslog level.
 
@@ -292,7 +292,7 @@ Set the log level. Must be one of `SyslogLevel`.
 - `<MessageOutT>` The type of the output message. This is the return type of the `format` function. **Default: `<string>`**
 - options
   - format `(record: LogContext<MessageInT, SyslogLevelT>): Promise<MessageOutT> | MessageOutT` A function that will format and serialize the `LogContext<MessageInT, SyslogLevelT>`. Please see [Formatting](#formatting) for how to implement a format function.
-- streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
+- streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.  You can use `TransformOptions` to set a `highWaterMark` on the `Formatter`.
 
 Use a `Formatter` in order to specify how your log message will be formatted prior to forwarding it to the Handler(s). An instance of [`LogContext`](#the-LogContext-class) is created that contains information about the environment at the time of the logging call. The `LogContext` is passed as the single argument to `format` function.
 
@@ -315,7 +315,7 @@ Returns: `<Formatter<LogContext<MessageInT, SyslogLevelT>, LogContext<MessageOut
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
 - options
   - filter `(record: LogContext<MessageT, SyslogLevelT>): Promise<boolean> | boolean` A function that will filter the `LogContext<MessageT, SyslogLevelT>`. Return `true` in order to permit the message through; otherwise, return `false`.
-- streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
+- streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream. You can use `TransformOptions` to set a `highWaterMark` on the `Filter`.
 
 _public_ **filter.connect(...nodes)**
 
@@ -334,9 +334,9 @@ Returns: `<Filter<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, Syslo
 **new streams-logger.ConsoleHandler\<MessageT\>(options, streamOptions)**
 
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
-- options `<ConsoleHandlerTransformOtions>`
+- options `<ConsoleHandlerOptions>`
   - level `<SyslogLevel>` An optional log level. **Default: `SyslogLevel.WARN`**
-- streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
+- streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream. You can use `TransformOptions` to set a `highWaterMark` on the `ConsoleHandler`.
 
 Use a `ConsoleHandler` in order to stream your messages to the console.
 
@@ -358,7 +358,7 @@ Set the log level. Must be one of `SyslogLevel`.
   - encoding `<BufferEncoding>` An optional encoding. **Default: `utf8`**
   - mode `<number>` An optional mode. **Deafult: `0o666`**
   - level `<SyslogLevel>` An optional log level. **Default: `SyslogLevel.WARN`**
-- streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream.
+- streamOptions `<stream.WritableOptions>` Optional options to be passed to the stream. You can use `WritableOptions` to set a `highWaterMark` on the `RotatingFileHandler`.
 
 Use a `RotatingFileHandler` in order to write your log messages to a file.
 
@@ -380,7 +380,7 @@ Set the log level. Must be one of `SyslogLevel`.
   - reviver `<(this: unknown, key: string, value: unknown) => unknown>` An optional reviver for `JSON.parse`.
   - replacer `<(this: unknown, key: string, value: unknown) => unknown>` An optional replacer for `JSON.stringify`.
   - space `<string | number>` An optional space specification for `JSON.stringify`.
-- streamOptions `<stream.DuplexOptions>` Optional options to be passed to the stream.
+- streamOptions `<stream.DuplexOptions>` Optional options to be passed to the stream. You can use `DuplexOptions` to set a `highWaterMark` on the `SocketHandler`.
 
 Use a `SocketHandler` in order to connect _Stream_ graphs over the network. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-example) example for instructions on how to use a `SocketHandler` in order to connect _Streams_ logging graphs over the network.
 
@@ -500,13 +500,15 @@ _public_ **LogContext.threadid**
 
 ### The Streams Config Settings Object
 
+The `Config` object is used to set global settings.  It can be used for performance [tuning](#tuning).
+
 **Config.errorHandler** `<(err: Error, ...params: Array<unknown>) => void>` Set an error handler.  **Default: `console.error`**
 
 **Config.captureISOTime** `<boolean>` Set this to `false` in order to disable capturing ISO time on each logging call.. **Default: `true`**
 
 **Config.captureStackTrace** `<boolean>` Set this to `false` in order to disable stack trace capture on each logging call. **Default: `true`**
 
-**Config.highWaterMark** `<number>` Set the `highWaterMark` for streams in buffer mode. **Default: `node:stream.getDefaultHighWaterMark(false)`**
+**Config.highWaterMark** `<number>` Set the `highWaterMark` for streams in Buffer mode. **Default: `node:stream.getDefaultHighWaterMark(false)`**
 
 **Config.highWaterMarkObjectMode** `<number>` Set the `highWaterMark` for streams in objectMode. **Default: `node:stream.getDefaultHighWaterMark(true)`**
 
@@ -755,28 +757,28 @@ const socketHandler = new Node<Buffer, Buffer>(socket);
 
 ### Tune the `highWaterMark`.
 
-_Streams_ `Node` implementations use the native Node.js stream API for message propagation. You have the option of tuning the Node.js stream `highWaterMark` to your specific needs - keeping in mind memory constraints. You can set a default `highWaterMark` using [`Config.setDefaultHighWaterMark(objectMode, value)`](#the-streams-config-settings-object) that will apply to Nodes in the _Streams_ library. Alternatively, you can pass an optional stream configuration argument to each `Node` individually.
+_Streams_ `Node` implementations use the native Node.js stream API for message propagation. You have the option of tuning the Node.js stream `highWaterMark` to your specific needs - keeping in mind memory constraints. You can set a `highWaterMark` using [`Config.highWaterMark`](#the-streams-config-settings-object) and [`Config.highWaterMarkObjectMode`](#the-streams-config-settings-object) that will apply to Nodes in the _Streams_ library. Alternatively, the `highWaterMark` can be set in the constructor of each `Node`; please see the [API](#api) for instructions on how to do this.
 
-In this example, the `highWaterMark` of ObjectMode streams and Buffer streams is artificially set to `1e6` objects and `1e6` bytes.
+In this example, the `highWaterMark` of ObjectMode streams and Buffer mode streams is artificially set to `1e6` objects and `1e6` bytes.
 
 ```ts
 import * as streams from "streams-logger";
 
-streams.Config.setDefaultHighWaterMark(true, 1e6);
-streams.Config.setDefaultHighWaterMark(false, 1e6);
+streams.Config.highWaterMark = 1e6;
+streams.Config.highWaterMarkObjectMode = 1e6;
 ```
 > Please see the [API](#api) for more information on global [`Config`](#the-streams-config-settings-object) object settings.
 
 ### Disable stack trace capture.
 
-Another optional setting that you can take advantage of is to turn off stack trace capture. Stack trace capture can be disabled globally using the _Streams_ configuration settings object i.e., [`Config.setCaptureStackTrace`](#the-streams-config-settings-object). Alternatively, you may disable stack trace capturing in a specific `Logger` by setting the `stackTraceCapture` property of the `LoggerOptions` to `false`.
+Another optional setting that you can take advantage of is to turn off stack trace capture. Stack trace capture can be disabled globally using the _Streams_ configuration settings object i.e., [`Config.captureStackTrace`](#the-streams-config-settings-object). Alternatively, you may disable stack trace capturing in a specific `Logger` by setting the `captureStackTrace` property of the `LoggerOptions` to `false`.
 
 Turning off stack trace capture will disable some of the information (e.g., function name and line number) that is normally contained in the `LogContext` object that is passed to the `format` function of a `Formatter`.
 
 ```ts
 import * as streams from "streams-logger";
 
-streams.Config.setCaptureStackTrace(false);
+streams.Config.captureStackTrace = false;
 ```
 > Please see the [API](#api) for more information on global [`Config`](#the-streams-config-settings-object) object settings.
 

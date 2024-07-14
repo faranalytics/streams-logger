@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import * as fsp from 'node:fs/promises';
 import * as stream from 'node:stream';
 import { LogContext } from '../commons/log_context.js';
-import { Node, $stream } from '@farar/nodes';
+import { Node } from '@farar/nodes';
 import { SyslogLevel, SyslogLevelT } from '../commons/syslog.js';
 import { Config } from '../index.js';
 
@@ -12,27 +12,34 @@ export const $option = Symbol('option');
 export const $path = Symbol('path');
 export const $writeStream = Symbol('writeStream');
 export const $size = Symbol('size');
+export const $level = Symbol('level');
+export const $rotationLimit = Symbol('rotationLimit');
+export const $maxSize = Symbol('maxSize');
+export const $encoding = Symbol('encoding');
+export const $mode = Symbol('mode');
 
 export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
 
-    public [$option]: Required<Omit<RotatingFileHandlerConstructorOptions, 'path'>>;
     protected [$path]: string;
     protected [$writeStream]: fs.WriteStream;
     protected [$size]: number;
+    protected [$level]: SyslogLevel;
+    protected [$rotationLimit]: number;
+    protected [$maxSize]: number;
+    protected [$mode]: number;
+    protected [$encoding]: NodeJS.BufferEncoding;
 
-    constructor({ level, path, rotationCount, maxSize = 1e6, encoding, mode }: RotatingFileHandlerConstructorOptions, writableOptions?: stream.WritableOptions) {
+    constructor({ level, path, rotationLimit, maxSize = 1e6, encoding, mode }: RotatingFileHandlerOptions, writableOptions?: stream.WritableOptions) {
         super({
             ...Config.getWritableOptions(true),
             ...writableOptions, ...{ objectMode: true }
         });
         this.propagateError = this.propagateError.bind(this);
-        this[$option] = {
-            level: level ?? SyslogLevel.WARN,
-            rotationCount: rotationCount ?? 0,
-            maxSize: maxSize ?? 1e6,
-            encoding: encoding ?? 'utf8',
-            mode: mode ?? 0o666
-        };
+        this[$level] = level ?? SyslogLevel.WARN;
+        this[$rotationLimit] = rotationLimit ?? 0;
+        this[$maxSize] = maxSize ?? 1e6;
+        this[$encoding] = encoding ?? 'utf8';
+        this[$mode] = mode ?? 0o666;
         this[$path] = pth.resolve(pth.normalize(path));
         this[$size] = 0;
         if (fs.existsSync(this[$path])) {
@@ -55,10 +62,10 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
         try {
             const message: Buffer = (
                 logContext.message instanceof Buffer ? logContext.message :
-                    typeof logContext.message == 'string' ? Buffer.from(logContext.message, this[$option].encoding) :
-                        Buffer.from(JSON.stringify(logContext.message), this[$option].encoding)
+                    typeof logContext.message == 'string' ? Buffer.from(logContext.message, this[$encoding]) :
+                        Buffer.from(JSON.stringify(logContext.message), this[$encoding])
             );
-            if (this[$size] + message.length > this[$option].maxSize) {
+            if (this[$size] + message.length > this[$maxSize]) {
                 await this[$rotate]();
             }
             this[$size] = this[$size] + message.length;
@@ -76,11 +83,11 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
         this.unpipe(this[$writeStream]);
         this[$writeStream].close();
         this[$writeStream].removeListener('error', this.propagateError);
-        if (this[$option].rotationCount === 0) {
+        if (this[$rotationLimit] === 0) {
             await fsp.rm(this[$path]);
         }
         else {
-            for (let i = this[$option].rotationCount - 1; i >= 0; i--) {
+            for (let i = this[$rotationLimit] - 1; i >= 0; i--) {
                 let path;
                 if (i == 0) {
                     path = this[$path];
@@ -97,35 +104,29 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
                 catch (e) { /* flow-control */ }
             }
         }
-        this[$writeStream] = fs.createWriteStream(this[$path], { mode: this[$option].mode, encoding: this[$option].encoding });
+        this[$writeStream] = fs.createWriteStream(this[$path], { mode: this[$mode], encoding: this[$encoding] });
         this[$writeStream].once('error', this.propagateError);
         this.pipe(this[$writeStream]);
         this[$size] = 0;
     }
 }
 
-export interface RotatingFileHandlerConstructorOptions {
+export interface RotatingFileHandlerOptions {
     path: string;
-    rotationCount?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+    rotationLimit?: number;
     maxSize?: number;
     encoding?: BufferEncoding;
     mode?: number;
     level?: SyslogLevel;
 }
 
-export class RotatingFileHandler<MessageT = string> extends Node<LogContext<MessageT, SyslogLevelT>, never> {
+export class RotatingFileHandler<MessageT = string> extends Node<LogContext<MessageT, SyslogLevelT>, never, RotatingFileHandlerTransform<MessageT>> {
 
-    public option: Required<Omit<RotatingFileHandlerConstructorOptions, 'path'>>;
-
-    constructor(options: RotatingFileHandlerConstructorOptions, streamOptions?: stream.WritableOptions) {
-        const rotatingFileHandlerTransform = new RotatingFileHandlerTransform<MessageT>(options, streamOptions);
-        super(rotatingFileHandlerTransform);
-        this.option = rotatingFileHandlerTransform[$option];
+    constructor(options: RotatingFileHandlerOptions, streamOptions?: stream.WritableOptions) {
+        super(new RotatingFileHandlerTransform<MessageT>(options, streamOptions));
     }
 
     public setLevel(level: SyslogLevel) {
-        if (this[$stream] instanceof RotatingFileHandlerTransform) {
-            this[$stream][$option].level = level;
-        }
+        this._stream[$level] = level;
     }
 }

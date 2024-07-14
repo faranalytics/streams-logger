@@ -1,5 +1,5 @@
-import { config as Config } from './commons/config.js';
-import { Node, $write, $size } from '@farar/nodes';
+import Config  from './commons/config.js';
+import { Node } from '@farar/nodes';
 import { LogContext } from './commons/log_context.js';
 import { Logger, root } from './loggers/logger.js';
 import { SyslogLevel, SyslogLevelT } from './commons/syslog.js';
@@ -21,7 +21,5 @@ export {
     RotatingFileHandler,
     SocketHandler,
     Filter,
-    root,
-    $write,
-    $size
+    root
 };

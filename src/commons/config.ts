@@ -1,8 +1,9 @@
 import * as stream from 'node:stream';
+import { EventEmitter } from 'node:events';
 
 export type ErrorHandler = (err: Error, ...params: Array<unknown>) => void;
 
-class Config {
+class Config extends EventEmitter {
 
     public highWaterMark: number;
     public highWaterMarkObjectMode: number;
@@ -11,6 +12,7 @@ class Config {
     public errorHandler: ErrorHandler;
 
     constructor() {
+        super();
         this.highWaterMark = stream.getDefaultHighWaterMark(false);
         this.highWaterMarkObjectMode = stream.getDefaultHighWaterMark(true);
         this.captureStackTrace = true;
@@ -38,4 +40,4 @@ class Config {
     }
 }
 
-export const config = new Config();
+export default new Config();

@@ -7,11 +7,14 @@ import { Config, AnyToAnyEmitter, AnyToEmitter, AnyTransformToAny, AnyToVoid } f
 
 // streams.Config.setDefaultHighWaterMark(true, 1e6);
 // streams.Config.setDefaultHighWaterMark(false, 1e6);
+
 try {
     const arg: Record<string, string> = process.argv.slice(2).reduce((prev: Record<string, string>, curr: string) => ({ ...prev, ...Object.fromEntries([curr.trim().split('=')]) }), {});
     Config.debug = JSON.parse(arg['verbose']);
 }
-catch (err) { Config.debug = false; }
+catch (err) { 
+    Config.debug = false; 
+}
 
 await describe('Log a string that passes through a SocketHandler.', async () => {
     after(() => {
@@ -57,7 +60,7 @@ await describe('Log a string that passes through a SocketHandler.', async () => 
         assert.match((await result)[0].message, new RegExp(`${greeting}\n$`));
     });
 
-    void test('Log `"Hello, World!".repeat(1e6)` and assert that it passed through the graph unscathed.', async () => {
+    void test('Log a long string, "Hello, World!" repeated 1e6 times, and assert that it passed through the graph unscathed.', async () => {
         const greeting = 'Hello, World!'.repeat(1e6);
         const result = once(anyToEmitter.emitter, 'data');
         log.warn(greeting);
@@ -65,7 +68,7 @@ await describe('Log a string that passes through a SocketHandler.', async () => 
         assert.strictEqual(message.slice(65).trim(), greeting);
     });
 
-    void test('Log `Hello, World!` 1e4 iterations and assert that each iteration passed through the graph unscathed.', async () => {
+    void test('Log `Hello, World!` repeatedly, 1e4 iterations, and assert that each iteration passed through the graph unscathed.', async () => {
         for (let i = 0; i < 1e4; i++) {
             const greeting = 'Hello, World!';
             const result = once(anyToEmitter.emitter, 'data');
@@ -93,18 +96,18 @@ await describe('Log a string that passes through a SocketHandler.', async () => 
             )
         );
 
-        void test('Test selective termination of inoperable graph components.', async () => {
+        void test('Test selective detachment of inoperable graph components.', async () => {
             const greeting = 'Hello, World!';
-            const anyToThrow = new AnyTransformToAny({ transform: () => { throw Error('AnyToThrow Error'); } });
-            const anyToThrowChild = new AnyToVoid();
-            anyToThrow.connect(anyToThrowChild);
+            const anyToThrow = new AnyTransformToAny<LogContext<string, SyslogLevelT>, LogContext<string, SyslogLevelT>>({ transform: () => { throw Error('AnyToThrow Error'); } });
+            const anyToVoid = new AnyToVoid();
+            anyToThrow.connect(anyToVoid);
             formatter.connect(anyToThrow);
-            assert.strictEqual(anyToThrow.ins.length, 1);
-            assert.strictEqual(anyToThrow.outs.length, 1);
+            assert.strictEqual(anyToThrow.writableCount, 1);
+            assert.strictEqual(anyToVoid.writableCount, 1);
             log.warn(greeting);
-            await new Promise((r) => setTimeout(r));
-            assert.strictEqual(anyToThrow.ins.length, 0);
-            assert.strictEqual(anyToThrow.outs.length, 0);
+            await new Promise((r)=>setTimeout(r));
+            assert.strictEqual(anyToThrow.writableCount, 0);
+            assert.strictEqual(anyToVoid.writableCount, 0);
         });
 
         void test('Test that the graph is operable after the error.', async () => {

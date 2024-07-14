@@ -1,13 +1,13 @@
 import * as stream from 'node:stream';
 import * as threads from 'node:worker_threads';
 import { LogContext } from '../commons/log_context.js';
-import { Node, $write, $outs, $size } from '@farar/nodes';
+import { Node } from '@farar/nodes';
 import { SyslogLevel, SyslogLevelT } from '../commons/syslog.js';
 import { KeysUppercase } from '../commons/types.js';
 import { QueueSizeLimitExceededError } from '../commons/errors.js';
 import { Config } from '../index.js';
 
-export interface LoggerConstructorOptions<MessageT> {
+export interface LoggerOptions<MessageT> {
     level?: SyslogLevel;
     name?: string;
     queueSizeLimit?: number;
@@ -18,9 +18,13 @@ export interface LoggerConstructorOptions<MessageT> {
 
 export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>> {
 
-    public option: Required<Pick<LoggerConstructorOptions<MessageT>, 'level'>> & Omit<LoggerConstructorOptions<MessageT>, 'level'>;
+    protected _level: SyslogLevel;
+    protected _name?: string;
+    protected _captureStackTrace: boolean;
+    protected _captureISOTime: boolean;
+    protected _queueSizeLimit?: number;
 
-    constructor({ name, level, queueSizeLimit, parent, captureStackTrace, captureISOTime }: LoggerConstructorOptions<MessageT>, streamOptions?: stream.TransformOptions) {
+    constructor({ name, level, queueSizeLimit, parent, captureStackTrace, captureISOTime }: LoggerOptions<MessageT>, streamOptions?: stream.TransformOptions) {
         super(new stream.Transform({
             ...Config.getDuplexOptions(true, true),
             ...streamOptions, ...{
@@ -28,12 +32,7 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
                 writableObjectMode: true,
                 transform: (logContext: LogContext<string, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback) => {
                     try {
-                        if (this[$outs]?.length) {
-                            callback(null, logContext);
-                        }
-                        else {
-                            callback();
-                        }
+                        callback(null, logContext);
                     }
                     catch (err) {
                         if (err instanceof Error) {
@@ -43,13 +42,12 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
                 }
             }
         }));
-        this.option = {
-            level: level ?? SyslogLevel.WARN,
-            name,
-            queueSizeLimit,
-            captureISOTime: captureISOTime ?? true,
-            captureStackTrace: captureStackTrace ?? true
-        };
+        this._level = level ?? SyslogLevel.WARN;
+        this._name = name;
+        this._queueSizeLimit = queueSizeLimit;
+        this._captureISOTime = captureISOTime ?? Config.captureISOTime ?? true;
+        this._captureStackTrace = captureStackTrace ?? Config.captureStackTrace ?? true;
+
         if (parent !== null) {
             parent = parent ?? root;
             if (parent) {
@@ -62,22 +60,22 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
         try {
             const logContext = new LogContext<MessageT, SyslogLevelT>({
                 message,
-                name: this.option.name,
+                name: this._name,
                 depth: 2,
                 level: SyslogLevel[level] as KeysUppercase<SyslogLevelT>,
-                isotime: Config.captureISOTime && this.option.captureISOTime ? new Date().toISOString() : undefined,
+                isotime: this._captureISOTime ? new Date().toISOString() : undefined,
                 label: label,
                 threadid: threads.threadId,
                 pid: process.pid,
                 env: process.env
             });
-            if (Config.captureStackTrace && this.option.captureStackTrace) {
+            if (this._captureStackTrace) {
                 Error.captureStackTrace(logContext, this.log);
                 logContext.parseStackTrace();
             }
-            super[$write](logContext).catch((err: Error) => Config.errorHandler(err));
-            if (this.option.queueSizeLimit && this[$size] > this.option.queueSizeLimit) {
-                throw new QueueSizeLimitExceededError(`The queue size limit, ${this.option.queueSizeLimit}, is exceeded.`);
+            super.write(logContext).catch((err: Error) => Config.errorHandler(err));
+            if (this._queueSizeLimit && this._size > this._queueSizeLimit) {
+                throw new QueueSizeLimitExceededError(`The queue size limit, ${this._queueSizeLimit}, is exceeded.`);
             }
         }
         catch (err) {
@@ -93,55 +91,55 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
     }
 
     public debug(message: MessageT, label?: string): void {
-        if (this.option.level >= SyslogLevel.DEBUG) {
+        if (this._level >= SyslogLevel.DEBUG) {
             this.log(message, label, SyslogLevel.DEBUG);
         }
     }
 
     public info(message: MessageT, label?: string): void {
-        if (this.option.level >= SyslogLevel.INFO) {
+        if (this._level >= SyslogLevel.INFO) {
             this.log(message, label, SyslogLevel.INFO);
         }
     }
 
     public notice(message: MessageT, label?: string): void {
-        if (this.option.level >= SyslogLevel.NOTICE) {
+        if (this._level >= SyslogLevel.NOTICE) {
             this.log(message, label, SyslogLevel.NOTICE);
         }
     }
 
     public warn(message: MessageT, label?: string): void {
-        if (this.option.level >= SyslogLevel.WARN) {
+        if (this._level >= SyslogLevel.WARN) {
             this.log(message, label, SyslogLevel.WARN);
         }
     }
 
     public error(message: MessageT, label?: string): void {
-        if (this.option.level >= SyslogLevel.ERROR) {
+        if (this._level >= SyslogLevel.ERROR) {
             this.log(message, label, SyslogLevel.ERROR);
         }
     }
 
     public crit(message: MessageT, label?: string): void {
-        if (this.option.level >= SyslogLevel.CRIT) {
+        if (this._level >= SyslogLevel.CRIT) {
             this.log(message, label, SyslogLevel.CRIT);
         }
     }
 
     public alert(message: MessageT, label?: string): void {
-        if (this.option.level >= SyslogLevel.ALERT) {
+        if (this._level >= SyslogLevel.ALERT) {
             this.log(message, label, SyslogLevel.ALERT);
         }
     }
 
     public emerg(message: MessageT, label?: string): void {
-        if (this.option.level >= SyslogLevel.EMERG) {
+        if (this._level >= SyslogLevel.EMERG) {
             this.log(message, label, SyslogLevel.EMERG);
         }
     }
 
     public setLevel(level: SyslogLevel): void {
-        this.option.level = level;
+        this._level = level;
     }
 }
 

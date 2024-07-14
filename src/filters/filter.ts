@@ -4,13 +4,13 @@ import { Node } from '@farar/nodes';
 import { SyslogLevelT } from '../commons/syslog.js';
 import { Config } from '../index.js';
 
-export interface FilterConstructorOptions<MessageT> {
+export interface FilterOptions<MessageT> {
     filter: (logContext: LogContext<MessageT, SyslogLevelT>) => Promise<boolean> | boolean
 }
 
 export class Filter<MessageT = string> extends Node<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>> {
 
-    constructor({ filter }: FilterConstructorOptions<MessageT>, streamOptions?: stream.TransformOptions) {
+    constructor({ filter }: FilterOptions<MessageT>, streamOptions?: stream.TransformOptions) {
         super(new stream.Transform({
             ...Config.getDuplexOptions(true, true),
             ...streamOptions, ...{

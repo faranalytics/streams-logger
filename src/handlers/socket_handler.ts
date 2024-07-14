@@ -2,10 +2,10 @@ import * as net from 'node:net';
 import * as stream from 'node:stream';
 import { LogContext } from '../commons/log_context.js';
 import { SyslogLevel, SyslogLevelT } from '../commons/syslog.js';
-import { Node, $stream } from '@farar/nodes';
+import { Node } from '@farar/nodes';
 import { Config } from '../index.js';
 
-export interface SocketHandlerConstructorOptions {
+export interface SocketHandlerOptions {
     socket: net.Socket;
     reviver?: (this: unknown, key: string, value: unknown) => unknown;
     replacer?: (this: unknown, key: string, value: unknown) => unknown;
@@ -15,13 +15,13 @@ export interface SocketHandlerConstructorOptions {
 
 export class SocketHandler<MessageT = string> extends Node<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>> {
 
-    public option: Required<Pick<SocketHandlerConstructorOptions, 'level'>> & Omit<SocketHandlerConstructorOptions, 'socket' | 'level'>;
+    public option: Required<Pick<SocketHandlerOptions, 'level'>> & Omit<SocketHandlerOptions, 'socket' | 'level'>;
 
     protected socket: net.Socket;
     protected ingressQueue: Buffer;
     protected messageSize: number | null;
 
-    constructor({ socket, reviver, replacer, space, level = SyslogLevel.WARN }: SocketHandlerConstructorOptions, streamOptions?: stream.DuplexOptions) {
+    constructor({ socket, reviver, replacer, space, level = SyslogLevel.WARN }: SocketHandlerOptions, streamOptions?: stream.DuplexOptions) {
         super(new stream.Duplex({
             ...streamOptions, ...{
                 writableObjectMode: true,
@@ -83,8 +83,8 @@ export class SocketHandler<MessageT = string> extends Node<LogContext<MessageT, 
             const buf = this.ingressQueue.subarray(6, this.messageSize);
             this.ingressQueue = this.ingressQueue.subarray(this.messageSize, this.ingressQueue.length);
             const message = this.deserializeMessage(buf);
-            if (this[$stream] instanceof stream.Readable) {
-                this[$stream].push(message);
+            if (this._stream instanceof stream.Readable) {
+                this._stream.push(message);
             }
         }
         else {
