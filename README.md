@@ -54,6 +54,7 @@ _Streams_ is an intuitive type-safe logging facility built on native Node.js str
   - [Disconnect from root.](#disconnect-from-root)
 - [Backpressure](#backpressure)
 - [Performance](#performance)
+- [Test](#test)
 
 ## Installation
 
@@ -63,7 +64,7 @@ npm install streams-logger
 
 ## Concepts
 
-Logging is essentially a data transformation task. When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed. Likewise, when data is written to a file or the console additional data transformations may take place e.g., serialization and representational transformation. _Streams_ accomplishes these data transformation tasks by means of a network of [`Node`](#node) instances (i.e., a data transformation graph) that is constructed using a [graph-like API pattern](#graph-api-pattern).
+Logging is essentially a data transformation task. When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed. Likewise, when data is written to a file or the console additional data transformations may take place e.g., serialization and representational transformation. _Streams_ accomplishes these data transformation tasks by means of a network of [`Node`](#node) instances that is constructed using a [graph-like API pattern](#graph-api-pattern).
 
 ### Node
 
@@ -118,7 +119,10 @@ _Streams_ uses a graph-like API pattern in order to construct a network of log N
 
 ```ts
 const log = logger.connect(
-  formatter.connect(consoleHandler, rotatingFileHandler)
+  formatter.connect(
+    consoleHandler, 
+    rotatingFileHandler
+    )
 );
 ```
 
@@ -127,7 +131,7 @@ const log = logger.connect(
 ```ts
 function sayHello() {
   log.info("Hello, World!");
-}
+};
 
 sayHello();
 ```
@@ -591,7 +595,11 @@ const formatter = new Formatter({
 });
 const consoleHandler = new ConsoleHandler();
 
-const log = logger.connect(formatter.connect(consoleHandler));
+const log = logger.connect(
+  formatter.connect(
+    consoleHandler
+    )
+);
 
 log.info("Hello, World!");
 ```
@@ -625,7 +633,11 @@ const formatter = new Formatter<Message, string>({
 });
 const consoleHandler = new ConsoleHandler<string>({ level: SyslogLevel.DEBUG });
 
-const log = logger.connect(formatter.connect(consoleHandler));
+const log = logger.connect(
+    formatter.connect(
+        consoleHandler
+    )
+);
 
 (function sayHello() {
   log.warn({ greeting: "Hello, World!", prime: 57 });
@@ -670,7 +682,11 @@ const formatter = new Formatter({
 });
 const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 
-root.connect(formatter.connect(consoleHandler));
+root.connect(
+    formatter.connect(
+        consoleHandler
+    )
+);
 ```
 
 ## How-Tos
@@ -718,7 +734,11 @@ const log = new Logger({ name: "main" });
 const logContextToBuffer = new LogContextToBuffer();
 const console = new Node<Buffer, never>(process.stdout);
 
-log.connect(logContextToBuffer.connect(console));
+log.connect(
+    logContextToBuffer.connect(
+        console
+    )
+);
 
 log.warn("Hello, World!");
 ```
@@ -750,7 +770,7 @@ const socketHandler = new Node<Buffer, Buffer>(socket);
 
 ### Tune the `highWaterMark`.
 
-_Streams_ `Node` implementations use the native Node.js stream API for message propagation. You have the option of tuning the Node.js stream `highWaterMark` to your specific needs - keeping in mind memory constraints. You can set a default `highWaterMark` using `Config.setDefaultHighWaterMark(objectMode, value)` that will apply to Nodes in the _Streams_ library. Alternatively, you can pass an optional stream configuration argument to each `Node` individually.
+_Streams_ `Node` implementations use the native Node.js stream API for message propagation. You have the option of tuning the Node.js stream `highWaterMark` to your specific needs - keeping in mind memory constraints. You can set a default `highWaterMark` using [`Config.setDefaultHighWaterMark(objectMode, value)`](#the-streams-config-settings-object) that will apply to Nodes in the _Streams_ library. Alternatively, you can pass an optional stream configuration argument to each `Node` individually.
 
 In this example, the `highWaterMark` of ObjectMode streams and Buffer streams is artificially set to `1e6` objects and `1e6` bytes.
 
@@ -760,10 +780,11 @@ import * as streams from "streams-logger";
 streams.Config.setDefaultHighWaterMark(true, 1e6);
 streams.Config.setDefaultHighWaterMark(false, 1e6);
 ```
+> Please see the [API](#api) for more information on global [`Config`](#the-streams-config-settings-object) object settings.
 
 ### Disable stack trace capture.
 
-Another optional setting that you can take advantage of is to turn off stack trace capture. Stack trace capture can be disabled globally using the _Streams_ configuration settings object i.e., `Config.setCaptureStackTrace`. Alternatively, you may disable stack trace capturing in a specific `Logger` by setting the `stackTraceCapture` property of the `LoggerOptions` to `false`.
+Another optional setting that you can take advantage of is to turn off stack trace capture. Stack trace capture can be disabled globally using the _Streams_ configuration settings object i.e., [`Config.setCaptureStackTrace`](#the-streams-config-settings-object). Alternatively, you may disable stack trace capturing in a specific `Logger` by setting the `stackTraceCapture` property of the `LoggerOptions` to `false`.
 
 Turning off stack trace capture will disable some of the information (e.g., function name and line number) that is normally contained in the `LogContext` object that is passed to the `format` function of a `Formatter`.
 
@@ -772,6 +793,7 @@ import * as streams from "streams-logger";
 
 streams.Config.setCaptureStackTrace(false);
 ```
+> Please see the [API](#api) for more information on global [`Config`](#the-streams-config-settings-object) object settings.
 
 ### Disconnect from root.
 

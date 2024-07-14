@@ -50,26 +50,53 @@ await describe('Log a string that passes through a SocketHandler.', async () => 
         log.warn(greeting);
         assert.match((await result)[0].message, new RegExp(`${greeting}\n$`));
     });
-    void test('Log `Hello, World!`, repeated 1e6 times, and assert that it passed through the graph unscathed.', async () => {
+    void test('Log `Hello, World!` * 1e6  and assert that it passed through the graph unscathed.', async () => {
         const greeting = 'Hello, World!'.repeat(1e6);
         const result = once(anyToAnyEmitter.emitter, 'data');
         log.warn(greeting);
         const message = (await result)[0].message;
         assert.strictEqual(message.slice(65).trim(), greeting);
     });
-    void test('Test selective termination of inoperable graph components.', async () => {
-        const greeting = 'Hello, World!';
-        const anyToThrow = new AnyTransformToAny({ transform: () => { throw Error('Error'); } });
-        const anyToThrowChild = new AnyToVoid();
-        anyToThrow.connect(anyToThrowChild);
-        socketHandler.connect(anyToThrow);
-        socketHandler.connect(anyToAnyEmitter);
-        assert.strictEqual(anyToThrow.ins.length, 1);
-        assert.strictEqual(anyToThrow.outs.length, 1);
-        log.warn(greeting);
-        await once(anyToAnyEmitter.emitter, 'data');
-        assert.strictEqual(anyToThrow.ins.length, 0);
-        assert.strictEqual(anyToThrow.outs.length, 0);
+
+    await describe('Test error handling.', () => {
+        const logger = new Logger({ name: 'main', level: SyslogLevel.DEBUG });
+        const formatter = new Formatter({
+            format: async ({ isotime, message, name, level, func, line, col }: LogContext<string, SyslogLevelT>) => (
+                `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
+            )
+        });
+        const filter = new Filter({ filter: (logContext: LogContext<string, SyslogLevelT>) => logContext.name == 'main' });
+        const anyToAnyEmitter = new AnyToAnyEmitter();
+
+        const log = logger.connect(
+            formatter.connect(
+                filter.connect(
+                    anyToAnyEmitter
+                )
+            )
+        );
+
+        void test('Test selective termination of inoperable graph components.', async () => {
+            const greeting = 'Hello, World!';
+            const anyToThrow = new AnyTransformToAny({ transform: () => { throw Error('Error'); } });
+            const anyToThrowChild = new AnyToVoid();
+            anyToThrow.connect(anyToThrowChild);
+            formatter.connect(anyToThrow);
+            assert.strictEqual(anyToThrow.ins.length, 1);
+            assert.strictEqual(anyToThrow.outs.length, 1);
+            log.warn(greeting);
+            await new Promise((r) => setTimeout(r));
+            assert.strictEqual(anyToThrow.ins.length, 0);
+            assert.strictEqual(anyToThrow.outs.length, 0);
+        });
+
+        void test('Test that the graph is operable after the error.', async () => {
+            const greeting = 'Hello, World!';
+            const result = once(anyToAnyEmitter.emitter, 'data');
+            log.warn(greeting);
+            assert.match((await result)[0].message, new RegExp(`${greeting}\n$`));
+        });
+
     });
 });
 
