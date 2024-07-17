@@ -43,6 +43,15 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
                 this.connect(parent);
             }
         }
+
+        Config.on('captureStackTrace', (value: boolean)=>{
+            this._captureStackTrace = captureStackTrace ?? value;
+        });
+
+
+        Config.on('captureISOTime', (value: boolean)=>{
+            this._captureISOTime = captureISOTime ?? value;
+        });
     }
 
     protected log(message: MessageT, label: string | undefined, level: SyslogLevel): void {

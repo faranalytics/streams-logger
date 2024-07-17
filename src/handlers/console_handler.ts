@@ -8,14 +8,17 @@ export const $level = Symbol('option');
 
 export class ConsoleHandlerTransform<MessageT> extends stream.Transform {
 
-    public [$level]!: SyslogLevel;
+    public [$level]: SyslogLevel;
 
-    constructor(streamOptions?: stream.WritableOptions) {
+    constructor(options: ConsoleHandlerOptions, streamOptions?: stream.WritableOptions) {
         super({
             ...Config.getWritableOptions(true),
             ...streamOptions,
             ...{ objectMode: true }
         });
+
+        this[$level] = options.level ?? SyslogLevel.WARN;
+
         this.once('error', () => this.unpipe(process.stdout)).pipe(process.stdout);
     }
 
@@ -47,13 +50,15 @@ export interface ConsoleHandlerOptions {
 
 export class ConsoleHandler<MessageT = string> extends Node<LogContext<MessageT, SyslogLevelT>, never, ConsoleHandlerTransform<MessageT>> {
 
-
-    constructor({ level }: ConsoleHandlerOptions, streamOptions?: stream.WritableOptions) {
-        super(new ConsoleHandlerTransform<MessageT>(streamOptions));
-        this._stream[$level] = level ?? SyslogLevel.WARN;
+    constructor(options: ConsoleHandlerOptions, streamOptions?: stream.WritableOptions) {
+        super(new ConsoleHandlerTransform<MessageT>(options, streamOptions));
     }
 
     public setLevel(level: SyslogLevel): void {
         this._stream[$level] = level;
+    }
+
+    public get level(): SyslogLevel {
+        return this._stream[$level];
     }
 }

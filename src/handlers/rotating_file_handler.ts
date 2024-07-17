@@ -38,7 +38,7 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
         this[$level] = level ?? SyslogLevel.WARN;
         this[$rotationLimit] = rotationLimit ?? 0;
         this[$maxSize] = maxSize ?? 1e6;
-        this[$encoding] = encoding ?? 'utf8';
+        this[$encoding] = encoding ?? 'utf-8';
         this[$mode] = mode ?? 0o666;
         this[$path] = pth.resolve(pth.normalize(path));
         this[$size] = 0;
@@ -128,5 +128,9 @@ export class RotatingFileHandler<MessageT = string> extends Node<LogContext<Mess
 
     public setLevel(level: SyslogLevel) {
         this._stream[$level] = level;
+    }
+
+    public get level(): SyslogLevel {
+        return this._stream[$level];
     }
 }

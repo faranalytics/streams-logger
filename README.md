@@ -6,7 +6,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
 
 <img align="right" src="./graph.png">
 
-_Streams_ is an intuitive type-safe logging facility built on native Node.js streams. You can use the built-in logging components (e.g., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)) for [common logging tasks](#usage) or implement your own logging [Node](https://github.com/faranalytics/@farar/nodes) to handle a wide range of logging scenarios. _Streams_ offers a graph-like API pattern for building sophisticated logging pipelines.
+_Streams_ is an intuitive type-safe logging facility built on native Node.js streams. You can use the built-in logging components (e.g., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)) for [common logging tasks](#usage) or implement your own logging [Node](https://github.com/faranalytics/nodes) to handle a wide range of logging scenarios. _Streams_ offers a graph-like API pattern for building sophisticated logging pipelines.
 
 ### Features
 
@@ -196,7 +196,7 @@ The _Streams_ API provides commonly used logging facilities (i.e., the [Logger](
 - options `<LoggerOptions>`
   - level `<SyslogLevel>` The syslog logger level. **Default: `SyslogLevel.WARN`**
   - name `<string>` An optional name for the `Logger`.
-  - parent `<Logger>` An optional parent `Logger`. **Default: `streams-logger.root`**
+  - parent `<Logger>` An optional parent `Logger`. Set this to `null` in order to disconnect from the root `Logger`.**Default: `streams-logger.root`**
   - queueSizeLimit `<number>` Optionally specify a limit on the number of log messages that may queue while waiting for a stream to drain. See [Backpressure](#backpressure).
   - captureStackTrace `<boolean>` Optionally specify if stack trace capturing is enabled. This setting will override the default.  **Default: `Config.captureStackTrace`**
   - captureISOTime `<boolean>` Optionally specify if capturing ISO time is enabled.  This setting will override the default.  **Default: `Config.captureISOTime`**
@@ -282,6 +282,8 @@ _public_ **logger.setLevel(level)**
 
 - level `<SyslogLevel>` A log level.
 
+Returns `<void>`
+
 Set the log level. Must be one of `SyslogLevel`.
 
 ### The Formatter Class
@@ -344,6 +346,8 @@ _public_ **consoleHandler.setLevel(level)**
 
 - level `<SyslogLevel>` A log level.
 
+Returns `<void>`
+
 Set the log level. Must be one of `SyslogLevel`.
 
 ### The RotatingFileHandler Class
@@ -355,7 +359,7 @@ Set the log level. Must be one of `SyslogLevel`.
   - path `<string>` The path of the log file.
   - rotationLimit `<number>` An optional number of log rotations. **Default: `0`**
   - maxSize `<number>` The size of the log file in bytes that will initiate a rotation. **Default: `1e6`**
-  - encoding `<BufferEncoding>` An optional encoding. **Default: `utf8`**
+  - encoding `<BufferEncoding>` An optional encoding. **Default: `utf-8`**
   - mode `<number>` An optional mode. **Deafult: `0o666`**
   - level `<SyslogLevel>` An optional log level. **Default: `SyslogLevel.WARN`**
 - streamOptions `<stream.WritableOptions>` Optional options to be passed to the stream. You can use `WritableOptions` to set a `highWaterMark` on the `RotatingFileHandler`.
@@ -367,6 +371,8 @@ Use a `RotatingFileHandler` in order to write your log messages to a file.
 _public_ **rotatingFileHandler.setLevel(level)**
 
 - level `<SyslogLevel>` A log level.
+
+Returns `<void>`
 
 Set the log level. Must be one of `SyslogLevel`.
 
@@ -382,7 +388,7 @@ Set the log level. Must be one of `SyslogLevel`.
   - space `<string | number>` An optional space specification for `JSON.stringify`.
 - streamOptions `<stream.DuplexOptions>` Optional options to be passed to the stream. You can use `DuplexOptions` to set a `highWaterMark` on the `SocketHandler`.
 
-Use a `SocketHandler` in order to connect _Stream_ graphs over the network. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-example) example for instructions on how to use a `SocketHandler` in order to connect _Streams_ logging graphs over the network.
+Use a `SocketHandler` in order to connect _Streams_ graphs over the network. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-example) example for instructions on how to use a `SocketHandler` in order to connect _Streams_ logging graphs over the network.
 
 _public_ **socketHandler.connect(...nodes)**
 
@@ -395,6 +401,14 @@ _public_ **socketHandler.disconnect(...nodes)**
 - nodes `<Array<Node<LogContext<MessageT, SyslogLevelT>, unknown>>` Disconnect from an Array of `Nodes`.
 
 Returns: `<SocketHandler<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>>`
+
+_public_ **socketHandler.setLevel(level)**
+
+- level `<SyslogLevel>` A log level.
+
+Returns `<void>`
+
+Set the log level. Must be one of `SyslogLevel`.
 
 ### The LogContext Class
 
@@ -413,87 +427,87 @@ A `LogContext` is instantiated each time a message is logged at (or below) the l
 
 The `LogContext` is passed as the single argument to the [format function](#formatting) of the `Formatter`; information about the environment can be extracted from the `LogContext` in order to format the logged message. The following properties will be available to the `format` function depending on the setting of `Config.captureStackTrace` and `Config.captureISOTime`. Please see the [Log Context Data](#log-context-data) table for details.
 
-_public_ **LogContext.col**
+_public_ **logContext.col**
 
 - `<string>`
   The column of the logging call. Available if `Config.captureStackTrace` is set to `true`.
 
-_public_ **LogContext.env**
+_public_ **logContext.env**
 
 - `<NodeJS.ProcessEnv>`
   The process environment.
 
-_public_ **LogContext.func**
+_public_ **logContext.func**
 
 - `<string>`
   The name of the function where the logging call took place. Available if `Config.captureStackTrace` is set to `true`.
 
-_public_ **LogContext.isotime**
+_public_ **logContext.isotime**
 
 - `<string>`
   The date and time in ISO format at the time of the logging call. Available if `Config.captureISOTime` is set to `true`.
 
-_public_ **LogContext.level**
+_public_ **logContext.level**
 
 - `<DEBUG | INFO | NOTICE | WARN | ERROR | CRIT | ALERT | EMERG>`
   An uppercase string representation of the level.
 
-_public_ **LogContext.line**
+_public_ **logContext.line**
 
 - `<string>`
   The line number of the logging call. Available if `Config.captureStackTrace` is set to `true`.
 
-_public_ **LogContext.message**
+_public_ **logContext.message**
 
 - `<string>`
   The logged message.
 
-_public_ **LogContext.metadata**
+_public_ **logContext.metadata**
 
 - `<unknown>`
   Optional user specified data.
 
-_public_ **LogContext.name**
+_public_ **logContext.name**
 
 - `<string>`
   The name of the `Logger`.
 
-_public_ **LogContext.path**
+_public_ **logContext.path**
 
 - `<string>`
   The complete path of the module. Available if `Config.captureStackTrace` is set to `true`.
 
-_public_ **LogContext.pathbase**
+_public_ **logContext.pathbase**
 
 - `<string>`
   The module filename. Available if `Config.captureStackTrace` is set to `true`.
 
-_public_ **LogContext.pathext**
+_public_ **logContext.pathext**
 
 - `<string>`
   The extension of the module. Available if `Config.captureStackTrace` is set to `true`.
 
-_public_ **LogContext.pathdir**
+_public_ **logContext.pathdir**
 
 - `<string>`
   The directory part of the module path. Available if `Config.captureStackTrace` is set to `true`.
 
-_public_ **LogContext.pathname**
+_public_ **logContext.pathname**
 
 - `<string>`
   The name of the module. Available if `Config.captureStackTrace` is set to `true`.
 
-_public_ **LogContext.pathroot**
+_public_ **logContext.pathroot**
 
 - `<string>`
   The root of the path. Available if `Config.captureStackTrace` is set to `true`.
 
-_public_ **LogContext.pid**
+_public_ **logContext.pid**
 
 - `<string>`
   The process identifier.
 
-_public_ **LogContext.threadid**
+_public_ **logContext.threadid**
 
 - `<string>`
   The thread identifier.
@@ -753,7 +767,7 @@ const socketHandler = new Node<Buffer, Buffer>(socket);
 
 ## Tuning
 
-**Depending on your requirements the defaults may be fine.** However, for high throughput applications you may choose to adjust the `highWaterMark`, disconnect your `Logger` from the root `Logger`, and/or disable stack trace capturing.
+**Depending on your requirements, the defaults may be fine.** However, for high throughput applications you may choose to adjust the `highWaterMark`, disconnect your `Logger` from the root `Logger`, and/or disable stack trace capturing.
 
 ### Tune the `highWaterMark`.
 
@@ -807,7 +821,9 @@ If you have a _cooperating_ stream that is backpressuring, you can either set a 
 
 ## Performance
 
-_Streams_ is a highly customizable Logger that performs well on a wide range of logging tasks. It is a good choice for both error logging and high-throughput logging. It strictly adheres to the Node.js public API contract and common conventions. This approach comes with trade-offs; however, it ensures stability and portability while still delivering a performant logging experience.
+_Streams_ is a highly customizable Logger that performs well on a wide range of logging tasks. It is a good choice for both error logging and high throughput logging. It strictly adheres to the Node.js public API contract and common conventions. This approach comes with trade-offs; however, it ensures stability and portability while still delivering a performant logging experience.
+
+>Please see [Tuning](#tuning) for how to configure the logging graph for high throughput applications.
 
 ## Test
 
