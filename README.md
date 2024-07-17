@@ -353,7 +353,7 @@ Set the log level. Must be one of `SyslogLevel`.
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
 - options `<RotatingFileHandlerOptions>`
   - path `<string>` The path of the log file.
-  - rotationCount `<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10>` An optional number of log rotations. **Default: `0`**
+  - rotationLimit `<number>` An optional number of log rotations. **Default: `0`**
   - maxSize `<number>` The size of the log file in bytes that will initiate a rotation. **Default: `1e6`**
   - encoding `<BufferEncoding>` An optional encoding. **Default: `utf8`**
   - mode `<number>` An optional mode. **Deafult: `0o666`**

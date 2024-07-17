@@ -18,7 +18,7 @@ const fileFortmatter = new Formatter({
         `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
     )
 });
-const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', rotationCount: 0, level: SyslogLevel.DEBUG });
+const rotatingFileHandler = new RotatingFileHandler({ path: './message.log', rotationLimit: 0, level: SyslogLevel.DEBUG });
 const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 
 const log = logger.connect(
