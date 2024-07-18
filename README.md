@@ -64,7 +64,7 @@ npm install streams-logger
 
 ## Concepts
 
-Logging is essentially a data transformation task. When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed. Likewise, when data is written to a file or the console additional data transformations may take place e.g., serialization and representational transformation. _Streams_ accomplishes these data transformation tasks by means of a network of [`Node`](#node) instances that is constructed using a [graph-like API pattern](#graph-api-pattern).
+Logging is essentially a data transformation task. When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed. Likewise, when data is written to a file or the console additional data transformations may take place e.g., serialization and representational transformation. _Streams_ accomplishes these data transformation tasks by means of a network of [`Node`](https://github.com/faranalytics/nodes) instances that is constructed using a [graph-like API pattern](#graph-api-pattern).
 
 ### Node
 
@@ -160,7 +160,7 @@ Please see the [_Network Connected **Streams** Logging Graph_](https://github.co
 
 ## Log Context Data
 
-_Streams_ provides a rich selection of contextual information with each logging call. This information is provided in a `LogContext` object that is passed as a single argument to the function assigned to the `format` property of the `FormatterOptions` object that is passed to the `Formatter` constructor. You can disable generation of some contextual information by setting `Config.captureStackTrace` and `Config.captureISOTime` to `false`. Please see [Formatting](#formatting) for instructions on how to incorporate contextual information into your logged message.
+_Streams_ provides a rich selection of contextual information with each logging call. This information is provided in a `LogContext` object that is passed as a single argument to the function assigned to the `format` property of the `FormatterOptions` object that is passed to the `Formatter` constructor. You can disable generation of some contextual information by setting `Config.captureStackTrace` and `Config.captureISOTime` to `false`. Please see [Tuning](#tuning) for instructions on how to disable contextual information.  Please see [Formatting](#formatting) for instructions on how to incorporate contextual information into your logged message.
 |Property|Description|Config Prerequisite|
 |---|---|---|
 |`col`| The column number of the logging call.|`captureStackTrace=true`|
@@ -229,49 +229,49 @@ _public_ **logger.debug(message, label)**
 
 Returns: `<void>`
 
-_public_ **logger.info(message)**
+_public_ **logger.info(message, label)**
 
 - message `<MessageT>` Write a INFO message to the `Logger`.
 - label: `<string>` An optional label.
 
 Returns: `<void>`
 
-_public_ **logger.notice(message)**
+_public_ **logger.notice(message, label)**
 
 - message `<MessageT>` Write a NOTICE message to the `Logger`.
 - label: `<string>` An optional label.
 
 Returns: `<void>`
 
-_public_ **logger.warn(message)**
+_public_ **logger.warn(message, label)**
 
 - message `<MessageT>` Write a WARN message to the `Logger`.
 - label: `<string>` An optional label.
 
 Returns: `<void>`
 
-_public_ **logger.error(message)**
+_public_ **logger.error(message, label)**
 
 - message `<MessageT>` Write a ERROR message to the `Logger`.
 - label: `<string>` An optional label.
 
 Returns: `<void>`
 
-_public_ **logger.crit(message)**
+_public_ **logger.crit(message, label)**
 
 - message `<MessageT>` Write a CRIT message to the `Logger`.
 - label: `<string>` An optional label.
 
 Returns: `<void>`
 
-_public_ **logger.alert(message)**
+_public_ **logger.alert(message, label)**
 
 - message `<MessageT>` Write a ALERT message to the `Logger`.
 - label: `<string>` An optional label.
 
 Returns: `<void>`
 
-_public_ **logger.emerg(message)**
+_public_ **logger.emerg(message, label)**
 
 - message `<MessageT>` Write a EMERG message to the `Logger`.
 - label: `<string>` An optional label.
@@ -514,7 +514,7 @@ _public_ **logContext.threadid**
 
 ### The Streams Config Settings Object
 
-The `Config` object is used to set global settings.  It can be used for performance [tuning](#tuning).
+The `Config` object is used to set default settings.  It can be used for performance [tuning](#tuning).
 
 **Config.errorHandler** `<(err: Error, ...params: Array<unknown>) => void>` Set an error handler.  **Default: `console.error`**
 
@@ -781,7 +781,7 @@ import * as streams from "streams-logger";
 streams.Config.highWaterMark = 1e6;
 streams.Config.highWaterMarkObjectMode = 1e6;
 ```
-> Please see the [API](#api) for more information on global [`Config`](#the-streams-config-settings-object) object settings.
+> Please see the [API](#api) for more information on [`Config`](#the-streams-config-settings-object) object settings.
 
 ### Disable stack trace capture.
 
@@ -794,7 +794,7 @@ import * as streams from "streams-logger";
 
 streams.Config.captureStackTrace = false;
 ```
-> Please see the [API](#api) for more information on global [`Config`](#the-streams-config-settings-object) object settings.
+> Please see the [API](#api) for more information on [`Config`](#the-streams-config-settings-object) object settings.
 
 ### Disconnect from root.
 
@@ -815,7 +815,7 @@ log.disconnect(streams.root);
 
 _Streams_ respects backpressure by queueing messages while the stream is draining. You can set a limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options. If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.
 
-**For typical logging applications setting a `queueSizeLimit` isn't necessary.** However, if a stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted. By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending Nodes in your graph.
+**For typical logging applications setting a `queueSizeLimit` isn't necessary.** However, if a remote stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted. By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending Nodes in your graph.
 
 If you have a _cooperating_ stream that is backpressuring, you can either set a default `highWaterMark` appropriate to your application or increase the `highWaterMark` on the specific stream in order to mitigate drain events.
 

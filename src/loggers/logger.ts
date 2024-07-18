@@ -5,7 +5,7 @@ import { Node } from '@farar/nodes';
 import { SyslogLevel, SyslogLevelT } from '../commons/syslog.js';
 import { KeysUppercase } from '../commons/types.js';
 import { QueueSizeLimitExceededError } from '../commons/errors.js';
-import { Config } from '../index.js';
+import Config from '../commons/config.js';
 
 export interface LoggerOptions<MessageT> {
     level?: SyslogLevel;
@@ -32,6 +32,7 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
                 writableObjectMode: true
             }
         }));
+
         this.level = level ?? SyslogLevel.WARN;
         this._name = name;
         this._queueSizeLimit = queueSizeLimit;
