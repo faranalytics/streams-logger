@@ -14,7 +14,7 @@ _Streams_ is an intuitive type-safe logging facility built on native Node.js str
 - A rich selection of [contextual data](#log-context-data) (e.g., module name, function name, line number, etc.) for augmenting log messages.
 - A type-safe graph-like API pattern for constructing sophisticated [logging graphs](#graph-api-pattern).
 - Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
-- Error propagation and selective termination of inoperable graph components.
+- Error handling and selective detachment of inoperable graph components.
 - Log any type of message you choose - including [objects serialized to JSON](#object-json-logging).
 - Import _Streams_ into your Node.js project or take advantage of the TypeScript type definitions.
 
@@ -160,7 +160,10 @@ Please see the [_Network Connected **Streams** Logging Graph_](https://github.co
 
 ## Log Context Data
 
-_Streams_ provides a rich selection of contextual information with each logging call. This information is provided in a `LogContext` object that is passed as a single argument to the function assigned to the `format` property of the `FormatterOptions` object that is passed to the `Formatter` constructor. You can disable generation of some contextual information by setting `Config.captureStackTrace` and `Config.captureISOTime` to `false`. Please see [Tuning](#tuning) for instructions on how to disable contextual information.  Please see [Formatting](#formatting) for instructions on how to incorporate contextual information into your logged message.
+_Streams_ provides a rich selection of contextual information with each logging call. This information is provided in a `LogContext` object that is passed as a single argument to the function assigned to the `format` property of the `FormatterOptions` object that is passed to the `Formatter` constructor. Please see [Formatting](#formatting) for instructions on how to incorporate contextual information into your logged message.
+
+> For high throughput applications, you can improve performance by preventing some contextual information from being generated; you can set `Config.captureStackTrace` and `Config.captureISOTime` to `false`.  Please see [Tuning](#tuning) for instructions on how to disable contextual information.  
+
 |Property|Description|Config Prerequisite|
 |---|---|---|
 |`col`| The column number of the logging call.|`captureStackTrace=true`|

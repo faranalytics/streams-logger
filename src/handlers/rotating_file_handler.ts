@@ -2,6 +2,7 @@ import * as pth from 'node:path';
 import * as fs from 'node:fs';
 import * as fsp from 'node:fs/promises';
 import * as stream from 'node:stream';
+import { once } from 'node:events';
 import { LogContext } from '../commons/log_context.js';
 import { Node } from '@farar/nodes';
 import { SyslogLevel, SyslogLevelT } from '../commons/syslog.js';
@@ -42,16 +43,21 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
         this[$mode] = mode ?? 0o666;
         this[$path] = pth.resolve(pth.normalize(path));
         this[$size] = 0;
+
         if (fs.existsSync(this[$path])) {
             this[$size] = fs.statSync(this[$path]).size;
         }
-        this[$writeStream] = fs.createWriteStream(path, { mode, encoding });
+
+        this.cork();
+        this[$writeStream] = fs.createWriteStream(this[$path], { mode, encoding, flush: true });
+        this[$writeStream].once('error', this.propagateError);
+        this.pipe(this[$writeStream]);
+        once(this[$writeStream], 'ready').then(() => { this.uncork(); }).catch(Config.errorHandler);
+
         this.once('error', () => {
             this.unpipe(this[$writeStream]);
             this[$writeStream].close();
         });
-        this[$writeStream].once('error', this.propagateError);
-        this.pipe(this[$writeStream]);
     }
 
     protected propagateError(err: Error) {
@@ -104,9 +110,11 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
                 catch (e) { /* flow-control */ }
             }
         }
+        this.cork();
         this[$writeStream] = fs.createWriteStream(this[$path], { mode: this[$mode], encoding: this[$encoding] });
         this[$writeStream].once('error', this.propagateError);
         this.pipe(this[$writeStream]);
+        once(this[$writeStream], 'ready').then(() => { this.uncork(); }).catch(Config.errorHandler);
         this[$size] = 0;
     }
 }
