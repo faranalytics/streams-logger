@@ -6,7 +6,7 @@ Streams is a type-safe logger for TypeScript and Node.js applications.
 
 <img align="right" src="./graph.png">
 
-_Streams_ is an intuitive type-safe logging facility built on native Node.js streams. You can use the built-in logging components (e.g., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)) for [common logging tasks](#usage) or implement your own logging [Node](https://github.com/faranalytics/nodes) to handle a wide range of logging scenarios. _Streams_ offers a graph-like API pattern for building sophisticated logging pipelines.
+_Streams_ is an intuitive type-safe logger built on native Node.js streams. You can use the built-in logging components (e.g., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)) for [common logging tasks](#usage) or implement your own logging [Node](https://github.com/faranalytics/nodes) to handle a wide range of logging scenarios. _Streams_ offers a graph-like API pattern for building sophisticated logging pipelines.
 
 ### Features
 
@@ -65,11 +65,11 @@ npm install streams-logger
 
 ## Concepts
 
-Logging is essentially a data transformation task. When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed. Likewise, when data is written to a file or the console additional data transformations may take place e.g., serialization and representational transformation. _Streams_ accomplishes these data transformation tasks by means of a network of [`Node`](https://github.com/faranalytics/nodes) instances that is constructed using a [graph-like API pattern](#graph-api-pattern).
+Logging is essentially a data transformation task. When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed. Likewise, when data is written to a file or the console additional data transformations may take place e.g., serialization and representational transformation. _Streams_ accomplishes these data transformation tasks by means of a network of [`Node`](#node) instances that is constructed using a [graph-like API pattern](#graph-api-pattern).
 
 ### Node
 
-Each data transformation step in a _Streams_ logging graph is realized through a `Node` implementation. Each `Node` in a data transformation graph consumes an input, transforms or filters the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Filters, Handlers, etc.) in a _Streams_ logging graph _is a_ `Node`.
+Each data transformation step in a _Streams_ logging graph is realized through a [`Node`](https://github.com/faranalytics/nodes) implementation. Each `Node` in a data transformation graph consumes an input, transforms or filters the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Filters, Handlers, etc.) in a _Streams_ logging graph _is a_ `Node`.
 
 ### Graph API Pattern
 
