@@ -828,7 +828,7 @@ If you have a _cooperating_ stream that is backpressuring, you can either set a 
 
 ## Performance
 
-_Streams_ is a highly customizable Logger that performs well on a wide range of logging tasks. It is a good choice for both error logging and high throughput logging. It strictly adheres to the Node.js public API contract and common conventions. This approach comes with trade-offs; however, it ensures stability and portability while still delivering a performant logging experience.
+_Streams_ is a highly customizable logger that performs well on a wide range of logging tasks. It is a good choice for both error logging and high throughput logging. It strictly adheres to the Node.js public API contract and common conventions. This approach comes with trade-offs; however, it ensures stability and portability while still delivering a performant logging experience.
 
 >Please see [Tuning](#tuning) for how to configure the logging graph for high throughput applications.
 
