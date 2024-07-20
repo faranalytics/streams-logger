@@ -27,7 +27,7 @@ _Streams_ is an intuitive type-safe logging facility built on native Node.js str
 - [Examples](#examples)
   - [_An Instance of Logging "Hello, World!"_](#an-instance-of-logging-hello-world-example)
   - [_Log to a File and the Console_](#log-to-a-file-and-the-console-example)
-  - [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-example)
+  - [_A Network Connected Streams Logging Graph_](#a-network-connected-streams-logging-graph-example)
   - [_Use Streams in a Node.js Project_](#use-streams-in-a-nodejs-project-example)
 - [Log Context Data](#log-context-data)
 - [API](#api)
@@ -155,12 +155,12 @@ Please see the [Usage](#usage) section above or the ["Hello, World!"](https://gi
 
 Please see the [_Log to a File and the Console_](https://github.com/faranalytics/streams-logger/tree/main/examples/log_to_a_file_and_the_console) example that demonstrates how to log to a file and the console using different `Formatters`.
 
-### _A Network Connected **Streams** Logging Graph_ <sup><sup>\</example\></sup></sup>
+### _A Network Connected Streams Logging Graph_ <sup><sup>\</example\></sup></sup>
 
-Please see the [_Network Connected **Streams** Logging Graph_](https://github.com/faranalytics/streams-logger/tree/main/examples/network_connected_logging_graph) example that demonstrates how to connect _Streams_ logging graphs over the network.
+Please see the [_Network Connected Streams Logging Graph_](https://github.com/faranalytics/streams-logger/tree/main/examples/network_connected_logging_graph) example that demonstrates how to connect _Streams_ logging graphs over the network.
 
 ### _Use **Streams** in a Node.js Project_ <sup><sup>\</example\></sup></sup>
-Please see the [_Use **Streams** in a Node.js Project_](https://github.com/faranalytics/streams-logger/tree/main/examples/use_streams_in_a_node_project) example that demonstrates how to use _Streams_ in a Node.js project.
+Please see the [_Use Streams in a Node.js Project_](https://github.com/faranalytics/streams-logger/tree/main/examples/use_streams_in_a_node_project) example that demonstrates how to use _Streams_ in a Node.js project.
 
 ## Log Context Data
 

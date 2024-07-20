@@ -1,4 +1,4 @@
-# *A Network Connected **Streams** Logging Graph*
+# *A Network Connected Streams Logging Graph*
 
 In this example you will contruct two *Streams* logging graphs that are connected by a `SocketHandler` at each end of the network socket.  The log message will be logged to the console on the client side and to a file on the server side.
 

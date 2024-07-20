@@ -1,4 +1,4 @@
-# *Use **Streams** in a Node Project*
+# *Use Streams in a Node Project*
 
 In the other examples, *Streams* is demonstrated in TypeScript projects.  However, you can use *Streams* in your Node project too. In this example, you will use CommonJS imports in order to import *Streams* logging Nodes and assemble them into a graph.  You will use the logger in order to log a Greeting object to the console.
 
