@@ -28,6 +28,7 @@ _Streams_ is an intuitive type-safe logging facility built on native Node.js str
   - [_An Instance of Logging "Hello, World!"_](#an-instance-of-logging-hello-world-example)
   - [_Log to a File and the Console_](#log-to-a-file-and-the-console-example)
   - [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-example)
+  - [_Use Streams in a Node.js Project_](#use-streams-in-a-nodejs-project-example)
 - [Log Context Data](#log-context-data)
 - [API](#api)
   - [The Logger Class](#the-logger-class)
@@ -158,11 +159,12 @@ Please see the [_Log to a File and the Console_](https://github.com/faranalytics
 
 Please see the [_Network Connected **Streams** Logging Graph_](https://github.com/faranalytics/streams-logger/tree/main/examples/network_connected_logging_graph) example that demonstrates how to connect _Streams_ logging graphs over the network.
 
+### _Use **Streams** in a Node.js Project_ <sup><sup>\</example\></sup></sup>
+Please see the [_Use **Streams** in a Node.js Project_](https://github.com/faranalytics/streams-logger/tree/main/examples/use_streams_in_a_node_project) example that demonstrates how to use _Streams_ in a Node.js project.
+
 ## Log Context Data
 
 _Streams_ provides a rich selection of contextual information with each logging call. This information is provided in a `LogContext` object that is passed as a single argument to the function assigned to the `format` property of the `FormatterOptions` object that is passed to the `Formatter` constructor. Please see [Formatting](#formatting) for instructions on how to incorporate contextual information into your logged message.
-
-> For high throughput applications, you can improve performance by preventing some contextual information from being generated; you can set `Config.captureStackTrace` and `Config.captureISOTime` to `false`.  Please see [Tuning](#tuning) for instructions on how to disable contextual information.  
 
 |Property|Description|Config Prerequisite|
 |---|---|---|
@@ -186,6 +188,8 @@ _Streams_ provides a rich selection of contextual information with each logging 
 |`stack`| The complete stack trace.|`captureStackTrace=true`|
 |`threadid`| The thread identifier.||
 |`url`| The URL of the module.|`captureStackTrace=true`|
+
+> **NB** For high throughput applications, you can improve performance by preventing some contextual information from being generated; you can set `Config.captureStackTrace` and `Config.captureISOTime` to `false`.  Please see [Tuning](#tuning) for instructions on how to disable contextual information.  
 
 ## API
 
@@ -701,7 +705,7 @@ _Streams_ is built on the type-safe Nodes graph API framework. This means that a
 
 For example, the somewhat contrived `LogContextToBuffer` implementation transforms the `message` contained in a `LogContext` to a `Buffer`; the graph pipeline streams the message to `process.stdout`.
 
-> NB: `writableObjectMode` is set to `true` and `readableObjectMode` is set to `false`; hence, the Node.js stream implementation will handle the input as a `object` and the output as an `Buffer`. It's important that `writableObjectMode` and `readableObjectMode` accurately reflect the input and output types of your Node.
+> **NB** In this example, `writableObjectMode` is set to `true` and `readableObjectMode` is set to `false`; hence, the Node.js stream implementation will handle the input as a `object` and the output as an `Buffer`. It's important that `writableObjectMode` and `readableObjectMode` accurately reflect the input and output types of your Node.
 
 ```ts
 import * as stream from "node:stream";

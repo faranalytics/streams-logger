@@ -1,0 +1,22 @@
+{
+  "name": "use_streams_in_a_node_project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/index.js",
+  "scripts": {
+    "start": "node --expose-gc .",
+    "monitor": "nodemon ."
+  },
+  "author": "FAR",
+  "license": "MIT",
+  "engines": {
+    "npm": ">=10.2.3",
+    "node": ">=18.18.0"
+  },
+  "dependencies": {
+    "streams-logger": "^0.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
