@@ -25,7 +25,7 @@
         "node": ">=18.20.4"
     },
     "dependencies": {
-        "@farar/nodes": "^0.5.3"
+        "@farar/nodes": "^1.0.0"
     },
     "devDependencies": {
         "@eslint/js": "^9.6.0",
