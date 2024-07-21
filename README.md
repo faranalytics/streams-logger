@@ -168,7 +168,7 @@ The `Logger` constructs and emits a `LogContext<MessageT, SyslogLevelT>` on each
 
 ### Log Context Properties
 
-_Streams_ provides a rich selection of contextual information with each logging call. This information is provided in a `LogContext` object that is passed as a single argument to the function assigned to the `format` property of the `FormatterOptions` object that is passed to the `Formatter` constructor. Please see [Formatting](#formatting) for instructions on how to incorporate contextual information into your logged message.
+_Streams_ provides a rich selection of contextual information with each logging call. This information is provided in a `LogContext` object that is passed as a single argument to the function assigned to the `format` property of the `FormatterOptions` object that is passed to the `Formatter` constructor. Please see the [example](#example-serializer) for instructions on how to incorporate contextual information into your logged message.
 
 |Property|Description|Config Prerequisite|
 |---|---|---|
