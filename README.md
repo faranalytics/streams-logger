@@ -29,7 +29,9 @@ _Streams_ is an intuitive type-safe logger built on native Node.js streams. You 
   - [_Log to a File and the Console_](#log-to-a-file-and-the-console-example)
   - [_A Network Connected Streams Logging Graph_](#a-network-connected-streams-logging-graph-example)
   - [_Use Streams in a Node.js Project_](#use-streams-in-a-nodejs-project-example)
-- [Log Context Data](#log-context-data)
+- [Formatting](#formatting)
+  - [Log Context Properties](#log-context-properties)
+  - [Example Serializer](#example-serializer)
 - [API](#api)
   - [The Logger Class](#the-logger-class)
   - [The Formatter Class](#the-formatter-class)
@@ -40,8 +42,6 @@ _Streams_ is an intuitive type-safe logger built on native Node.js streams. You 
   - [The LogContext Class](#the-LogContext-class)
   - [The Streams Config Settings Object](#the-streams-config-settings-object)
   - [The SyslogLevel Enum](#the-sysloglevel-enum)
-- [Formatting](#formatting)
-  - [Example Serializer](#example-serializer)
 - [Object (JSON) Logging](#object-json-logging)
 - [Using a Socket Handler](#using-a-socket-handler)
   - [Security](#security)
@@ -162,7 +162,11 @@ Please see the [_Network Connected Streams Logging Graph_](https://github.com/fa
 ### _Use **Streams** in a Node.js Project_ <sup><sup>\</example\></sup></sup>
 Please see the [_Use Streams in a Node.js Project_](https://github.com/faranalytics/streams-logger/tree/main/examples/use_streams_in_a_node_project) example that demonstrates how to use _Streams_ in a Node.js project.
 
-## Log Context Data
+## Formatting
+
+The `Logger` constructs and emits a `LogContext<MessageT, SyslogLevelT>` on each logged message. The properties of a `LogContext` _may_ undergo formatting and serialization using a `Formatter`. This can be accomplished by passing a `FormatterOptions` object, to the constructor of a `Formatter`, with its `format` property set to a custom [serialization](#example-serializer) or transformation function that accepts a `LogContext` as its single argument. The serialization function can construct a log message from the `LogContext` [properties](#log-context-data). In the concise [example](#example-serializer) below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
+
+### Log Context Properties
 
 _Streams_ provides a rich selection of contextual information with each logging call. This information is provided in a `LogContext` object that is passed as a single argument to the function assigned to the `format` property of the `FormatterOptions` object that is passed to the `Formatter` constructor. Please see [Formatting](#formatting) for instructions on how to incorporate contextual information into your logged message.
 
@@ -190,6 +194,48 @@ _Streams_ provides a rich selection of contextual information with each logging 
 |`url`| The URL of the module.|`captureStackTrace=true`|
 
 > **NB** For high throughput applications, you can improve performance by preventing some contextual information from being generated; you can set `Config.captureStackTrace` and `Config.captureISOTime` to `false`.  Please see [Tuning](#tuning) for instructions on how to disable contextual information.  
+
+### Example Serializer
+
+In the following code excerpt, a serializer is implemented that logs:
+
+1. The time of the logging call in ISO format
+2. The log level
+3. The name of the function where the log event originated
+4. The line number of the log event
+5. The column number of the log event
+6. The log message
+7. A newline
+
+The `format` function is passed in a `FormatterOptions` object to the constructor of a `Formatter`. The `Logger` is connected to the `Formatter`. The `Formatter` is connected to the `ConsoleHandler`.
+
+```ts
+import { Logger, Formatter, ConsoleHandler, SyslogLevel } from "streams-logger";
+
+const logger = new Logger({ name: "main", level: SyslogLevel.DEBUG });
+const formatter = new Formatter({
+  format: async ({ isotime, message, name, level, func, url, line, col }) => {
+    return `${isotime}:${level}:${func}:${line}:${col}:${message}\n`;
+  },
+});
+const consoleHandler = new ConsoleHandler();
+
+const log = logger.connect(
+  formatter.connect(
+    consoleHandler
+    )
+);
+
+log.info("Hello, World!");
+```
+
+This is an example of what a logged message will look like using the serializer defined above.
+
+```bash
+# ⮶date-time    function name⮷   column⮷ ⮶message
+2024-06-12T00:10:15.894Z:INFO:sayHello:7:9:Hello, World!
+#                        ⮴level       ⮴line number
+```
 
 ## API
 
@@ -573,52 +619,6 @@ Use `Config.getWritableOptions` when implementing a [custom _Streams_ data trans
   - DEBUG = 7
 
 Use `SyslogLevel` to set the level in the options passed to `Logger`, `Filter`, and Handler constructors.
-
-## Formatting
-
-The `Logger` constructs and emits a `LogContext<MessageT, SyslogLevelT>` on each logged message. The properties of a `LogContext` _may_ undergo formatting and serialization using a `Formatter`. This can be accomplished by passing a `FormatterOptions` object, to the constructor of a `Formatter`, with its `format` property set to a custom [serialization](#example-serializer) or transformation function that accepts a `LogContext` as its single argument. The serialization function can construct a log message from the `LogContext` [properties](#the-LogContext-class). In the concise example below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
-
-### Example Serializer
-
-In the following code excerpt, a serializer is implemented that logs:
-
-1. The time of the logging call in ISO format
-2. The log level
-3. The name of the function where the log event originated
-4. The line number of the log event
-5. The column number of the log event
-6. The log message
-7. A newline
-
-The `format` function is passed in a `FormatterOptions` object to the constructor of a `Formatter`. The `Logger` is connected to the `Formatter`. The `Formatter` is connected to the `ConsoleHandler`.
-
-```ts
-import { Logger, Formatter, ConsoleHandler, SyslogLevel } from "streams-logger";
-
-const logger = new Logger({ name: "main", level: SyslogLevel.DEBUG });
-const formatter = new Formatter({
-  format: async ({ isotime, message, name, level, func, url, line, col }) => {
-    return `${isotime}:${level}:${func}:${line}:${col}:${message}\n`;
-  },
-});
-const consoleHandler = new ConsoleHandler();
-
-const log = logger.connect(
-  formatter.connect(
-    consoleHandler
-    )
-);
-
-log.info("Hello, World!");
-```
-
-This is an example of what a logged message will look like using the serializer defined above.
-
-```bash
-# ⮶date-time    function name⮷   column⮷ ⮶message
-2024-06-12T00:10:15.894Z:INFO:sayHello:7:9:Hello, World!
-#                        ⮴level       ⮴line number
-```
 
 ## Object (JSON) Logging
 
