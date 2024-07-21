@@ -834,14 +834,9 @@ _Streams_ is a highly customizable logger that performs well on a wide range of 
 
 ## Test
 
-### Install dependencies.
-
 ```bash
+git clone https://github.com/faranalytics/streams-logger.git
+cd streams-logger
 npm install && npm update
-```
-
-### Run tests.
-
-```bash
 npm test verbose=false
 ```
