@@ -226,7 +226,11 @@ const log = logger.connect(
     )
 );
 
-log.info("Hello, World!");
+function sayHello() {
+    log.info('Hello, World!');
+}
+
+sayHello();
 ```
 
 This is an example of what a logged message will look like using the `Formatter` defined above.
