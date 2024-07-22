@@ -31,7 +31,7 @@ _Streams_ is an intuitive type-safe logger built on native Node.js streams. You 
   - [_Use Streams in a Node.js Project_](#use-streams-in-a-nodejs-project-example)
 - [Formatting](#formatting)
   - [Log Context Properties](#log-context-properties)
-  - [Example Serializer](#example-serializer)
+  - [Example Formatter](#example-formatter)
 - [API](#api)
   - [The Logger Class](#the-logger-class)
   - [The Formatter Class](#the-formatter-class)
@@ -164,11 +164,11 @@ Please see the [_Use Streams in a Node.js Project_](https://github.com/faranalyt
 
 ## Formatting
 
-The `Logger` constructs a `LogContext<MessageT, SyslogLevelT>` on each logged message. The properties of a `LogContext` _may_ undergo formatting and serialization using a `Formatter`. This can be accomplished by passing a `FormatterOptions` object, to the constructor of a `Formatter`, with its `format` property set to a custom [serialization](#example-serializer) or transformation function that accepts a `LogContext` as its single argument. The serialization function can construct a log message from the `LogContext` [properties](#log-context-data). In the concise [example](#example-serializer) below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
+The `Logger` constructs a `LogContext<MessageT, SyslogLevelT>` on each logged message. The properties of a `LogContext` _may_ undergo formatting and serialization using a `Formatter`. This can be accomplished by passing a `FormatterOptions` object, to the constructor of a `Formatter`, with its `format` property set to a custom [serialization](#example-formatter) or transformation function that accepts a `LogContext` as its single argument. The serialization function can construct a log message from the `LogContext` [properties](#log-context-data). In the concise [example](#example-formatter) below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
 
 ### Log Context Properties
 
-_Streams_ provides a rich selection of contextual information with each logging call. This information is provided in a `LogContext` object that is passed as a single argument to the function assigned to the `format` property of the `FormatterOptions` object that is passed to the `Formatter` constructor. Please see the [example](#example-serializer) for instructions on how to incorporate contextual information into your logged message.
+_Streams_ provides a rich selection of contextual information with each logging call. This information is provided in a `LogContext` object that is passed as a single argument to the function assigned to the `format` property of the `FormatterOptions` object that is passed to the `Formatter` constructor. Please see the [example](#example-formatter) for instructions on how to incorporate contextual information into your logged message.
 
 |Property|Description|Config Prerequisite|
 |---|---|---|
@@ -195,9 +195,9 @@ _Streams_ provides a rich selection of contextual information with each logging 
 
 > **NB** For high throughput applications, you can improve performance by preventing some contextual information from being generated; you can set `Config.captureStackTrace` and `Config.captureISOTime` to `false`.  Please see [Tuning](#tuning) for instructions on how to disable contextual information.  
 
-### Example Serializer
+### Example Formatter
 
-In the following code excerpt, a serializer is implemented that logs:
+In the following code excerpt, a formatter is implemented that serializes a `LogContext` to:
 
 1. The time of the logging call in ISO format
 2. The log level
@@ -229,7 +229,7 @@ const log = logger.connect(
 log.info("Hello, World!");
 ```
 
-This is an example of what a logged message will look like using the serializer defined above.
+This is an example of what a logged message will look like using the `Formatter` defined above.
 
 ```bash
 # ⮶date-time    function name⮷   column⮷ ⮶message
