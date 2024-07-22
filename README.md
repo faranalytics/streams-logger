@@ -164,7 +164,7 @@ Please see the [_Use Streams in a Node.js Project_](https://github.com/faranalyt
 
 ## Formatting
 
-The `Logger` constructs and emits a `LogContext<MessageT, SyslogLevelT>` on each logged message. The properties of a `LogContext` _may_ undergo formatting and serialization using a `Formatter`. This can be accomplished by passing a `FormatterOptions` object, to the constructor of a `Formatter`, with its `format` property set to a custom [serialization](#example-serializer) or transformation function that accepts a `LogContext` as its single argument. The serialization function can construct a log message from the `LogContext` [properties](#log-context-data). In the concise [example](#example-serializer) below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
+The `Logger` constructs a `LogContext<MessageT, SyslogLevelT>` on each logged message. The properties of a `LogContext` _may_ undergo formatting and serialization using a `Formatter`. This can be accomplished by passing a `FormatterOptions` object, to the constructor of a `Formatter`, with its `format` property set to a custom [serialization](#example-serializer) or transformation function that accepts a `LogContext` as its single argument. The serialization function can construct a log message from the `LogContext` [properties](#log-context-data). In the concise [example](#example-serializer) below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
 
 ### Log Context Properties
 
@@ -834,9 +834,18 @@ _Streams_ is a highly customizable logger that performs well on a wide range of 
 
 ## Test
 
+### Test variations on logger functionality.
+
+#### Clone the repository and change directory into the root of the repository.
 ```bash
 git clone https://github.com/faranalytics/streams-logger.git
 cd streams-logger
+```
+#### Install dependencies.
+```bash
 npm install && npm update
+```
+#### Run the tests.
+```bash
 npm test verbose=false
 ```
