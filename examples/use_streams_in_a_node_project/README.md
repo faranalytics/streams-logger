@@ -1,6 +1,6 @@
 # *Use Streams in a Node.js Project*
 
-In the other examples, *Streams* is demonstrated in TypeScript projects.  However, you can use *Streams* in your Node project too. In this example, you will use `require` in order to import *Streams* logging Nodes.  You will assemble the Nodes into a logging graph and log a Greeting object and string to the console and a file.
+In the other examples, *Streams* is demonstrated in TypeScript projects.  However, you can use *Streams* in your Node.js project too. In this example, you will use `require` in order to import *Streams* logging Nodes.  You will assemble the Nodes into a logging graph and log a Greeting object and a string to the console and a file.
 
 ## Implementation
 
