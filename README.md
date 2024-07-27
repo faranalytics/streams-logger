@@ -801,16 +801,21 @@ Another optional setting that you can take advantage of is to turn off stack tra
 
 Turning off stack trace capture will disable some of the information (e.g., function name and line number) that is normally contained in the `LogContext` object that is passed to the `format` function of a `Formatter`.
 
+You can turn off stack trace capturing for all `Logger` instances.
 ```ts
 import * as streams from "streams-logger";
 
 streams.Config.captureStackTrace = false;
 ```
+Alternatively, you can instantiate a `Logger` with stack trace capturing disabled.
+```ts
+const logger = new Logger({ captureStackTrace: false });
+```
 > Please see the [API](#api) for more information on [`Config`](#the-streams-config-settings-object) object settings.
 
 ### Disconnect from root.
 
-You can optionally disconnect your `Logger` from the root `Logger` or a specified antecedent. This will prevent message propagation to the root logger, which will provide cost savings and isolation. E.g.,
+You can optionally disconnect your `Logger` from the root `Logger` or a specified antecedent. This will prevent message propagation to the root logger, which will provide cost savings and isolation.  You can either set the `parent` parameter to `null` in the constructor of the `Logger` or explicitely disconnect from the root `Logger` using the `disconnect` method of the `Logger` instance.  In this example the `Logger` instance is disconnected from the _Streams_ root logger after instantiation.
 
 ```ts
 import * as streams from 'streams-logger';
@@ -820,6 +825,7 @@ const log = logger.connect(
         consoleHandler
     )
 );
+
 log.disconnect(streams.root);
 ```
 
@@ -829,11 +835,12 @@ If you have a high throughput logging application or if you are benchmarking _St
 ```ts
 import * as streams from 'streams-logger';
 
-streams.Config.captureStackTrace = false;
 streams.Config.highWaterMark = 1e5;
 streams.Config.highWaterMarkObjectMode = 1e5;
 
-...
+const logger = new Logger({ parent: null, captureStackTrace: false });
+
+... // Create an instance of a `Formatter` and `ConsoleHandler`.
 
 const log = logger.connect(
     formatter.connect(
@@ -841,7 +848,6 @@ const log = logger.connect(
     )
 );
 
-log.disconnect(streams.root);
 ```
 However, for typical error logging applications or debugging scenarios the defaults should work fine.
 
