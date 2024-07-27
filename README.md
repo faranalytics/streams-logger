@@ -16,7 +16,7 @@ _Streams_ is an intuitive type-safe logger built on native Node.js streams. You 
 - Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
 - Error handling and selective detachment of inoperable graph components.
 - Log any type of message you choose - including [objects serialized to JSON](#object-json-logging).
-- Import _Streams_ into your Node.js project or take advantage of the TypeScript type definitions.
+- Use _Streams_ in your [Node.js project](#use-streams-in-a-nodejs-project-without-type-safety-example) or take advantage of the TypeScript type definitions.
 
 ## Table of Contents
 
