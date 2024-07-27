@@ -53,6 +53,7 @@ _Streams_ is an intuitive type-safe logger built on native Node.js streams. You 
   - [Tune the highWaterMark.](#tune-the-highwatermark)
   - [Disable the stack trace capture.](#disable-the-stack-trace-capture)
   - [Disconnect from root.](#disconnect-from-root)
+  - [Putting it all together.](#putting-it-all-together)
 - [Backpressure](#backpressure)
 - [Performance](#performance)
 - [Test](#test)
@@ -193,7 +194,7 @@ _Streams_ provides a rich selection of contextual information with each logging 
 |`threadid`| The thread identifier.||
 |`url`| The URL of the module.|`captureStackTrace=true`|
 
-> **NB** For high throughput applications, you can improve performance by preventing some contextual information from being generated; you can set `Config.captureStackTrace` and `Config.captureISOTime` to `false`.  Please see [Tuning](#tuning) for instructions on how to disable contextual information.  
+> **NB** For high throughput logging applications, you can improve performance by preventing some contextual information from being generated; you can set `Config.captureStackTrace` and `Config.captureISOTime` to `false`.  Please see [Tuning](#tuning) for instructions on how to disable contextual information.  
 
 ### Example Formatter
 
@@ -778,7 +779,7 @@ const socketHandler = new Node<Buffer, Buffer>(socket);
 
 ## Tuning
 
-**Depending on your requirements, the defaults may be fine.** However, for high throughput applications you may choose to adjust the `highWaterMark`, disconnect your `Logger` from the root `Logger`, and/or disable stack trace capturing.
+**Depending on your requirements, the defaults may be fine.** However, for high throughput logging applications you may choose to adjust the `highWaterMark`, disconnect your `Logger` from the root `Logger`, and/or disable stack trace capturing.
 
 ### Tune the `highWaterMark`.
 
@@ -822,6 +823,25 @@ const log = logger.connect(
 log.disconnect(streams.root);
 ```
 
+### Putting it all together.
+If you have a high throughput logging application or if you are benchmarking _Streams_ against a logger that does not default to stack trace capturing, then the following settings should get you to where you want to be while keeping stream buffers in check.
+
+```ts
+import * as streams from 'streams-logger';
+
+streams.Config.captureStackTrace = false;
+streams.Config.highWaterMark = 1e5;
+streams.Config.highWaterMarkObjectMode = 1e5;
+
+const log = logger.connect(
+    formatter.connect(
+        consoleHandler
+    )
+);
+
+log.disconnect(streams.root);
+```
+
 ## Backpressure
 
 _Streams_ respects backpressure by queueing messages while the stream is draining. You can set a limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options. If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.
@@ -834,7 +854,7 @@ If you have a _cooperating_ stream that is backpressuring, you can either set a 
 
 _Streams_ is a highly customizable logger that performs well on a wide range of logging tasks. It is a good choice for both error logging and high throughput logging. It strictly adheres to the Node.js public API contract and common conventions. This approach comes with trade-offs; however, it ensures stability and portability while still delivering a performant logging experience.
 
->Please see [Tuning](#tuning) for how to configure the logging graph for high throughput applications.
+>Please see [Tuning](#tuning) for how to configure the logging graph for high throughput logging applications.
 
 ## Test
 
