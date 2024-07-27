@@ -847,7 +847,6 @@ const log = logger.connect(
         consoleHandler
     )
 );
-
 ```
 However, for typical error logging applications or debugging scenarios the defaults should work fine.
 
