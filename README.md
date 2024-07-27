@@ -28,7 +28,7 @@ _Streams_ is an intuitive type-safe logger built on native Node.js streams. You 
   - [_An Instance of Logging "Hello, World!"_](#an-instance-of-logging-hello-world-example)
   - [_Log to a File and the Console_](#log-to-a-file-and-the-console-example)
   - [_A Network Connected Streams Logging Graph_](#a-network-connected-streams-logging-graph-example)
-  - [_Use Streams in a Node.js Project_](#use-streams-in-a-nodejs-project-example)
+  - [_Use Streams in a Node.js Project (without type safety)._](#use-streams-in-a-nodejs-project-without-type-safety-example)
 - [Formatting](#formatting)
   - [Log Context Properties](#log-context-properties)
   - [Example Formatter](#example-formatter)
@@ -160,8 +160,8 @@ Please see the [_Log to a File and the Console_](https://github.com/faranalytics
 
 Please see the [_Network Connected Streams Logging Graph_](https://github.com/faranalytics/streams-logger/tree/main/examples/network_connected_logging_graph) example that demonstrates how to connect _Streams_ logging graphs over the network.
 
-### _Use **Streams** in a Node.js Project_ <sup><sup>\</example\></sup></sup>
-Please see the [_Use Streams in a Node.js Project_](https://github.com/faranalytics/streams-logger/tree/main/examples/use_streams_in_a_node_project) example that demonstrates how to use _Streams_ in a Node.js project.
+### _Use **Streams** in a Node.js Project (without type safety)_ <sup><sup>\</example\></sup></sup>
+Please see the [_Use **Streams** in a Node.js Project_](https://github.com/faranalytics/streams-logger/tree/main/examples/use_streams_in_a_node_project) example that demonstrates how to use _Streams_ in a Node.js project.
 
 ## Formatting
 
