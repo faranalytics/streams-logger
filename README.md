@@ -116,7 +116,7 @@ const rotatingFileHandler = new RotatingFileHandler({
 
 #### 3. Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
 
-_Streams_ uses a graph-like API pattern in order to construct a network of log Nodes. Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, is a [Node](https://github.com/faranalytics/@farar/nodes).
+_Streams_ uses a graph-like API pattern in order to construct a network of log Nodes. Each component in a given network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, _is a_ [Node](https://github.com/faranalytics/nodes).
 
 ```ts
 const log = logger.connect(
