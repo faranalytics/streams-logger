@@ -25,10 +25,10 @@ _Streams_ is an intuitive logger built on native Node.js streams. You can use th
 - [Usage](#usage)
   - [Log to a File and the Console](#log-to-a-file-and-the-console)
 - [Examples](#examples)
-  - [_An Instance of Logging "Hello, World!" <sup><sup>\</TypeScript\></sup></sup>_](#an-instance-of-logging-hello-world-typescript)
-  - [_Log to a File and the Console <sup><sup>\</TypeScript\></sup></sup>_](#log-to-a-file-and-the-console-typescript)
-  - [_A Network Connected Streams Logging Graph <sup><sup>\</TypeScript\></sup></sup>_](#a-network-connected-streams-logging-graph-typescript)
-  - [_Use Streams in a Node.js Project (without type safety) <sup><sup>\</Node.js\></sup></sup>_](#use-streams-in-a-nodejs-project-without-type-safety-nodejs)
+  - [_An Instance of Logging "Hello, World!"_](#an-instance-of-logging-hello-world-typescript) <sup><sup>\</TypeScript\></sup></sup>
+  - [_Log to a File and the Console_](#log-to-a-file-and-the-console-typescript) <sup><sup>\</TypeScript\></sup></sup>
+  - [_A Network Connected Streams Logging Graph_](#a-network-connected-streams-logging-graph-typescript) <sup><sup>\</TypeScript\></sup></sup>
+  - [_Use Streams in a Node.js Project (without type safety)_](#use-streams-in-a-nodejs-project-without-type-safety-nodejs) <sup><sup>\</Node.js\></sup></sup>
 - [Formatting](#formatting)
   - [Log Context Properties](#log-context-properties)
   - [Example Formatter](#example-formatter)
