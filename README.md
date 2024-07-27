@@ -1,12 +1,12 @@
 # _Streams_ Logger
 
-Streams is a type-safe logger for TypeScript and Node.js applications.
+Streams is an intuitive and performant logger for TypeScript _and_ Node.js applications.
 
 ## Introduction
 
 <img align="right" src="./graph.png">
 
-_Streams_ is an intuitive type-safe logger built on native Node.js streams. You can use the built-in logging components (e.g., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)) for [common logging tasks](#usage) or implement your own logging [Node](https://github.com/faranalytics/nodes) to handle a wide range of logging scenarios. _Streams_ offers a graph-like API pattern for building sophisticated logging pipelines.
+_Streams_ is an intuitive logger built on native Node.js streams. You can use the built-in logging components (e.g., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)) for [common logging tasks](#usage) or implement your own logging [Node](https://github.com/faranalytics/nodes) to handle a wide range of logging scenarios. _Streams_ offers a graph-like API pattern for building sophisticated logging pipelines.
 
 ### Features
 
@@ -16,7 +16,7 @@ _Streams_ is an intuitive type-safe logger built on native Node.js streams. You 
 - Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
 - Error handling and selective detachment of inoperable graph components.
 - Log any type of message you choose - including [objects serialized to JSON](#object-json-logging).
-- Use _Streams_ in your [Node.js project](#use-streams-in-a-nodejs-project-without-type-safety-example) or take advantage of the TypeScript type definitions.
+- Use _Streams_ in your [Node.js project](#use-streams-in-a-nodejs-project-without-type-safety-nodejs) or take advantage of the TypeScript type definitions.
 
 ## Table of Contents
 
@@ -25,10 +25,10 @@ _Streams_ is an intuitive type-safe logger built on native Node.js streams. You 
 - [Usage](#usage)
   - [Log to a File and the Console](#log-to-a-file-and-the-console)
 - [Examples](#examples)
-  - [_An Instance of Logging "Hello, World!"_](#an-instance-of-logging-hello-world-example)
-  - [_Log to a File and the Console_](#log-to-a-file-and-the-console-example)
-  - [_A Network Connected Streams Logging Graph_](#a-network-connected-streams-logging-graph-example)
-  - [_Use Streams in a Node.js Project (without type safety)._](#use-streams-in-a-nodejs-project-without-type-safety-example)
+  - [_An Instance of Logging "Hello, World!"_](#an-instance-of-logging-hello-world-typescript)
+  - [_Log to a File and the Console_](#log-to-a-file-and-the-console-typescript)
+  - [_A Network Connected Streams Logging Graph_](#a-network-connected-streams-logging-graph-typescript)
+  - [_Use Streams in a Node.js Project (without type safety)._](#use-streams-in-a-nodejs-project-without-type-safety-nodejs)
 - [Formatting](#formatting)
   - [Log Context Properties](#log-context-properties)
   - [Example Formatter](#example-formatter)
@@ -148,19 +148,19 @@ sayHello();
 
 ## Examples
 
-### _An Instance of Logging "Hello, World!"_ <sup><sup>\</example\></sup></sup>
+### _An Instance of Logging "Hello, World!"_ <sup><sup>\</TypeScript\></sup></sup>
 
 Please see the [Usage](#usage) section above or the ["Hello, World!"](https://github.com/faranalytics/streams-logger/tree/main/examples/hello_world) example for a working implementation.
 
-### _Log to a File and the Console_ <sup><sup>\</example\></sup></sup>
+### _Log to a File and the Console_ <sup><sup>\</TypeScript\></sup></sup>
 
 Please see the [_Log to a File and the Console_](https://github.com/faranalytics/streams-logger/tree/main/examples/log_to_a_file_and_the_console) example that demonstrates how to log to a file and the console using different `Formatters`.
 
-### _A Network Connected Streams Logging Graph_ <sup><sup>\</example\></sup></sup>
+### _A Network Connected Streams Logging Graph_ <sup><sup>\</TypeScript\></sup></sup>
 
 Please see the [_Network Connected Streams Logging Graph_](https://github.com/faranalytics/streams-logger/tree/main/examples/network_connected_logging_graph) example that demonstrates how to connect _Streams_ logging graphs over the network.
 
-### _Use **Streams** in a Node.js Project (without type safety)_ <sup><sup>\</example\></sup></sup>
+### _Use **Streams** in a Node.js Project (without type safety)_ <sup><sup>\</Node.js\></sup></sup>
 Please see the [_Use **Streams** in a Node.js Project_](https://github.com/faranalytics/streams-logger/tree/main/examples/use_streams_in_a_node_project) example that demonstrates how to use _Streams_ in a Node.js project _without_ type checks.
 
 ## Formatting
@@ -446,7 +446,7 @@ Set the log level. Must be one of `SyslogLevel`.
   - space `<string | number>` An optional space specification for `JSON.stringify`.
 - streamOptions `<stream.DuplexOptions>` Optional options to be passed to the stream. You can use `DuplexOptions` to set a `highWaterMark` on the `SocketHandler`.
 
-Use a `SocketHandler` in order to connect _Streams_ graphs over the network. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-example) example for instructions on how to use a `SocketHandler` in order to connect _Streams_ logging graphs over the network.
+Use a `SocketHandler` in order to connect _Streams_ graphs over the network. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-typescript) example for instructions on how to use a `SocketHandler` in order to connect _Streams_ logging graphs over the network.
 
 _public_ **socketHandler.connect(...nodes)**
 
@@ -665,7 +665,7 @@ const log = logger.connect(
 
 ## Using a Socket Handler
 
-_Streams_ uses Node.js streams for message propagation. Node.js represents sockets as streams; hence, sockets are a natural extension of a _Streams_ logging graph. For example, you may choose to use a `ConsoleHandler` locally and log to a `RotatingFileHandler` on a remote server. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-example) example for a working implementation.
+_Streams_ uses Node.js streams for message propagation. Node.js represents sockets as streams; hence, sockets are a natural extension of a _Streams_ logging graph. For example, you may choose to use a `ConsoleHandler` locally and log to a `RotatingFileHandler` on a remote server. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-typescript) example for a working implementation.
 
 ### Security
 
