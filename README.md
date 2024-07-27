@@ -833,6 +833,8 @@ streams.Config.captureStackTrace = false;
 streams.Config.highWaterMark = 1e5;
 streams.Config.highWaterMarkObjectMode = 1e5;
 
+...
+
 const log = logger.connect(
     formatter.connect(
         consoleHandler
@@ -841,6 +843,7 @@ const log = logger.connect(
 
 log.disconnect(streams.root);
 ```
+However, for typical error logging applications or debugging scenarios the defaults should work fine.
 
 ## Backpressure
 
