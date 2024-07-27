@@ -161,7 +161,7 @@ Please see the [_Log to a File and the Console_](https://github.com/faranalytics
 Please see the [_Network Connected Streams Logging Graph_](https://github.com/faranalytics/streams-logger/tree/main/examples/network_connected_logging_graph) example that demonstrates how to connect _Streams_ logging graphs over the network.
 
 ### _Use **Streams** in a Node.js Project (without type safety)_ <sup><sup>\</example\></sup></sup>
-Please see the [_Use **Streams** in a Node.js Project_](https://github.com/faranalytics/streams-logger/tree/main/examples/use_streams_in_a_node_project) example that demonstrates how to use _Streams_ in a Node.js project.
+Please see the [_Use **Streams** in a Node.js Project_](https://github.com/faranalytics/streams-logger/tree/main/examples/use_streams_in_a_node_project) example that demonstrates how to use _Streams_ in a Node.js project _without_ type checks.
 
 ## Formatting
 
