@@ -176,6 +176,7 @@ _Streams_ provides a rich selection of contextual information with each logging 
 |`col`| The column number of the logging call.|`captureStackTrace=true`|
 |`env`| The process [environment](https://nodejs.org/dist/latest-v8.x/docs/api/process.html#process_process_env).||
 |`func`| The name of the function where the logging call took place.|`captureStackTrace=true`|
+|`hostname`| The [hostname](https://nodejs.org/api/os.html#oshostname). ||
 |`isotime`| The ISO 8601 [representation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) of the time at which the logging call took place.|`captureISOTime=true`|
 |`label`| Optional user specified label.||
 |`level`| The `SyslogLevel` of the logging call.||
@@ -499,6 +500,11 @@ _public_ **logContext.func**
 
 - `<string>`
   The name of the function where the logging call took place. Available if `Config.captureStackTrace` is set to `true`.
+
+_public_ **logContext.hostname**
+
+- `<string>`
+  The hostname.
 
 _public_ **logContext.isotime**
 
