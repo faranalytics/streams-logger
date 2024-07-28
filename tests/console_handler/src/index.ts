@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as fs from 'node:fs';
-import { Logger, Formatter, ConsoleHandler, SyslogLevel, RotatingFileHandler } from 'streams-logger';
+import { Logger, Formatter, ConsoleHandler, SyslogLevel } from 'streams-logger';
 
 // fs.readdirSync('.', { withFileTypes: true }).forEach((value: fs.Dirent) => {
 //     if (value.name.match(/[^.]+.log.\d+/)) {
@@ -25,7 +25,7 @@ const log = logger.connect(
 
 function sayHello() {
     for (let i = 0; i < 1e1; i++) {
-        log.warn('Hello, World!');
+        log.debug('Hello, World!');
     }
 }
 
