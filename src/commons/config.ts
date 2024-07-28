@@ -22,17 +22,20 @@ class Config extends EventEmitter {
         return this._highWaterMark ?? stream.getDefaultHighWaterMark(false);
     }
 
+    public set highWaterMark(highWaterMark: number) {
+        this._highWaterMark = highWaterMark;
+    }
 
     public get highWaterMarkObjectMode(): number {
         return this._highWaterMarkObjectMode ?? stream.getDefaultHighWaterMark(true);
     }
 
-    public set highWaterMark(highWaterMark: number) {
-        this._highWaterMark = highWaterMark;
-    }
-
     public set highWaterMarkObjectMode(highWaterMarkObjectMode: number) {
         this._highWaterMarkObjectMode = highWaterMarkObjectMode;
+    }
+
+    public get captureStackTrace(): boolean{
+        return this._captureStackTrace;
     }
 
     public set captureStackTrace(captureStackTrace: boolean) {
@@ -40,8 +43,8 @@ class Config extends EventEmitter {
         this.emit('captureStackTrace', captureStackTrace);
     }
 
-    public get captureStackTrace(): boolean{
-        return this._captureStackTrace;
+    public get captureISOTime(): boolean{
+        return this._captureISOTime;
     }
 
     public set captureISOTime(captureISOTime: boolean) {
@@ -49,17 +52,13 @@ class Config extends EventEmitter {
         this.emit('captureISOTime', captureISOTime);
     }
 
-    public get captureISOTime(): boolean{
-        return this._captureISOTime;
+    public get errorHandler() {
+        return this._errorHandler;
     }
 
     public set errorHandler(errorHandler: ErrorHandler) {
         this._errorHandler = errorHandler;
         this.emit('errorHandler', errorHandler);
-    }
-
-    public get errorHandler() {
-        return this._errorHandler;
     }
 
     public getWritableOptions(objectMode: boolean = true): stream.WritableOptions {
