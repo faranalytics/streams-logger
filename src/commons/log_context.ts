@@ -21,6 +21,7 @@ export interface LogContextConstructorOptions<MessageT = string, LevelT = Syslog
     pathext?: string;
     pid?: number;
     env?: NodeJS.ProcessEnv;
+    hostname?: string;
     threadid?: number;
     metadata?: unknown;
     label?: string;
@@ -44,6 +45,7 @@ export class LogContext<MessageT, LevelT> implements LogContextConstructorOption
     public pathext?: string;
     public pid?: number;
     public env?: NodeJS.ProcessEnv = {};
+    public hostname?: string;
     public threadid?: number;
     public stack?: string;
     public depth?: number;
@@ -70,6 +72,7 @@ export class LogContext<MessageT, LevelT> implements LogContextConstructorOption
         this.pathext = options.pathext;
         this.pid = options.pid;
         this.env = options.env;
+        this.hostname = options.hostname;
         this.threadid = options.threadid;
         this.metadata = options.metadata;
         this.label = options.label;

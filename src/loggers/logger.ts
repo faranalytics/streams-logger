@@ -1,11 +1,12 @@
+import * as os from 'node:os';
 import * as stream from 'node:stream';
 import * as threads from 'node:worker_threads';
+import Config from '../commons/config.js';
 import { LogContext } from '../commons/log_context.js';
 import { Node } from '@farar/nodes';
 import { SyslogLevel, SyslogLevelT } from '../commons/syslog.js';
 import { KeysUppercase } from '../commons/types.js';
 import { QueueSizeLimitExceededError } from '../commons/errors.js';
-import Config from '../commons/config.js';
 
 export interface LoggerOptions<MessageT> {
     level?: SyslogLevel;
@@ -66,7 +67,8 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
                 label: label,
                 threadid: threads.threadId,
                 pid: process.pid,
-                env: process.env
+                env: process.env,
+                hostname: os.hostname()
             });
             if (this._captureStackTrace) {
                 Error.captureStackTrace(logContext, this.log);
