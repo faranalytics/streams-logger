@@ -1,4 +1,5 @@
 import * as stream from 'node:stream';
+import { once } from 'node:events';
 import { Node } from '@farar/nodes';
 import { LogContext } from '../commons/log_context.js';
 import { SyslogLevel, SyslogLevelT } from '../commons/syslog.js';
@@ -24,16 +25,28 @@ export class ConsoleHandlerTransform<MessageT> extends stream.Transform {
 
     public async _transform(logContext: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback): Promise<void> {
         try {
-            if (SyslogLevel[logContext.level] <= this[$level]) {
-                const message: string | Buffer = (
-                    (typeof logContext.message == 'string' || logContext.message instanceof Buffer) ? logContext.message :
-                        JSON.stringify(logContext.message)
-                );
-                callback(null, message);
-            }
-            else {
+            if (SyslogLevel[logContext.level] > this[$level]) {
                 callback();
+                return;
             }
+
+            const message: string | Buffer = (
+                (typeof logContext.message == 'string' || logContext.message instanceof Buffer) ? logContext.message :
+                    JSON.stringify(logContext.message)
+            );
+
+            if (SyslogLevel[logContext.level] > SyslogLevel.ERROR) {
+                callback(null, message);
+                return;
+            }
+
+            if (!process.stderr.write(message)) {
+                await once(process.stderr, 'drain');
+                callback();
+                return;
+            }
+
+            callback();
         }
         catch (err) {
             if (err instanceof Error) {
