@@ -5,11 +5,11 @@ export type ErrorHandler = (err: Error, ...params: Array<unknown>) => void;
 
 class Config extends EventEmitter {
 
-    public _highWaterMark?: number;
-    public _highWaterMarkObjectMode?: number;
-    public _captureStackTrace: boolean;
-    public _captureISOTime: boolean;
-    public _errorHandler: ErrorHandler;
+    protected _highWaterMark?: number;
+    protected _highWaterMarkObjectMode?: number;
+    protected _captureStackTrace: boolean;
+    protected _captureISOTime: boolean;
+    protected _errorHandler: ErrorHandler;
 
     constructor() {
         super();
