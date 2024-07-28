@@ -58,6 +58,10 @@ class Config extends EventEmitter {
         this.emit('errorHandler', errorHandler);
     }
 
+    public get errorHandler() {
+        return this._errorHandler;
+    }
+
     public getWritableOptions(objectMode: boolean = true): stream.WritableOptions {
         return {
             highWaterMark: objectMode ? this._highWaterMarkObjectMode : this.highWaterMark
