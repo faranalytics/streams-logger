@@ -174,7 +174,6 @@ _Streams_ provides a rich selection of contextual information with each logging 
 |Property|Description|Config Prerequisite|
 |---|---|---|
 |`col`| The column number of the logging call.|`captureStackTrace=true`|
-|`env`| The process [environment](https://nodejs.org/dist/latest-v8.x/docs/api/process.html#process_process_env).||
 |`func`| The name of the function where the logging call took place.|`captureStackTrace=true`|
 |`hostname`| The [hostname](https://nodejs.org/api/os.html#oshostname). ||
 |`isotime`| The ISO 8601 [representation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) of the time at which the logging call took place.|`captureISOTime=true`|
@@ -490,11 +489,6 @@ _public_ **logContext.col**
 
 - `<string>`
   The column of the logging call. Available if `Config.captureStackTrace` is set to `true`.
-
-_public_ **logContext.env**
-
-- `<NodeJS.ProcessEnv>`
-  The process environment.
 
 _public_ **logContext.func**
 
@@ -836,7 +830,7 @@ log.disconnect(streams.root);
 ```
 
 ### Putting it all together.
-If you have a high throughput logging application or if you are benchmarking _Streams_ against a logger that does not default to stack trace capturing, then the following settings should get you to where you want to be while keeping stream buffers in check.
+If you have a high throughput logging application, the following settings should get you to where you want to be while keeping Node.js stream buffers in check.
 
 ```ts
 import * as streams from 'streams-logger';
