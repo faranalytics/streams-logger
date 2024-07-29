@@ -34,7 +34,6 @@ export class Formatter<MessageInT = string, MessageOutT = string> extends Node<L
                             pathbase: logContext.pathbase,
                             pathext: logContext.pathext,
                             pid: logContext.pid,
-                            env: logContext.env,
                             threadid: logContext.threadid,
                             regex: logContext.regex
                         });
