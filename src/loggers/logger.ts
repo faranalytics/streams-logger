@@ -67,7 +67,6 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
                 label: label,
                 threadid: threads.threadId,
                 pid: process.pid,
-                env: process.env,
                 hostname: os.hostname()
             });
             if (this._captureStackTrace) {
