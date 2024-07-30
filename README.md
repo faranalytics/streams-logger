@@ -138,7 +138,7 @@ function sayHello() {
 sayHello();
 ```
 
-##### Output:
+**Output**
 
 ```bash
 # ⮶date-time    function name⮷   column⮷ ⮶message
@@ -653,14 +653,14 @@ const log = logger.connect(
 );
 
 (function sayHello() {
-  log.warn({ greeting: "Hello, World!", prime: 57 });
+  log.warn({ greeting: "Hello, World!", prime_number: 57 });
 })();
 ```
 
-### Output
+**Output**
 
 ```bash
-2024-07-06T03:19:28.767Z:WARN:sayHello:9:9:{"greeting":"Hello, World!","prime":57}
+2024-07-06T03:19:28.767Z:WARN:sayHello:9:9:{"greeting":"Hello, World!","prime_number":57}
 ```
 
 ## Using a Socket Handler
@@ -756,7 +756,7 @@ log.connect(
 log.warn("Hello, World!");
 ```
 
-#### Output
+**Output**
 
 ```bash
 Hello, World!
