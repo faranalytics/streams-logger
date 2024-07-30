@@ -811,7 +811,6 @@ Alternatively, you can instantiate a `Logger` with stack trace capturing disable
 ```ts
 const logger = new Logger({ captureStackTrace: false });
 ```
-> Please see the [API](#api) for more information on [`Config`](#the-streams-config-settings-object) object settings.
 
 ### Disconnect from root.
 
