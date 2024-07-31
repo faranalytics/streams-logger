@@ -165,7 +165,7 @@ Please see the [_Use **Streams** in a Node.js Project_](https://github.com/faran
 
 ## Formatting
 
-The `Logger` constructs a `LogContext<MessageT, SyslogLevelT>` on each logged message. The properties of a `LogContext` _may_ undergo formatting and serialization using a `Formatter`. This can be accomplished by passing a `FormatterOptions` object, to the constructor of a `Formatter`, with its `format` property set to a custom [serialization](#example-formatter) or transformation function that accepts a `LogContext` as its single argument. The serialization function can construct a log message from the `LogContext` [properties](#log-context-data). In the concise [example](#example-formatter) below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
+You can format your log message using a `Formatter` Node.  The `Logger` constructs a `LogContext` instance on each logged message. The [properties](#log-context-properties) of each `LogContext` contain information about the context of the logged message (e.g., module name, function name, line number, etc.).  You can define a serialization function and pass it to the constructor of a `Formatter`. The serialization function can construct a log message from the `LogContext` [properties](#log-context-properties). In the concise [example](#example-formatter) below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
 
 ### Log Context Properties
 
