@@ -14,7 +14,7 @@ import { Logger, Formatter, ConsoleHandler, SyslogLevel } from 'streams-logger';
 ```ts
 const logger = new Logger({ name: 'hello-logger', level: SyslogLevel.DEBUG });
 const formatter = new Formatter({
-    format: async ({ isotime, message, name, level, func, url, line, col }) => (
+    format: ({ isotime, message, name, level, func, url, line, col }) => (
         `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
     )
 });

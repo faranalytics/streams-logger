@@ -23,7 +23,7 @@ import { once } from 'node:events';
 import { Logger, Formatter, ConsoleHandler, SocketHandler, SyslogLevel, RotatingFileHandler } from 'streams-logger';
 
 const serverRotatingFileHandler = new RotatingFileHandler({ path: 'server.log' });
-const serverFormatter = new Formatter({ format: async ({ message }) => (`${new Date().toISOString()}:${message}`) });
+const serverFormatter = new Formatter({ format: ({ message }) => (`${new Date().toISOString()}:${message}`) });
 const formatterNode = serverFormatter.connect(serverRotatingFileHandler);
 net.createServer((socket: net.Socket) => {
     const socketHandler = new SocketHandler({ socket });
@@ -39,7 +39,7 @@ await once(socket, 'connect');
 const socketHandler = new SocketHandler({ socket });
 const logger = new Logger({ name: 'main', level: SyslogLevel.DEBUG });
 const formatter = new Formatter({
-    format: async ({ isotime, message, name, level, func, url, line, col }) => (
+    format: ({ isotime, message, name, level, func, url, line, col }) => (
         `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
     )
 });

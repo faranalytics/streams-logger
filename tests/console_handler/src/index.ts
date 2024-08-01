@@ -10,7 +10,7 @@ import { Logger, Formatter, ConsoleHandler, SyslogLevel } from 'streams-logger';
 
 const logger = new Logger({ level: SyslogLevel.DEBUG });
 const consoleFormatter = new Formatter({
-    format: async ({level, isotime, hostname, pid, message,  }) => (
+    format: ({level, isotime, hostname, pid, message,  }) => (
         `<${level}> ${isotime} ${hostname} ${pid} - ${message}\n`
     )
 });

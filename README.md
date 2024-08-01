@@ -104,7 +104,7 @@ import {
 ```ts
 const logger = new Logger({ level: SyslogLevel.DEBUG });
 const formatter = new Formatter({
-  format: async ({ isotime, message, name, level, func, url, line, col }) => {
+  format: ({ isotime, message, name, level, func, url, line, col }) => {
     return `${isotime}:${level}:${func}:${line}:${col}:${message}\n`;
   },
 });
@@ -215,7 +215,7 @@ import { Logger, Formatter, ConsoleHandler, SyslogLevel } from "streams-logger";
 
 const logger = new Logger({ name: "main", level: SyslogLevel.DEBUG });
 const formatter = new Formatter({
-  format: async ({ isotime, message, name, level, func, url, line, col }) => {
+  format: ({ isotime, message, name, level, func, url, line, col }) => {
     return `${isotime}:${level}:${func}:${line}:${col}:${message}\n`;
   },
 });
@@ -638,7 +638,7 @@ interface Message {
 
 const logger = new Logger<Message>({ level: SyslogLevel.DEBUG });
 const formatter = new Formatter<Message, string>({
-  format: async ({ isotime, message, level, func, line, col }) => {
+  format: ({ isotime, message, level, func, line, col }) => {
     return `${isotime}:${level}:${func}:${line}:${col}:${JSON.stringify(
       message
     )}\n`;
@@ -689,7 +689,7 @@ You may capture logging events from other modules (_and your own_) by connecting
 import { Formatter, ConsoleHandler, SyslogLevel, root } from "streams-logger";
 
 const formatter = new Formatter({
-  format: async ({ isotime, message, name, level, func, url, line, col }) => {
+  format: ({ isotime, message, name, level, func, url, line, col }) => {
     return `${isotime}:${level}:${func}:${line}:${col}:${message}\n`;
   },
 });

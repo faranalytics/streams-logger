@@ -9,12 +9,12 @@ import { Logger, Formatter, ConsoleHandler, SyslogLevel, RotatingFileHandler } f
 
 const logger = new Logger({ name: 'hello-logger', level: SyslogLevel.DEBUG });
 const consoleFormatter = new Formatter({
-    format: async ({ isotime, message, name, level, func, url, line, col }) => (
+    format: ({ isotime, message, name, level, func, url, line, col }) => (
         `${name}:${isotime}:${level}:${message}\n`
     )
 });
 const fileFortmatter = new Formatter({
-    format: async ({ isotime, message, name, level, func, url, line, col }) => (
+    format: ({ isotime, message, name, level, func, url, line, col }) => (
         `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
     )
 });

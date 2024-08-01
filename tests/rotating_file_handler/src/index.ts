@@ -10,12 +10,12 @@ fs.readdirSync('.', { withFileTypes: true }).forEach((value: fs.Dirent) => {
 
 const logger = new Logger({ level: SyslogLevel.DEBUG });
 const consoleFormatter = new Formatter({
-    format: async ({ isotime, message, level }) => (
+    format: ({ isotime, message, level }) => (
         `${isotime}:${level}:${message}\n`
     )
 });
 const fileFortmatter = new Formatter({
-    format: async ({ isotime, message, level }) => (
+    format: ({ isotime, message, level }) => (
         `${isotime}:${level}:${message}\n`
     )
 });

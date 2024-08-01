@@ -28,7 +28,7 @@ await describe('Log a string that passes through a SocketHandler.', async () => 
         });
     });
     const serverRotatingFileHandler = new RotatingFileHandler({ path: 'server.log' });
-    const serverFormatter = new Formatter({ format: async ({ message }) => message });
+    const serverFormatter = new Formatter({ format: ({ message }) => message });
     const formatterNode = serverFormatter.connect(serverRotatingFileHandler);
     const server = net.createServer((socket: net.Socket) => {
         const socketHandler = new SocketHandler({ socket });
@@ -42,7 +42,7 @@ await describe('Log a string that passes through a SocketHandler.', async () => 
     const anyToEmitter = new AnyToEmitter();
     const logger = new Logger({ name: 'main', level: SyslogLevel.DEBUG });
     const formatter = new Formatter({
-        format: async ({ isotime, message, name, level, func, line, col }: LogContext<string, SyslogLevelT>) => (
+        format: ({ isotime, message, name, level, func, line, col }: LogContext<string, SyslogLevelT>) => (
             `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
         )
     });
@@ -87,7 +87,7 @@ await describe('Log a string that passes through a SocketHandler.', async () => 
     await describe('Test error handling.', () => {
         const logger = new Logger({ name: 'main', level: SyslogLevel.DEBUG });
         const formatter = new Formatter({
-            format: async ({ isotime, message, name, level, func, line, col }: LogContext<string, SyslogLevelT>) => (
+            format: ({ isotime, message, name, level, func, line, col }: LogContext<string, SyslogLevelT>) => (
                 `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
             )
         });
@@ -149,7 +149,7 @@ await describe('Log an object that passes through a SocketHandler.', async () =>
         }
     }
     const serverRotatingFileHandler = new RotatingFileHandler<string>({ path: 'server.log' });
-    const serverFormatter = new Formatter<Greeter, string>({ format: async ({ message }) => `${JSON.stringify(message)}\n` });
+    const serverFormatter = new Formatter<Greeter, string>({ format: ({ message }) => `${JSON.stringify(message)}\n` });
     const formatterNode = serverFormatter.connect(serverRotatingFileHandler);
     const server = net.createServer((socket: net.Socket) => {
         const socketHandler = new SocketHandler<Greeter>({ socket });
@@ -164,7 +164,7 @@ await describe('Log an object that passes through a SocketHandler.', async () =>
     const anyToAnyEmitter = new AnyToAnyEmitter();
     const logger = new Logger<Greeter>({ name: 'main', level: SyslogLevel.DEBUG });
     const formatter = new Formatter<Greeter, Greeter>({
-        format: async ({ message, isotime, name, level, func, url, line, col }: LogContext<Greeter, SyslogLevelT>) => {
+        format: ({ message, isotime, name, level, func, url, line, col }: LogContext<Greeter, SyslogLevelT>) => {
             message.isotime = isotime;
             message.name = name;
             message.level = level;
@@ -214,7 +214,7 @@ await describe('Log a string that passes through a rotating file handler.', asyn
     const MAX_SIZE = 1e5 * 50 / 5;
     const logger = new Logger<string>({ name: 'main' });
     const formatter = new Formatter<string, string>({
-        format: async ({ isotime, message, name, level, func }: LogContext<string, SyslogLevelT>) => (
+        format: ({ isotime, message, name, level, func }: LogContext<string, SyslogLevelT>) => (
             `${name}:${isotime}:${level}:${func}:${message}\n`
         )
     });
