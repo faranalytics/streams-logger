@@ -48,7 +48,7 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
         }
 
         this.cork();
-        this[$writeStream] = fs.createWriteStream(this[$path], { mode, encoding, flush: true });
+        this[$writeStream] = fs.createWriteStream(this[$path], { mode, encoding, flush: true, autoClose: true});
         this.pipe(this[$writeStream]);
         once(this[$writeStream], 'ready').then(() => { this.uncork(); }).catch(Config.errorHandler);
 
@@ -59,6 +59,9 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
 
     public async _transform(logContext: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback): Promise<void> {
         try {
+            if (this[$writeStream].closed) {
+                callback(this[$writeStream].errored ? this[$writeStream].errored : new Error('The `WriteStream` closed.'));
+            }
             const message: Buffer = (
                 logContext.message instanceof Buffer ? logContext.message :
                     typeof logContext.message == 'string' ? Buffer.from(logContext.message, this[$encoding]) :
