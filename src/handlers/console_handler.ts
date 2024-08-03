@@ -25,27 +25,26 @@ export class ConsoleHandlerTransform<MessageT> extends stream.Transform {
 
     public async _transform(logContext: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback): Promise<void> {
         try {
+            if (process.stdout.closed) {
+                callback(process.stdout.errored ? process.stdout.errored : new Error('The `Writable` closed.'));
+            }
             if (SyslogLevel[logContext.level] > this[$level]) {
                 callback();
                 return;
             }
-
             const message: string | Buffer = (
                 (typeof logContext.message == 'string' || logContext.message instanceof Buffer) ? logContext.message :
                     JSON.stringify(logContext.message)
             );
-
             if (SyslogLevel[logContext.level] > SyslogLevel.ERROR) {
                 callback(null, message);
                 return;
             }
-
             if (!process.stderr.write(message)) {
                 await once(process.stderr, 'drain');
                 callback();
                 return;
             }
-
             callback();
         }
         catch (err) {

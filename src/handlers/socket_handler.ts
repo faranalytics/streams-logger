@@ -35,6 +35,10 @@ export class SocketHandler<MessageT = string> extends Node<LogContext<MessageT, 
                 },
                 write: (logContext: LogContext<MessageT, SyslogLevelT>, _encoding: BufferEncoding, callback: stream.TransformCallback) => {
                     try {
+                        if (this._socket.closed) {
+                            callback(this._socket.errored ? this._socket.errored : new Error('The `Socket` closed.'));
+                            return;
+                        }
                         if (SyslogLevel[logContext.level] <= this.level) {
                             const data = this.serializeMessage(logContext);
                             const size = Buffer.alloc(6, 0);

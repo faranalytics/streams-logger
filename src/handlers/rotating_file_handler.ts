@@ -61,6 +61,7 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
         try {
             if (this[$writeStream].closed) {
                 callback(this[$writeStream].errored ? this[$writeStream].errored : new Error('The `WriteStream` closed.'));
+                return;
             }
             const message: Buffer = (
                 logContext.message instanceof Buffer ? logContext.message :
