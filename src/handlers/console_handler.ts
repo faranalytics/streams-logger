@@ -20,7 +20,7 @@ export class ConsoleHandlerTransform<MessageT> extends stream.Transform {
 
         this[$level] = options.level ?? SyslogLevel.WARN;
 
-        this.once('error', () => this.unpipe(process.stdout)).pipe(process.stdout);
+        this.pipe(process.stdout);
     }
 
     public async _transform(logContext: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback): Promise<void> {
