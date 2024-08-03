@@ -27,6 +27,7 @@ export class ConsoleHandlerTransform<MessageT> extends stream.Transform {
         try {
             if (process.stdout.closed) {
                 callback(process.stdout.errored ? process.stdout.errored : new Error('The `Writable` closed.'));
+                return;
             }
             if (SyslogLevel[logContext.level] > this[$level]) {
                 callback();
