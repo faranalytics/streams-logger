@@ -716,10 +716,7 @@ For example, the somewhat contrived `LogContextToBuffer` implementation transfor
 import * as stream from "node:stream";
 import { Logger, Node, Config, LogContext, SyslogLevelT } from "streams-logger";
 
-export class LogContextToBuffer extends Node<
-  LogContext<string, SyslogLevelT>,
-  Buffer
-> {
+export class LogContextToBuffer extends Node<LogContext<string, SyslogLevelT>, Buffer> {
   public encoding: NodeJS.BufferEncoding = "utf-8";
 
   constructor(streamOptions?: stream.TransformOptions) {
