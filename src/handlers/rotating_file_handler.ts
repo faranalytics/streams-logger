@@ -35,7 +35,6 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
             ...Config.getWritableOptions(true),
             ...writableOptions, ...{ objectMode: true }
         });
-        this.propagateError = this.propagateError.bind(this);
         this[$level] = level ?? SyslogLevel.WARN;
         this[$rotationLimit] = rotationLimit ?? 0;
         this[$maxSize] = maxSize ?? 1e6;
@@ -50,18 +49,12 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
 
         this.cork();
         this[$writeStream] = fs.createWriteStream(this[$path], { mode, encoding, flush: true });
-        this[$writeStream].once('error', this.propagateError);
         this.pipe(this[$writeStream]);
         once(this[$writeStream], 'ready').then(() => { this.uncork(); }).catch(Config.errorHandler);
 
         this.once('error', () => {
-            this.unpipe(this[$writeStream]);
             this[$writeStream].close();
         });
-    }
-
-    protected propagateError(err: Error) {
-        this.emit('error', err);
     }
 
     public async _transform(logContext: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback): Promise<void> {
@@ -88,7 +81,6 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
     protected async [$rotate]() {
         this.unpipe(this[$writeStream]);
         this[$writeStream].close();
-        this[$writeStream].removeListener('error', this.propagateError);
         if (this[$rotationLimit] === 0) {
             await fsp.rm(this[$path]);
         }
@@ -112,7 +104,6 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
         }
         this.cork();
         this[$writeStream] = fs.createWriteStream(this[$path], { mode: this[$mode], encoding: this[$encoding] });
-        this[$writeStream].once('error', this.propagateError);
         this.pipe(this[$writeStream]);
         once(this[$writeStream], 'ready').then(() => { this.uncork(); }).catch(Config.errorHandler);
         this[$size] = 0;
