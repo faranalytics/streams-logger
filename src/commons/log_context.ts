@@ -2,7 +2,7 @@ import * as pth from 'node:path';
 import { KeysUppercase } from './types.js';
 import { SyslogLevelT } from './syslog.js';
 
-export interface LogContextConstructorOptions<MessageT = string, LevelT = SyslogLevelT> {
+export interface LogContextOptions<MessageT = string, LevelT = SyslogLevelT> {
     message: MessageT;
     name?: string;
     level: KeysUppercase<LevelT>;
@@ -26,7 +26,7 @@ export interface LogContextConstructorOptions<MessageT = string, LevelT = Syslog
     regex?: string;
 }
 
-export class LogContext<MessageT, LevelT> implements LogContextConstructorOptions<MessageT, LevelT> {
+export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT, LevelT> {
 
     public message: MessageT;
     public name?: string;
@@ -49,7 +49,7 @@ export class LogContext<MessageT, LevelT> implements LogContextConstructorOption
     public metadata?: unknown;
     public label?: string;
 
-    constructor(options: LogContextConstructorOptions<MessageT, LevelT>) {
+    constructor(options: LogContextOptions<MessageT, LevelT>) {
         this.message = options.message;
         this.name = options.name;
         this.level = options.level;
