@@ -478,7 +478,6 @@ Set the log level. Must be one of `SyslogLevel`.
   - message `<MessageT>` The logged message.
   - name `<string>` The name of the `Logger`.
   - level `<KeysUppercase<LevelT>` An uppercase string representing the log level.
-  - depth `<number>` Used to specify which line of the stack trace to parse.
   - stack `<string>` An optional stack trace.
 
 A `LogContext` is instantiated each time a message is logged at (or below) the level set on the `Logger`. It contains information about the process and environment at the time of the logging call. All _Streams_ Nodes take a `LogContext` as an input and emit a `LogContext` as an output.
