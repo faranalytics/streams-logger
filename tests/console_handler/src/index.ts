@@ -10,8 +10,8 @@ import { Logger, Formatter, ConsoleHandler, SyslogLevel } from 'streams-logger';
 
 const logger = new Logger({ level: SyslogLevel.DEBUG });
 const consoleFormatter = new Formatter({
-    format: ({level, isotime, hostname, pid, message,  }) => (
-        `<${level}> ${isotime} ${hostname} ${pid} - ${message}\n`
+    format: ({level, isotime, hostname, pid, func, message,  }) => (
+        `<${level}> ${isotime} ${hostname} ${pid} - ${func} ${message}\n`
     )
 });
 
@@ -29,7 +29,7 @@ function sayHello() {
     }
 }
 
-sayHello();
+setInterval(sayHello, 1000);
 
 // process.once('exit', () => {
 //     fs.readdirSync('.', { withFileTypes: true }).forEach((value: fs.Dirent) => {
