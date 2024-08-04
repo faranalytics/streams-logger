@@ -130,3 +130,4 @@ dist
 .pnp.*
 
 message.log*
+package-lock.json
