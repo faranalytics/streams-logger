@@ -569,6 +569,14 @@ _public_ **logContext.threadid**
 - `<string>`
   The thread identifier.
 
+_public_ **logContext.parseStackTrace(depth)**
+
+- depth `<number>` An optional depth i.e., the number of newlines to skip.
+
+Returns `<void>`
+
+If the `stack` property has been set, parse the stack trace.
+
 ### The Streams Config Settings Object
 
 The `Config` object is used to set default settings.  It can be used for performance [tuning](#tuning).
