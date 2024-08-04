@@ -47,16 +47,13 @@ export class LogContext<MessageT, LevelT> implements LogContextConstructorOption
     public hostname?: string;
     public threadid?: number;
     public stack?: string;
-    public depth?: number;
     public metadata?: unknown;
     public label?: string;
-    public regex?: string;
 
     constructor(options: LogContextConstructorOptions<MessageT, LevelT>) {
         this.message = options.message;
         this.name = options.name;
         this.level = options.level;
-        this.depth = options.depth;
         this.stack = options.stack;
         this.func = options.func;
         this.url = options.url;
@@ -74,13 +71,14 @@ export class LogContext<MessageT, LevelT> implements LogContextConstructorOption
         this.threadid = options.threadid;
         this.metadata = options.metadata;
         this.label = options.label;
-        this.regex = options.regex;
     }
 
-    public parseStackTrace() {
-        if (this.stack && this.depth) {
-            this.regex = this.regex ?? `^${'[^\\n]*\\n'.repeat(this.depth)}\\s+at (?<func>[^\\s]+)?.*?(?<url>(?:file://|/)(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)`;
-            const regex = new RegExp(this.regex, 'is');
+    public parseStackTrace(depth?: number) {
+        if (this.stack) {
+            const regex = (depth ?
+                RegExp(`^${'[^\\n]*\\n'.repeat(depth)}\\s+at (?<func>[^\\s]+)?.*?(?<url>(?:file://|/)(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)`, 'is') :
+                /^[^\n]*\n[^\n]*\n\s+at (?<func>[^\s]+)?.*?(?<url>(?:file:\/\/|\/)(?<path>[^:]+)):(?<line>\d+):(?<col>\d+)/
+            );
             const match = this.stack?.match(regex);
             const groups = match?.groups;
             if (groups) {
