@@ -61,7 +61,6 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
             const logContext = new LogContext<MessageT, SyslogLevelT>({
                 message,
                 name: this._name,
-                depth: 2,
                 level: SyslogLevel[level] as KeysUppercase<SyslogLevelT>,
                 isotime: this._captureISOTime ? new Date().toISOString() : undefined,
                 label: label,

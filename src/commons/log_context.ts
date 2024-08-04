@@ -6,7 +6,6 @@ export interface LogContextConstructorOptions<MessageT = string, LevelT = Syslog
     message: MessageT;
     name?: string;
     level: KeysUppercase<LevelT>;
-    depth?: number;
     stack?: string;
     func?: string;
     url?: string;
