@@ -713,7 +713,7 @@ root.connect(
 
 ### How to implement a custom _Streams_ data transformation Node.
 
-_Streams_ is built on the type-safe Nodes graph API framework. This means that any Nodes `Node` may be incorporated into your logging graph provided that it meets the contextual type requirements. In order to implement a _Streams_ data transformation `Node`, subclass the `Node` class, and provide the appropriate _Streams_ defaults to the stream constructor.
+_Streams_ is built on the type-safe [Nodes](https://github.com/faranalytics/nodes) graph API framework. This means that any Nodes `Node` may be incorporated into your logging graph provided that it meets the contextual type requirements. In order to implement a _Streams_ data transformation `Node`, subclass the `Node` class, and provide the appropriate _Streams_ defaults to the stream constructor.
 
 For example, the somewhat contrived `LogContextToBuffer` implementation transforms the `message` contained in a `LogContext` to a `Buffer`; the graph pipeline streams the message to `process.stdout`.
 
