@@ -70,7 +70,7 @@ Logging is essentially a data transformation task. When a string is logged to th
 
 ### Node
 
-Each data transformation step in a _Streams_ logging graph is realized through a [`Node`](https://github.com/faranalytics/nodes) implementation. Each `Node` in a data transformation graph consumes an input, transforms or filters the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Filters, Handlers, etc.) in a _Streams_ logging graph _is a_ `Node`.
+Each data transformation step in a _Streams_ logging graph is realized through a [`Node`](https://github.com/faranalytics/nodes) implementation. Each `Node` manages and represents a native Node.js stream.  A `Node` in a data transformation graph consumes an input, transforms or filters the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Filters, Handlers, etc.) in a _Streams_ logging graph _is a_ `Node`.  Each `Node` *has a* native Node.js stream that it manages.
 
 ### Graph API Pattern
 
