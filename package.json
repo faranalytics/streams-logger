@@ -36,6 +36,7 @@
         "typescript-eslint": "^7.15.0"
     },
     "keywords": [
+        "bunyan",
         "logger",
         "logging",
         "logs",
