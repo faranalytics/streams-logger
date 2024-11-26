@@ -32,7 +32,7 @@
         "@types/eslint__js": "^8.42.3",
         "@types/node": "^20.11.28",
         "eslint": "^8.57.0",
-        "typescript": "^5.5.3",
+        "typescript": "^5.7.2",
         "typescript-eslint": "^7.15.0"
     },
     "keywords": [
