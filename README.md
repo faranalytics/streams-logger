@@ -56,6 +56,7 @@ _Streams_ is an intuitive logger built on native Node.js streams. You can use th
   - [Putting it all together.](#putting-it-all-together)
 - [Backpressure](#backpressure)
 - [Performance](#performance)
+- [Versioning](#versioning)
 - [Test](#test)
 
 ## Installation
@@ -66,7 +67,7 @@ npm install streams-logger
 
 ## Concepts
 
-Logging is essentially a data transformation task. When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed. Likewise, when data is written to a file or the console additional data transformations may take place e.g., serialization and representational transformation. _Streams_ accomplishes these data transformation tasks by means of a network of [`Node`](#node) instances that is constructed using a [graph-like API pattern](#graph-api-pattern).
+Logging is essentially a data transformation task. When a string is logged to the console, for example, it typically undergoes a transformation step where relevant information (e.g., the timestamp, log level, process id, etc.) is added to the log message prior to it being printed. Likewise, when data is written to a file or the console, additional data transformations may take place e.g., serialization and representational transformation. _Streams_ facilitates these data transformation tasks by means of a network of [`Node`](#node) instances that is constructed using a [graph-like API pattern](#graph-api-pattern).
 
 ### Node
 
@@ -866,6 +867,20 @@ If you have a _cooperating_ stream that is backpressuring, you can either set a 
 _Streams_ is a highly customizable logger that performs well on a wide range of logging tasks. It is a good choice for both error logging and high throughput logging. It strictly adheres to the Node.js public API contract and common conventions. This approach comes with trade-offs; however, it ensures stability and portability while still delivering a performant logging experience.
 
 >Please see [Tuning](#tuning) for how to configure the logging graph for high throughput logging applications.
+
+## Versioning
+
+The _Streams_ package adheres to semantic versioning. Breaking changes to the public API will result in a turn of the major. Minor and patch changes will always be backward compatible.
+
+Excerpted from [Semantic Versioning 2.0.0](https://semver.org/):
+
+> Given a version number MAJOR.MINOR.PATCH, increment the:
+>
+> 1. MAJOR version when you make incompatible API changes
+> 2. MINOR version when you add functionality in a backward compatible manner
+> 3. PATCH version when you make backward compatible bug fixes
+>
+> Additional labels for pre-release and build metadata are available as extensions to the MAJOR.MINOR.PATCH format.
 
 ## Test
 
