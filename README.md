@@ -766,6 +766,7 @@ log.warn("Hello, World!");
 ```bash
 Hello, World!
 ```
+_Streams_ provides a few examples of [handlers](https://github.com/faranalytics/streams-logger/tree/main/src/handlers), which you can use for modeling your data transformation `Node`. 
 
 ### How to consume a Readable, Writable, Duplex, or Transform Node.js stream.
 
