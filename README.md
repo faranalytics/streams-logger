@@ -583,7 +583,7 @@ The `Config` object is used to set default settings.  It can be used for perform
 
 **Config.errorHandler** `<(err: Error, ...params: Array<unknown>) => void>` Set an error handler.  **Default: `console.error`**
 
-**Config.captureISOTime** `<boolean>` Set this to `false` in order to disable capturing ISO time on each logging call.. **Default: `true`**
+**Config.captureISOTime** `<boolean>` Set this to `false` in order to disable capturing ISO time on each logging call. **Default: `true`**
 
 **Config.captureStackTrace** `<boolean>` Set this to `false` in order to disable stack trace capture on each logging call. **Default: `true`**
 
