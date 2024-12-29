@@ -889,9 +889,13 @@ Excerpted from [Semantic Versioning 2.0.0](https://semver.org/):
 
 ### Test variations on logger functionality.
 
-#### Clone the repository and change directory into the root of the repository.
+#### Clone the repository.
 ```bash
 git clone https://github.com/faranalytics/streams-logger.git
+```
+
+#### Change directory into the root of the repository.
+```bash
 cd streams-logger
 ```
 
