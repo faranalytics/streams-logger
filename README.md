@@ -162,6 +162,7 @@ Please see the [_Log to a File and the Console_](https://github.com/faranalytics
 Please see the [_Network Connected Streams Logging Graph_](https://github.com/faranalytics/streams-logger/tree/main/examples/network_connected_logging_graph) example that demonstrates how to connect _Streams_ logging graphs over the network.
 
 ### _Use **Streams** in a Node.js Project (without type safety)_ <sup><sup>\</Node.js\></sup></sup>
+
 Please see the [_Use **Streams** in a Node.js Project_](https://github.com/faranalytics/streams-logger/tree/main/examples/use_streams_in_a_node_project) example that demonstrates how to use _Streams_ in a Node.js project _without_ type checks.
 
 ## Formatting
@@ -835,6 +836,7 @@ log.disconnect(streams.root);
 ```
 
 ### Putting it all together.
+
 If you have a high throughput logging application, the following settings should get you to where you want to be while keeping Node.js stream buffers in check.
 
 ```ts
@@ -892,10 +894,12 @@ Excerpted from [Semantic Versioning 2.0.0](https://semver.org/):
 git clone https://github.com/faranalytics/streams-logger.git
 cd streams-logger
 ```
+
 #### Install dependencies.
 ```bash
 npm install && npm update
 ```
+
 #### Run the tests.
 ```bash
 npm test verbose=false
