@@ -221,7 +221,7 @@ const formatter = new Formatter({
     return `${isotime}:${level}:${func}:${line}:${col}:${message}\n`;
   },
 });
-const consoleHandler = new ConsoleHandler();
+const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 
 const log = logger.connect(
   formatter.connect(
