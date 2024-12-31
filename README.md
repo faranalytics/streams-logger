@@ -669,7 +669,9 @@ const log = logger.connect(
 **Output**
 
 ```bash
+# ⮶date-time    function name⮷ column⮷    ⮶message
 2024-07-06T03:19:28.767Z:WARN:sayHello:9:9:{"greeting":"Hello, World!","prime_number":57}
+#                        ⮴level          ⮴line number
 ```
 
 ## Using a Socket Handler
@@ -781,7 +783,7 @@ import { Node } from "streams-logger";
 net.createServer((socket: net.Socket) => socket.pipe(socket)).listen(3000);
 const socket = net.createConnection({ port: 3000 });
 await once(socket, "connect");
-const socketHandler = new Node<Buffer, Buffer>(socket);
+const socketHandler = new Node<Buffer, Buffer>(socket); // Connect this `Node` to any `Node` that produces a Buffer.
 ```
 
 ## Tuning
