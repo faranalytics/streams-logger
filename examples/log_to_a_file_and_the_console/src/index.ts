@@ -3,7 +3,7 @@ import { Logger, Formatter, ConsoleHandler, SyslogLevel, RotatingFileHandler } f
 
 const logger = new Logger({ name: 'hello-logger', level: SyslogLevel.DEBUG });
 const consoleFormatter = new Formatter({
-    format: ({ isotime, message, name, level, func, url, line, col }) => (
+    format: ({ isotime, message, name, level }) => (
         `${name}:${isotime}:${level}:${message}\n`
     )
 });

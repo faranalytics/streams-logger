@@ -1,6 +1,15 @@
 # *Log to a File and the Console*
 
-In this example you will use *Streams* in order to log "Hello, World!" to a file and the console using different instances of `Formatter`.
+In this example you will use *Streams* in order to log "Hello, World!" to a file and the console using different instances of a `Formatter`.  Streams provides a rich selection of [contextual information](https://github.com/faranalytics/streams-logger/tree/main?tab=readme-ov-file#log-context-properties) to choose from.  For this example you will log:
+
+- The name of the logger
+- The ISO time
+- The log level
+- The name of the function where the logging call took place
+- The line number
+- The column number
+- The log message
+- A newline
 
 ## Implementation
 
@@ -9,7 +18,7 @@ import { Logger, Formatter, ConsoleHandler, SyslogLevel, RotatingFileHandler } f
 
 const logger = new Logger({ name: 'hello-logger', level: SyslogLevel.DEBUG });
 const consoleFormatter = new Formatter({
-    format: ({ isotime, message, name, level, func, url, line, col }) => (
+    format: ({ isotime, message, name, level }) => (
         `${name}:${isotime}:${level}:${message}\n`
     )
 });
