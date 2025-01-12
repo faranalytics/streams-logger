@@ -22,6 +22,7 @@
   "type": "module",
   "devDependencies": {
     "@types/node": "^20.6.2",
+    "nodemon": "^3.1.9",
     "typescript": "^5.1.6"
   }
 }

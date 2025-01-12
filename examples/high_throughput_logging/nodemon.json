@@ -12,5 +12,5 @@
       "NODE_ENV": "development"
     },
     "ext": "ts,json",
-    "exec": "clear && npm run build && node --expose-gc ."
+    "exec": "clear && npm run build && npm start"
   }

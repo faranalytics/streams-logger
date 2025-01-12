@@ -17,6 +17,6 @@
     "streams-logger": "^1.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.9"
   }
 }
