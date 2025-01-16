@@ -1,8 +1,11 @@
 # *A Network Connected Streams Logging Graph*
 
+## Introduction
+
 In this example you will contruct two *Streams* logging graphs that are connected by a `SocketHandler` at each end of the network socket.  The log message will be logged to the console on the client side and to a file on the server side.
 
 ## Step by Step
+
 A `Logger` is used in order to log a `Hello, World!` message.  The message undergoes the following transformations:
 
 - The message is formatted and serialized; the serialized message contains the `Logger` name, ISO time, log `Level`, function name, line number, column number, and the message.
@@ -64,31 +67,42 @@ const log = logger.connect(
 Follow the instructions to run the example.
 
 ### Clone the *Streams* repo.
+
 ```bash
 git clone https://github.com/faranalytics/streams-logger.git
 ```
+
 ### Change directory into the relevant example directory.
+
 ```bash
 cd streams-logger/examples/network_connected_logging_graph
 ```
+
 ### Install the example dependencies.
+
 ```bash
 npm install && npm update
 ```
+
 ### Build the application.
+
 ```bash
 npm run clean:build
 ```
+
 ### Run the application.
+
 ```bash
 npm start
 ```
+
 #### Output
-##### `server.log`
+
+`server.log`
 ```bash
 2024-07-02T23:13:18.754Z:main:2024-07-02T23:13:18.752Z:WARN:sayHello:22:9:Hello, World!
 ```
-##### `console`
+`console`
 ```bash
 main:2024-07-02T23:13:18.752Z:WARN:sayHello:22:9:Hello, World!
 2024-07-02T23:13:18.754Z:main:2024-07-02T23:13:18.752Z:WARN:sayHello:22:9:Hello, World!
