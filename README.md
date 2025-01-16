@@ -47,13 +47,13 @@ _Streams_ is an intuitive logger built on native Node.js streams. You can use th
   - [Security](#security)
 - [Hierarchical Logging](#hierarchical-logging)
 - [How-Tos](#how-tos)
-  - [How to implement a custom _Streams_ data transformation Node.](#how-to-implement-a-custom-streams-data-transformation-node)
-  - [How to consume a Readable, Writable, Duplex, or Transform stream.](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream)
+  - [How to Implement a Custom _Streams_ Data Transformation Node](#how-to-implement-a-custom-streams-data-transformation-node)
+  - [How to Consume a Readable, Writable, Duplex, or Transform Stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream)
 - [Tuning](#tuning)
-  - [Tune the highWaterMark.](#tune-the-highwatermark)
-  - [Disable the stack trace capture.](#disable-the-stack-trace-capture)
-  - [Disconnect from root.](#disconnect-from-root)
-  - [Putting it all together.](#putting-it-all-together)
+  - [Tune the HighWaterMark](#tune-the-highwatermark)
+  - [Disable the Stack Trace Capture](#disable-the-stack-trace-capture)
+  - [Disconnect from Root](#disconnect-from-root)
+  - [Putting it All Together](#putting-it-all-together)
 - [Backpressure](#backpressure)
 - [Performance](#performance)
 - [Versioning](#versioning)
@@ -715,7 +715,7 @@ root.connect(
 
 ## How-Tos
 
-### How to implement a custom _Streams_ data transformation Node.
+### How to Implement a Custom _Streams_ Data Transformation Node
 
 _Streams_ is built on the type-safe [Nodes](https://github.com/faranalytics/nodes) graph API framework. This means that any Nodes `Node` may be incorporated into your logging graph provided that it meets the contextual type requirements. In order to implement a _Streams_ data transformation `Node`, subclass the `Node` class, and provide the appropriate _Streams_ defaults to the stream constructor.
 
@@ -771,7 +771,7 @@ Hello, World!
 ```
 _Streams_ provides a few examples of [handlers](https://github.com/faranalytics/streams-logger/tree/main/src/handlers), which you can use for modeling your data transformation `Node`. 
 
-### How to consume a Readable, Writable, Duplex, or Transform Node.js stream.
+### How to Consume a Readable, Writable, Duplex, or Transform Node.js Stream
 
 You can incorporate any Readable, Writable, Duplex, or Transform stream into your logging graph, provided that it meets the contextual type requirements, by passing the stream to the `Node` constructor. In this hypothetical example a type-safe `Node` is constructed from a `net.Socket`. The type variables are specified as `<Buffer, Buffer>`; the writable side of the stream consumes a `Buffer` and the readable side of the stream produces a `Buffer`.
 
@@ -790,7 +790,7 @@ const socketHandler = new Node<Buffer, Buffer>(socket); // Connect this `Node` t
 
 **Depending on your requirements, the defaults may be fine.** However, for high throughput logging applications you may choose to adjust the `highWaterMark`, disconnect your `Logger` from the root `Logger`, and/or disable stack trace capturing.
 
-### Tune the `highWaterMark`.
+### Tune the highWaterMark
 
 _Streams_ `Node` implementations use the native Node.js stream API for message propagation. You have the option of tuning the Node.js stream `highWaterMark` to your specific needs - keeping in mind memory constraints. You can set a `highWaterMark` using [`Config.highWaterMark`](#the-streams-config-settings-object) and [`Config.highWaterMarkObjectMode`](#the-streams-config-settings-object) that will apply to Nodes in the _Streams_ library. Alternatively, the `highWaterMark` can be set in the constructor of each `Node`; please see the [API](#api) for instructions on how to do this.
 
@@ -804,7 +804,7 @@ streams.Config.highWaterMarkObjectMode = 1e6;
 ```
 > Please see the [API](#api) for more information on [`Config`](#the-streams-config-settings-object) object settings.
 
-### Disable stack trace capture.
+### Disable Stack Trace Capture
 
 Another optional setting that you can take advantage of is to turn off stack trace capture. Stack trace capture can be disabled globally using the _Streams_ configuration settings object i.e., [`Config.captureStackTrace`](#the-streams-config-settings-object). Alternatively, you may disable stack trace capturing in a specific `Logger` by setting the `captureStackTrace` property of the `LoggerOptions` to `false`.
 
@@ -821,7 +821,7 @@ Alternatively, you can instantiate a `Logger` with stack trace capturing disable
 const logger = new Logger({ captureStackTrace: false });
 ```
 
-### Disconnect from root.
+### Disconnect from Root
 
 You can optionally disconnect your `Logger` from the root `Logger` or a specified antecedent. This will prevent message propagation to the root logger, which will provide cost savings and isolation.  You can either set the `parent` parameter to `null` in the constructor of the `Logger` or explicitely disconnect from the root `Logger` using the `disconnect` method of the `Logger` instance.  In this example the `Logger` instance is disconnected from the _Streams_ root logger after instantiation.
 
@@ -837,7 +837,7 @@ const log = logger.connect(
 log.disconnect(streams.root);
 ```
 
-### Putting it all together.
+### Putting it All Together
 
 If you have a high throughput logging application, the following settings should get you to where you want to be while keeping Node.js stream buffers in check.
 
@@ -889,7 +889,7 @@ Excerpted from [Semantic Versioning 2.0.0](https://semver.org/):
 
 ## Test
 
-### Test variations on logger functionality.
+### Test Variations on Logger Functionality.
 
 #### Clone the repository.
 ```bash
