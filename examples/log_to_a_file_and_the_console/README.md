@@ -48,41 +48,43 @@ function sayHello() {
 sayHello();
 ```
 
-## Instructions
+## Run the Example
+
+### Instructions
 
 Follow the instructions to run the example.
 
-### Clone the Streams repo.
+#### Clone the Streams repo.
 
 ```bash
 git clone https://github.com/faranalytics/streams-logger.git
 ```
 
-### Change directory into the relevant example directory.
+#### Change directory into the relevant example directory.
 
 ```bash
 cd streams-logger/examples/log_to_a_file_and_the_console
 ```
 
-### Install the example dependencies.
+#### Install the example dependencies.
 
 ```bash
 npm install && npm update
 ```
 
-### Build the application.
+#### Build the application.
 
 ```bash
 npm run clean:build
 ```
 
-### Run the application.
+#### Run the application.
 
 ```bash
 npm start
 ```
 
-#### Output
+##### Output
 
 `message.log`
 ```bash
