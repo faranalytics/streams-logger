@@ -892,21 +892,25 @@ Excerpted from [Semantic Versioning 2.0.0](https://semver.org/):
 ### Test Variations on Logger Functionality.
 
 #### Clone the repository.
+
 ```bash
 git clone https://github.com/faranalytics/streams-logger.git
 ```
 
 #### Change directory into the root of the repository.
+
 ```bash
 cd streams-logger
 ```
 
 #### Install dependencies.
+
 ```bash
 npm install && npm update
 ```
 
 #### Run the tests.
+
 ```bash
 npm test verbose=false
 ```
