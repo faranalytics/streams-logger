@@ -35,6 +35,7 @@ _Streams_ is an intuitive logger built on native Node.js streams. You can use th
 - [Performance](#performance)
 - [Versioning](#versioning)
 - [Test](#test)
+- [Support](#support)
 
 ## Installation
 
@@ -881,3 +882,9 @@ Run the tests.
 ```bash
 npm test verbose=false
 ```
+
+## Support
+
+If you have a feature request or run into any issues, feel free to submit an [issue](https://github.com/faranalytics/streams-logger/issues) or start a [discussion](https://github.com/faranalytics/streams-logger/discussions). You’re also welcome to reach out directly to one of the authors at any time.
+
+- [Adam Patterson](https://github.com/adamjpatterson)
