@@ -70,6 +70,8 @@ const log = logger.connect(
 
 ### Instructions
 
+#### Clone the repository and run the example.
+
 Clone the _Streams_ repo.
 
 ```bash
@@ -100,7 +102,7 @@ Run the application.
 npm start
 ```
 
-Output
+#### Output
 
 `server.log`
 

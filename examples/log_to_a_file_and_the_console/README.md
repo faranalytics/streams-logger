@@ -56,6 +56,8 @@ sayHello();
 
 ### Instructions
 
+#### Clone the repository and run the example.
+
 Clone the Streams repo.
 
 ```bash
@@ -86,7 +88,7 @@ Run the application.
 npm start
 ```
 
-Output
+#### Output
 
 `message.log`
 

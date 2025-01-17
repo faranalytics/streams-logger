@@ -47,6 +47,8 @@ sayHello();
 
 ### Instructions
 
+#### Clone the repository and run the example.
+
 Clone the Streams repo.
 
 ```bash
@@ -77,7 +79,7 @@ Run the application.
 npm start
 ```
 
-Output
+#### Output
 
 ```bash
 hello-logger:2024-07-06T00:44:46.045Z:INFO:sayHello:10:9:Hello, World!
