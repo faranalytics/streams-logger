@@ -641,7 +641,7 @@ Output
 #                        ⮴level          ⮴line number
 ```
 
-## Using a Socket handler
+## Using a Socket Handler
 
 _Streams_ uses Node.js streams for message propagation. Node.js represents sockets as streams; hence, sockets are a natural extension of a _Streams_ logging graph. For example, you may choose to use a `ConsoleHandler` locally and log to a `RotatingFileHandler` on a remote server. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-typescript) example for a working implementation.
 
