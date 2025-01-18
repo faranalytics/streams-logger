@@ -18,7 +18,7 @@ _Streams_ is an intuitive logger built on native Node.js streams. You can use th
 - Log any type of message you choose - including [objects serialized to JSON](#object-json-logging).
 - Use _Streams_ in your Node.js project, [without type safety](#use-streams-in-a-nodejs-project-without-type-safety-nodejs), or take advantage of the TypeScript type definitions.
 
-## Table of Contents
+## Table of contents
 
 - [Installation](#installation)
 - [Concepts](#concepts)
@@ -26,9 +26,9 @@ _Streams_ is an intuitive logger built on native Node.js streams. You can use th
 - [Examples](#examples)
 - [Formatting](#formatting)
 - [API](#api)
-- [Object (JSON) Logging](#object-json-logging)
+- [Object (JSON) logging](#object-json-logging)
 - [Using a Socket Handler](#using-a-socket-handler)
-- [Hierarchical Logging](#hierarchical-logging)
+- [Hierarchical logging](#hierarchical-logging)
 - [How-Tos](#how-tos)
 - [Tuning](#tuning)
 - [Backpressure](#backpressure)
@@ -51,7 +51,7 @@ Logging is essentially a data transformation task. When a string is logged to th
 
 Each data transformation step in a _Streams_ logging graph is realized through a [`Node`](https://github.com/faranalytics/nodes) implementation. Each `Node` manages and represents a native Node.js stream. A `Node` in a data transformation graph consumes an input, transforms or filters the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Filters, Handlers, etc.) in a _Streams_ logging graph _is a_ `Node`. Each `Node` _has a_ native Node.js stream that it manages.
 
-### Graph API Pattern
+### Graph API pattern
 
 _Streams_ uses a graph-like API pattern for constructing a logging graph. Each graph consists of a network of `Node` instances that together comprise a graph logging pipeline. Please see the [Usage](#usage) or [Examples](#examples) for instructions on how to construct a _Streams_ data transformation graph.
 
@@ -124,19 +124,19 @@ Output
 
 ## Examples
 
-### _An Instance of Logging "Hello, World!"_ <sup><sup>\</TypeScript\></sup></sup>
+### _An instance of logging "Hello, World!"_ <sup><sup>\</TypeScript\></sup></sup>
 
 Please see the [Usage](#usage) section above or the ["Hello, World!"](https://github.com/faranalytics/streams-logger/tree/main/examples/hello_world) example for a working implementation.
 
-### _Log to a File and the Console_ <sup><sup>\</TypeScript\></sup></sup>
+### _Log to a file and the console_ <sup><sup>\</TypeScript\></sup></sup>
 
 Please see the [_Log to a File and the Console_](https://github.com/faranalytics/streams-logger/tree/main/examples/log_to_a_file_and_the_console) example that demonstrates how to log to a file and the console using different `Formatters`.
 
-### _A Network Connected Streams Logging Graph_ <sup><sup>\</TypeScript\></sup></sup>
+### _A network connected streams logging graph_ <sup><sup>\</TypeScript\></sup></sup>
 
-Please see the [_Network Connected Streams Logging Graph_](https://github.com/faranalytics/streams-logger/tree/main/examples/network_connected_logging_graph) example that demonstrates how to connect _Streams_ logging graphs over the network.
+Please see the [_Network Connected **Streams** Logging Graph_](https://github.com/faranalytics/streams-logger/tree/main/examples/network_connected_logging_graph) example that demonstrates how to connect _Streams_ logging graphs over the network.
 
-### _Use **Streams** in a Node.js Project (without type safety)_ <sup><sup>\</Node.js\></sup></sup>
+### _Use **Streams** in a Node.js project (without type safety)_ <sup><sup>\</Node.js\></sup></sup>
 
 Please see the [_Use **Streams** in a Node.js Project_](https://github.com/faranalytics/streams-logger/tree/main/examples/use_streams_in_a_node_project) example that demonstrates how to use _Streams_ in a Node.js project _without_ type checks.
 
@@ -144,7 +144,7 @@ Please see the [_Use **Streams** in a Node.js Project_](https://github.com/faran
 
 You can format your log message using a `Formatter` Node. The `Logger` constructs a `LogContext` instance on each logged message. The [properties](#log-context-properties) of each `LogContext` contain information about the context of the logged message (e.g., module name, function name, line number, etc.). You can define a serialization function and pass it to the constructor of a `Formatter`. The serialization function can construct a log message from the `LogContext` [properties](#log-context-properties). In the concise [example](#example-formatter) below this is accomplished by using a [template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
 
-### Log Context Properties
+### Log context properties
 
 _Streams_ provides a rich selection of contextual information with each logging call. This information is provided in a `LogContext` object that is passed as a single argument to the function assigned to the `format` property of the `FormatterOptions` object that is passed to the `Formatter` constructor. Please see the [example](#example-formatter) for instructions on how to incorporate contextual information into your logged message.
 
@@ -173,7 +173,7 @@ _Streams_ provides a rich selection of contextual information with each logging 
 
 > **NB** For high throughput logging applications, you can improve performance by preventing some contextual information from being generated; you can set `Config.captureStackTrace` and `Config.captureISOTime` to `false`. Please see [Tuning](#tuning) for instructions on how to disable contextual information.
 
-### Example Formatter
+### Example formatter
 
 In the following code excerpt, a formatter is implemented that serializes a `LogContext` to:
 
@@ -219,7 +219,7 @@ This is an example of what a logged message will look like using the `Formatter`
 
 The _Streams_ API provides commonly used logging facilities (i.e., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)). However, you can [consume any Node.js stream](#how-to-consume-a-readable-writable-duplex-or-transform-nodejs-stream) and add it to your logging graph.
 
-### The Logger Class
+### The Logger class
 
 #### new streams-logger.Logger\<MessageT\>(options, streamOptions)
 
@@ -317,7 +317,7 @@ Returns `<void>`
 
 Set the log level. Must be one of `SyslogLevel`.
 
-### The Formatter Class
+### The Formatter class
 
 #### new streams-logger.Formatter\<MessageInT, MessageOutT\>(options, streamOptions)
 
@@ -341,7 +341,7 @@ _public_ **formatter.disconnect(...nodes)**
 
 Returns: `<Formatter<LogContext<MessageInT, SyslogLevelT>, LogContext<MessageOutT, SyslogLevelT>>`
 
-### The Filter Class
+### The Filter class
 
 #### new streams-logger.Filter\<MessageT\>(options, streamOptions)
 
@@ -362,7 +362,7 @@ _public_ **filter.disconnect(...nodes)**
 
 Returns: `<Filter<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>>`
 
-### The ConsoleHandler Class
+### The ConsoleHandler class
 
 #### new streams-logger.ConsoleHandler\<MessageT\>(options, streamOptions)
 
@@ -381,7 +381,7 @@ Returns `<void>`
 
 Set the log level. Must be one of `SyslogLevel`.
 
-### The RotatingFileHandler Class
+### The RotatingFileHandler class
 
 #### new streams-logger.RotatingFileHandler\<MessageT\>(options, streamOptions)
 
@@ -407,7 +407,7 @@ Returns `<void>`
 
 Set the log level. Must be one of `SyslogLevel`.
 
-### The SocketHandler Class
+### The SocketHandler class
 
 #### new streams-logger.SocketHandler\<MessageT\>(options, streamOptions)
 
@@ -441,7 +441,7 @@ Returns `<void>`
 
 Set the log level. Must be one of `SyslogLevel`.
 
-### The LogContext Class
+### The LogContext class
 
 #### new streams-logger.LogContext\<MessageT, LevelT\>(options)
 
@@ -550,7 +550,7 @@ Returns `<void>`
 
 If the `stack` property has been set, parse the stack trace.
 
-### The Streams Config Settings Object
+### The _Streams_ Config settings object
 
 The `Config` object is used to set default settings. It can be used for performance [tuning](#tuning).
 
@@ -589,7 +589,7 @@ Returns: `<stream.WritableOptions>`
 
 Use `Config.getWritableOptions` when implementing a [custom _Streams_ data transformation Node](#how-to-implement-a-custom-streams-data-transformation-node).
 
-### The SyslogLevel Enum
+### The SyslogLevel enum
 
 #### streams-logger.SyslogLevel\[Level\]
 
@@ -605,7 +605,7 @@ Use `Config.getWritableOptions` when implementing a [custom _Streams_ data trans
 
 Use `SyslogLevel` to set the level in the options passed to `Logger`, `Filter`, and Handler constructors.
 
-## Object (JSON) Logging
+## Object (JSON) logging
 
 _Streams_ logging facilities (e.g., Logger, Formatter, etc.) default to logging `string` messages; however, you can log any type of message you want by specifying your message type in the type parameter of the constructor. In the following example, a permissive interface is created named `Message`. The `Message` type is specified in the type parameter of the constructor of each `Node` (i.e., the Logger, Formatter, and ConsoleHandler). The `Formatter` is configured to input a `Message` and output a `string`; `Message` objects are serialized using `JSON.stringify`.
 
@@ -641,7 +641,7 @@ Output
 #                        ⮴level          ⮴line number
 ```
 
-## Using a Socket Handler
+## Using a Socket handler
 
 _Streams_ uses Node.js streams for message propagation. Node.js represents sockets as streams; hence, sockets are a natural extension of a _Streams_ logging graph. For example, you may choose to use a `ConsoleHandler` locally and log to a `RotatingFileHandler` on a remote server. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-typescript) example for a working implementation.
 
@@ -657,7 +657,7 @@ TLS Encryption may be implemented using native Node.js [TLS Encryption](https://
 
 TLS Client Certificate Authentication may be implemented using native Node.js [TLS Client Authentication](https://nodejs.org/docs/latest-v20.x/api/tls.html).
 
-## Hierarchical Logging
+## Hierarchical logging
 
 _Streams_ supports hierarchical logging. By default every `Logger` instance is connected to the root `Logger` (`streams-logger.root`). However, you may optionally specify an antecedent other than `root` by assigning an instance of `Logger` to the `parent` property in the `LoggerOptions`. The antecedent of the root `Logger` is `null`.
 
@@ -678,13 +678,15 @@ root.connect(formatter.connect(consoleHandler));
 
 ## How-Tos
 
-### How to Implement a Custom _Streams_ Data Transformation Node
+### How to implement a custom _Streams_ data transformation node
 
 _Streams_ is built on the type-safe [Nodes](https://github.com/faranalytics/nodes) graph API framework. This means that any Nodes `Node` may be incorporated into your logging graph provided that it meets the contextual type requirements. In order to implement a _Streams_ data transformation `Node`, subclass the `Node` class, and provide the appropriate _Streams_ defaults to the stream constructor.
 
 For example, the somewhat contrived `LogContextToBuffer` implementation transforms the `message` contained in a `LogContext` to a `Buffer`; the graph pipeline streams the message to `process.stdout`.
 
 > **NB** In this example, `writableObjectMode` is set to `true` and `readableObjectMode` is set to `false`; hence, the Node.js stream implementation will handle the input as a `object` and the output as an `Buffer`. It's important that `writableObjectMode` and `readableObjectMode` accurately reflect the input and output types of your Node.
+
+#### Implement the `index.ts` module.
 
 ```ts
 import * as stream from "node:stream";
@@ -726,7 +728,7 @@ log.connect(logContextToBuffer.connect(console));
 log.warn("Hello, World!");
 ```
 
-**Output**
+##### Output
 
 ```bash
 Hello, World!
@@ -734,7 +736,7 @@ Hello, World!
 
 _Streams_ provides a few examples of [handlers](https://github.com/faranalytics/streams-logger/tree/main/src/handlers), which you can use for modeling your data transformation `Node`.
 
-### How to Consume a Readable, Writable, Duplex, or Transform Node.js Stream
+### How to consume a Readable, Writable, Duplex, or Transform Node.js stream
 
 You can incorporate any Readable, Writable, Duplex, or Transform stream into your logging graph, provided that it meets the contextual type requirements, by passing the stream to the `Node` constructor. In this hypothetical example a type-safe `Node` is constructed from a `net.Socket`. The type variables are specified as `<Buffer, Buffer>`; the writable side of the stream consumes a `Buffer` and the readable side of the stream produces a `Buffer`.
 
@@ -768,7 +770,7 @@ streams.Config.highWaterMarkObjectMode = 1e6;
 
 > Please see the [API](#api) for more information on [`Config`](#the-streams-config-settings-object) object settings.
 
-### Disable Stack Trace Capture
+### Disable stack trace capture
 
 Another optional setting that you can take advantage of is to turn off stack trace capture. Stack trace capture can be disabled globally using the _Streams_ configuration settings object i.e., [`Config.captureStackTrace`](#the-streams-config-settings-object). Alternatively, you may disable stack trace capturing in a specific `Logger` by setting the `captureStackTrace` property of the `LoggerOptions` to `false`.
 
@@ -788,7 +790,7 @@ Alternatively, you can instantiate a `Logger` with stack trace capturing disable
 const logger = new Logger({ captureStackTrace: false });
 ```
 
-### Disconnect from Root
+### Disconnect from root
 
 You can optionally disconnect your `Logger` from the root `Logger` or a specified antecedent. This will prevent message propagation to the root logger, which will provide cost savings and isolation. You can either set the `parent` parameter to `null` in the constructor of the `Logger` or explicitely disconnect from the root `Logger` using the `disconnect` method of the `Logger` instance. In this example the `Logger` instance is disconnected from the _Streams_ root logger after instantiation.
 
@@ -804,7 +806,7 @@ const log = logger.connect(
 log.disconnect(streams.root);
 ```
 
-### Putting it All Together
+### Putting it all together
 
 If you have a high throughput logging application, the following settings should get you to where you want to be while keeping Node.js stream buffers in check.
 
@@ -857,27 +859,27 @@ Excerpted from [Semantic Versioning 2.0.0](https://semver.org/):
 
 ## Test
 
-### Instructions
+### How to run the test
 
-Clone the repository.
+#### Clone the repository.
 
 ```bash
 git clone https://github.com/faranalytics/streams-logger.git
 ```
 
-Change directory into the root of the repository.
+#### Change directory into the root of the repository.
 
 ```bash
 cd streams-logger
 ```
 
-Install dependencies.
+#### Install dependencies.
 
 ```bash
 npm install && npm update
 ```
 
-Run the tests.
+#### Run the tests.
 
 ```bash
 npm test verbose=false
@@ -885,6 +887,6 @@ npm test verbose=false
 
 ## Support
 
-If you have a feature request or run into any issues, feel free to submit an [issue](https://github.com/faranalytics/streams-logger/issues) or start a [discussion](https://github.com/faranalytics/streams-logger/discussions). You’re also welcome to reach out directly to one of the authors at any time.
+If you have a feature request or run into any issues, feel free to submit an [issue](https://github.com/faranalytics/streams-logger/issues) or start a [discussion](https://github.com/faranalytics/streams-logger/discussions). You’re also welcome to reach out directly to one of the authors.
 
 - [Adam Patterson](https://github.com/adamjpatterson)
