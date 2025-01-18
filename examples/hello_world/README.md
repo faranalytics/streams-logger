@@ -4,17 +4,17 @@
 
 In this example you will use Streams in order to log "Hello, World!" to the console.
 
-## Implementation
+## Implement the example
 
-### Instructions
+### Implement the `index.ts` module
 
-Import the Logger, Formatter, ConsoleHandler, and SyslogLevel enum.
+#### Import the Logger, Formatter, ConsoleHandler, and SyslogLevel enum.
 
 ```ts
 import { Logger, Formatter, ConsoleHandler, SyslogLevel } from "streams-logger";
 ```
 
-Create an instance of a Logger, Formatter, and ConsoleHandler.
+#### Create an instance of a Logger, Formatter, and ConsoleHandler.
 
 ```ts
 const logger = new Logger({ name: "hello-logger", level: SyslogLevel.DEBUG });
@@ -25,13 +25,13 @@ const formatter = new Formatter({
 const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 ```
 
-Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler.
+#### Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler.
 
 ```ts
 const log = logger.connect(formatter.connect(consoleHandler));
 ```
 
-Log "Hello, World!" to the console.
+#### Log "Hello, World!" to the console.
 
 ```ts
 function sayHello() {
@@ -43,43 +43,41 @@ setInterval(sayHello, 1e3);
 sayHello();
 ```
 
-## Run the Example
+## Run the example
 
-### Instructions
+### How to run the example
 
-#### Clone the repository and run the example.
-
-Clone the Streams repo.
+#### Clone the _Streams_ repository.
 
 ```bash
 git clone https://github.com/faranalytics/streams-logger.git
 ```
 
-Change directory into the relevant example directory.
+#### Change directory into the relevant example directory.
 
 ```bash
 cd streams-logger/examples/hello_world
 ```
 
-Install the example dependencies.
+#### Install the example dependencies.
 
 ```bash
 npm install && npm update
 ```
 
-Build the application.
+#### Build the application.
 
 ```bash
 npm run clean:build
 ```
 
-Run the application.
+#### Run the application.
 
 ```bash
 npm start
 ```
 
-#### Output
+##### Output
 
 ```bash
 hello-logger:2024-07-06T00:44:46.045Z:INFO:sayHello:10:9:Hello, World!

@@ -4,7 +4,7 @@
 
 In this example you will contruct two _Streams_ logging graphs that are connected by a `SocketHandler` at each end of the network socket. The log message will be logged to the console on the client side and to a file on the server side.
 
-## Step by Step
+## Step by step
 
 A `Logger` is used in order to log a `Hello, World!` message. The message undergoes the following transformations:
 
@@ -17,9 +17,9 @@ A `Logger` is used in order to log a `Hello, World!` message. The message underg
 - The message is sent over a socket back to the client using the same `SocketHandler`.
 - The message is logged to the console using a `ConsoleHandler`.
 
-## Implementation
+## Implement the example
 
-`index.ts`
+### Implement the `index.ts` module
 
 ```ts
 import * as net from "node:net";
@@ -66,43 +66,41 @@ const log = logger.connect(
 })();
 ```
 
-## Run the Example
+## Run the example
 
-### Instructions
+### How to run the example
 
-#### Clone the repository and run the example.
-
-Clone the _Streams_ repo.
+#### Clone the _Streams_ repository.
 
 ```bash
 git clone https://github.com/faranalytics/streams-logger.git
 ```
 
-Change directory into the relevant example directory.
+#### Change directory into the relevant example directory.
 
 ```bash
 cd streams-logger/examples/network_connected_logging_graph
 ```
 
-Install the example dependencies.
+#### Install the example dependencies.
 
 ```bash
 npm install && npm update
 ```
 
-Build the application.
+#### Build the application.
 
 ```bash
 npm run clean:build
 ```
 
-Run the application.
+#### Run the application.
 
 ```bash
 npm start
 ```
 
-#### Output
+##### Output
 
 `server.log`
 
