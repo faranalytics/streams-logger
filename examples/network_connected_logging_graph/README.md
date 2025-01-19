@@ -52,7 +52,9 @@ parentPort?.postMessage(null);
 
 ### Implement the `index.ts` module
 
-This is the main thread. This module starts a "logging server" in a worker thread. Once the server is listening for connections, it creates a connection with the logging server. The `SocketHandler` sends a message over a `net.Socket` to the server and receives the message from the server with the prepended server timestamp.
+This is the main thread. This module starts a "logging server" in a worker thread. The `Logger` is configured to format the message, log it to the console, and send it to the listening server.
+
+Once the server is listening for connections, a connection is made with the logging server. The `SocketHandler` sends a message over a `net.Socket` to the logging server and receives the message from the server with the prepended server timestamp. Finally, it logs the message to the console.
 
 ```ts
 import * as net from "node:net";
