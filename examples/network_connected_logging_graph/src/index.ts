@@ -1,26 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as net from 'node:net';
 import { once } from 'node:events';
-import { Logger, Formatter, ConsoleHandler, SocketHandler, SyslogLevel, RotatingFileHandler } from 'streams-logger';
+import { Worker } from 'node:worker_threads';
+import { Logger, Formatter, ConsoleHandler, SocketHandler, SyslogLevel } from 'streams-logger';
 
-const serverRotatingFileHandler = new RotatingFileHandler({ path: 'server.log' });
-const serverFormatter = new Formatter({ format: ({ message }) => (`${new Date().toISOString()}:${message}`) });
-const formatterNode = serverFormatter.connect(serverRotatingFileHandler);
-net.createServer((socket: net.Socket) => {
-    const socketHandler = new SocketHandler({ socket });
-    socketHandler.connect(
-        formatterNode.connect(
-            socketHandler
-        )
-    );
-}).listen(3000);
+const worker = new Worker('./dist/logging_server.js');
 
-const socket = net.createConnection({ port: 3000 });
+await once(worker, 'message'); // Wait for the server to bind to the interface.
+
+const socket = net.createConnection({ port: 3000, host: '127.0.0.1' });
 await once(socket, 'connect');
 const socketHandler = new SocketHandler({ socket });
 const logger = new Logger({ name: 'main', level: SyslogLevel.DEBUG });
 const formatter = new Formatter({
-    format: ({ isotime, message, name, level, func, url, line, col }) => (
+    format: ({ isotime, message, name, level, func, line, col }) => (
         `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`
     )
 });

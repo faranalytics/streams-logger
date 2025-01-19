@@ -8,10 +8,10 @@ In this example you will contruct two _Streams_ logging graphs that are connecte
 
 A `Logger` is used in order to log a `Hello, World!` message. The message undergoes the following transformations:
 
-- The message is formatted and serialized; the serialized message contains the `Logger` name, ISO time, log `Level`, function name, line number, column number, and the message.
+- The message is formatted; the formatted message contains the `Logger` name, ISO time, log `Level`, function name, line number, column number, and the message.
 - The message is logged to the console using a `ConsoleHandler`.
-- The message is sent over a socket to a server using a `SocketHandler`.
-- The message is deserialized to a `LogContext` using a `SocketHandler`.
+- The `LogContext` is serialized and sent over a socket to a server using a `SocketHandler`.
+- The serialized `LogContext` is deserialized to a `LogContext` object using a `SocketHandler`.
 - A server timestamp is prepended to the message using a `Formatter`.
 - The message is logged to a file named `server.log` using a `RotatingFileHandler`.
 - The message is sent over a socket back to the client using the same `SocketHandler`.
@@ -19,19 +19,15 @@ A `Logger` is used in order to log a `Hello, World!` message. The message underg
 
 ## Implement the example
 
-### Implement the `index.ts` module
+### Implement the `logging_server.ts` module.
+
+This module runs a `net.Server`. The `net.Server` will receive messages from the client. The `SocketHandler` prepends messages with a timestamp, log the message to a file, and send the message back to the client.
 
 ```ts
 import * as net from "node:net";
 import { once } from "node:events";
-import {
-  Logger,
-  Formatter,
-  ConsoleHandler,
-  SocketHandler,
-  SyslogLevel,
-  RotatingFileHandler,
-} from "streams-logger";
+import { Formatter, SocketHandler, RotatingFileHandler } from "streams-logger";
+import { parentPort } from "node:worker_threads";
 
 const serverRotatingFileHandler = new RotatingFileHandler({
   path: "server.log",
@@ -39,24 +35,54 @@ const serverRotatingFileHandler = new RotatingFileHandler({
 const serverFormatter = new Formatter({
   format: ({ message }) => `${new Date().toISOString()}:${message}`,
 });
-const formatterNode = serverFormatter.connect(serverRotatingFileHandler);
-net
-  .createServer((socket: net.Socket) => {
-    const socketHandler = new SocketHandler({ socket });
-    socketHandler.connect(formatterNode.connect(socketHandler));
-  })
-  .listen(3000);
 
-const socket = net.createConnection({ port: 3000 });
+const formatterNode = serverFormatter.connect(serverRotatingFileHandler);
+
+const server = net.createServer((socket: net.Socket) => {
+  const socketHandler = new SocketHandler({ socket });
+  socketHandler.connect(formatterNode.connect(socketHandler));
+});
+
+server.listen(3000, "127.0.0.1");
+
+await once(server, "listening");
+
+parentPort?.postMessage(null);
+```
+
+### Implement the `index.ts` module
+
+This is the main thread. This module starts a "logging server" in a worker thread. Once the server is listening for connections, it creates a connection with the logging server. The `SocketHandler` sends a message over a `net.Socket` to the server and receives the message from the server with the prepended server timestamp.
+
+```ts
+import * as net from "node:net";
+import { once } from "node:events";
+import { Worker } from "node:worker_threads";
+import {
+  Logger,
+  Formatter,
+  ConsoleHandler,
+  SocketHandler,
+  SyslogLevel,
+} from "streams-logger";
+
+const worker = new Worker("./dist/logging_server.js");
+await once(worker, "message"); // Wait for the server to bind to the interface.
+
+const socket = net.createConnection({ port: 3000, host: "127.0.0.1" });
 await once(socket, "connect");
+
 const socketHandler = new SocketHandler({ socket });
 const logger = new Logger({ name: "main", level: SyslogLevel.DEBUG });
 const formatter = new Formatter({
-  format: ({ isotime, message, name, level, func, url, line, col }) =>
+  format: ({ isotime, message, name, level, func, line, col }) =>
     `${name}:${isotime}:${level}:${func}:${line}:${col}:${message}\n`,
 });
 const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 
+// 1. Connect the logger to the fomatter
+// 2. Connect the fommater to the consoleHandler and the socketHandler
+// 3. Connect the socketHandler to the consoleHandler
 const log = logger.connect(
   formatter.connect(consoleHandler, socketHandler.connect(consoleHandler))
 );
