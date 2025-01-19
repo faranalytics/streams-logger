@@ -393,6 +393,7 @@ Set the log level. Must be one of `SyslogLevel`.
   - encoding `<BufferEncoding>` An optional encoding. **Default: `utf-8`**
   - mode `<number>` An optional mode. **Deafult: `0o666`**
   - level `<SyslogLevel>` An optional log level. **Default: `SyslogLevel.WARN`**
+  - flags `<string>` An optional file system flag. **Default: `a`**
 - streamOptions `<stream.WritableOptions>` Optional options to be passed to the stream. You can use `WritableOptions` to set a `highWaterMark` on the `RotatingFileHandler`.
 
 Use a `RotatingFileHandler` in order to write your log messages to a file.
