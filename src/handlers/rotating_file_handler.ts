@@ -30,7 +30,7 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
     protected [$mode]: number;
     protected [$encoding]: NodeJS.BufferEncoding;
 
-    constructor({ level, path, rotationLimit, maxSize = 1e6, encoding, mode }: RotatingFileHandlerOptions, writableOptions?: stream.WritableOptions) {
+    constructor({ level, path, rotationLimit, maxSize = 1e6, flags = 'a', encoding, mode }: RotatingFileHandlerOptions, writableOptions?: stream.WritableOptions) {
         super({
             ...Config.getWritableOptions(true),
             ...writableOptions, ...{ objectMode: true }
@@ -48,7 +48,7 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
         }
 
         this.cork();
-        this[$writeStream] = fs.createWriteStream(this[$path], { mode, encoding, flush: true, autoClose: true});
+        this[$writeStream] = fs.createWriteStream(this[$path], { mode, encoding, flush: true, autoClose: true, flags: flags });
         this.pipe(this[$writeStream]);
         once(this[$writeStream], 'ready').then(() => { this.uncork(); }).catch(Config.errorHandler);
 
@@ -121,6 +121,7 @@ export interface RotatingFileHandlerOptions {
     encoding?: BufferEncoding;
     mode?: number;
     level?: SyslogLevel;
+    flags?: string;
 }
 
 export class RotatingFileHandler<MessageT = string> extends Node<LogContext<MessageT, SyslogLevelT>, never, RotatingFileHandlerTransform<MessageT>> {
