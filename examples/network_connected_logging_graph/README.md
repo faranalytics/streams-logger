@@ -67,11 +67,11 @@ import {
 } from "streams-logger";
 
 const worker = new Worker("./dist/logging_server.js");
+
 await once(worker, "message"); // Wait for the server to bind to the interface.
 
 const socket = net.createConnection({ port: 3000, host: "127.0.0.1" });
 await once(socket, "connect");
-
 const socketHandler = new SocketHandler({ socket });
 const logger = new Logger({ name: "main", level: SyslogLevel.DEBUG });
 const formatter = new Formatter({
@@ -80,9 +80,9 @@ const formatter = new Formatter({
 });
 const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 
-// 1. Connect the logger to the fomatter
-// 2. Connect the fommater to the consoleHandler and the socketHandler
-// 3. Connect the socketHandler to the consoleHandler
+// 1. Connect the logger to the fomatter.
+// 2. Connect the fommater to the consoleHandler and the socketHandler.
+// 3. Connect the socketHandler to the consoleHandler.
 const log = logger.connect(
   formatter.connect(consoleHandler, socketHandler.connect(consoleHandler))
 );

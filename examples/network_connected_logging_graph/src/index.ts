@@ -18,6 +18,9 @@ const formatter = new Formatter({
 });
 const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 
+// 1. Connect the logger to the fomatter.
+// 2. Connect the fommater to the consoleHandler and the socketHandler.
+// 3. Connect the socketHandler to the consoleHandler.
 const log = logger.connect(
     formatter.connect(
         consoleHandler,
