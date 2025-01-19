@@ -29,18 +29,21 @@ import { once } from "node:events";
 import { Formatter, SocketHandler, RotatingFileHandler } from "streams-logger";
 import { parentPort } from "node:worker_threads";
 
-const serverRotatingFileHandler = new RotatingFileHandler({
-  path: "server.log",
-});
-const serverFormatter = new Formatter({
+const rotatingFileHandler = new RotatingFileHandler({ path: "server.log" });
+const formatter = new Formatter({
   format: ({ message }) => `${new Date().toISOString()}:${message}`,
 });
 
-const formatterNode = serverFormatter.connect(serverRotatingFileHandler);
+// Connect the formatter to the rotatingFileHandler.
+formatter.connect(rotatingFileHandler);
 
 const server = net.createServer((socket: net.Socket) => {
+  // Create a socketHandler on each connection.
   const socketHandler = new SocketHandler({ socket });
-  socketHandler.connect(formatterNode.connect(socketHandler));
+
+  // 1. Connect the socketHandler to the fomatter
+  // 2. Connect the formatter back to the socketHandler; the message will be sent back to the client.
+  socketHandler.connect(formatter.connect(socketHandler));
 });
 
 server.listen(3000, "127.0.0.1");
