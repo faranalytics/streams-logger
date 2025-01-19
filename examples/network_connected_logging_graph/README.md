@@ -44,9 +44,7 @@ const server = net.createServer((socket: net.Socket) => {
 });
 
 server.listen(3000, "127.0.0.1");
-
 await once(server, "listening");
-
 parentPort?.postMessage(null);
 ```
 
