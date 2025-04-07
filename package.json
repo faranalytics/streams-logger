@@ -21,8 +21,8 @@
     },
     "homepage": "https://github.com/faranalytics/streams-logger#readme",
     "engines": {
-        "npm": ">=10.2.3",
-        "node": ">=18.20.4"
+        "npm": ">=10.8.2",
+        "node": ">=18.20.8"
     },
     "dependencies": {
         "@farar/nodes": "^1.0.0"
