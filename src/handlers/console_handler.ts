@@ -67,9 +67,9 @@ export class ConsoleHandler<MessageT = string> extends Node<LogContext<MessageT,
         super(new ConsoleHandlerTransform<MessageT>(options, streamOptions));
     }
 
-    public setLevel(level: SyslogLevel): void {
+    public setLevel = (level: SyslogLevel): void => {
         this._stream[$level] = level;
-    }
+    };
 
     public get level(): SyslogLevel {
         return this._stream[$level];

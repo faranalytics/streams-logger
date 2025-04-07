@@ -32,24 +32,24 @@ class Config {
         this._highWaterMarkObjectMode = highWaterMarkObjectMode;
     }
 
-    public getWritableOptions(objectMode: boolean = true): stream.WritableOptions {
+    public getWritableOptions = (objectMode: boolean = true): stream.WritableOptions => {
         return {
             highWaterMark: objectMode ? this._highWaterMarkObjectMode : this.highWaterMark
         };
-    }
+    };
 
-    public getReadableOptions(objectMode: boolean = true): stream.WritableOptions {
+    public getReadableOptions = (objectMode: boolean = true): stream.WritableOptions => {
         return {
             highWaterMark: objectMode ? this._highWaterMarkObjectMode : this.highWaterMark
         };
-    }
+    };
 
-    public getDuplexOptions(writableObjectMode: boolean = true, readableObjectMode: boolean = true): stream.DuplexOptions {
+    public getDuplexOptions = (writableObjectMode: boolean = true, readableObjectMode: boolean = true): stream.DuplexOptions => {
         return {
             writableHighWaterMark: writableObjectMode ? this._highWaterMarkObjectMode : this.highWaterMark,
             readableHighWaterMark: readableObjectMode ? this._highWaterMarkObjectMode : this.highWaterMark
         };
-    }
+    };
 }
 
 export default new Config();

@@ -130,9 +130,9 @@ export class RotatingFileHandler<MessageT = string> extends Node<LogContext<Mess
         super(new RotatingFileHandlerTransform<MessageT>(options, streamOptions));
     }
 
-    public setLevel(level: SyslogLevel) {
+    public setLevel = (level: SyslogLevel): void => {
         this._stream[$level] = level;
-    }
+    };
 
     public get level(): SyslogLevel {
         return this._stream[$level];

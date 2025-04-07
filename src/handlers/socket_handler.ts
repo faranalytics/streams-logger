@@ -105,7 +105,7 @@ export class SocketHandler<MessageT = string> extends Node<LogContext<MessageT, 
         return new LogContext(<LogContext<MessageT, SyslogLevelT>>JSON.parse(data.toString('utf-8'), this._reviver));
     }
 
-    public setLevel(level: SyslogLevel) {
+    public setLevel = (level: SyslogLevel): void => {
         this.level = level;
-    }
+    };
 }

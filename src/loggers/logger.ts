@@ -80,57 +80,57 @@ export class Logger<MessageT = string> extends Node<LogContext<MessageT, SyslogL
         }
     }
 
-    public debug(message: MessageT, label?: string): void {
+    public debug = (message: MessageT, label?: string): void => {
         if (this.level >= SyslogLevel.DEBUG) {
             this.log(message, label, SyslogLevel.DEBUG);
         }
-    }
+    };
 
-    public info(message: MessageT, label?: string): void {
+    public info = (message: MessageT, label?: string): void => {
         if (this.level >= SyslogLevel.INFO) {
             this.log(message, label, SyslogLevel.INFO);
         }
-    }
+    };
 
-    public notice(message: MessageT, label?: string): void {
+    public notice = (message: MessageT, label?: string): void => {
         if (this.level >= SyslogLevel.NOTICE) {
             this.log(message, label, SyslogLevel.NOTICE);
         }
-    }
+    };
 
-    public warn(message: MessageT, label?: string): void {
+    public warn = (message: MessageT, label?: string): void => {
         if (this.level >= SyslogLevel.WARN) {
             this.log(message, label, SyslogLevel.WARN);
         }
-    }
+    };
 
-    public error(message: MessageT, label?: string): void {
+    public error = (message: MessageT, label?: string): void => {
         if (this.level >= SyslogLevel.ERROR) {
             this.log(message, label, SyslogLevel.ERROR);
         }
-    }
+    };
 
-    public crit(message: MessageT, label?: string): void {
+    public crit = (message: MessageT, label?: string): void => {
         if (this.level >= SyslogLevel.CRIT) {
             this.log(message, label, SyslogLevel.CRIT);
         }
-    }
+    };
 
-    public alert(message: MessageT, label?: string): void {
+    public alert = (message: MessageT, label?: string): void => {
         if (this.level >= SyslogLevel.ALERT) {
             this.log(message, label, SyslogLevel.ALERT);
         }
-    }
+    };
 
-    public emerg(message: MessageT, label?: string): void {
+    public emerg = (message: MessageT, label?: string): void => {
         if (this.level >= SyslogLevel.EMERG) {
             this.log(message, label, SyslogLevel.EMERG);
         }
-    }
+    };
 
-    public setLevel(level: SyslogLevel): void {
+    public setLevel = (level: SyslogLevel): void => {
         this.level = level;
-    }
+    };
 }
 
 // eslint-disable-next-line prefer-const, no-var, @typescript-eslint/no-explicit-any

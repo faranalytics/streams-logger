@@ -72,7 +72,7 @@ export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT,
         this.label = options.label;
     }
 
-    public parseStackTrace(depth?: number) {
+    public parseStackTrace = (depth?: number): void => {
         if (this.stack) {
             const regex = (depth ?
                 RegExp(`^${'[^\\n]*\\n'.repeat(depth)}\\s+at (?<func>[^\\s]+)?.*?(?<url>(?:file://|/)(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)`, 'is') :
@@ -94,5 +94,5 @@ export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT,
                 this.pathext = path.ext;
             }
         }
-    }
+    };
 }
