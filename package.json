@@ -28,12 +28,10 @@
         "@farar/nodes": "^1.0.0"
     },
     "devDependencies": {
-        "@eslint/js": "^9.6.0",
-        "@types/eslint__js": "^8.42.3",
+        "@stylistic/eslint-plugin-ts": "^4.2.0",
         "@types/node": "^20.11.28",
-        "eslint": "^8.57.0",
         "typescript": "^5.7.2",
-        "typescript-eslint": "^7.15.0"
+        "typescript-eslint": "^8.29.0"
     },
     "keywords": [
         "bunyan",
