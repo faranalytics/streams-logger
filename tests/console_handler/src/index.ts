@@ -1,12 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import * as fs from "node:fs";
 import { Logger, Formatter, ConsoleHandler, SyslogLevel } from "streams-logger";
-
-// fs.readdirSync('.', { withFileTypes: true }).forEach((value: fs.Dirent) => {
-//     if (value.name.match(/[^.]+.log.\d+/)) {
-//         fs.rmSync(value.name);
-//     }
-// });
 
 const logger = new Logger({ level: SyslogLevel.DEBUG });
 const consoleFormatter = new Formatter({
@@ -36,11 +28,3 @@ log.debug("Hello, World!");
 (function sayHello() {
   log.debug("Hello, World!");
 })();
-
-// process.once('exit', () => {
-//     fs.readdirSync('.', { withFileTypes: true }).forEach((value: fs.Dirent) => {
-//         if (value.name.match(/[^.]+.log.\d+/)) {
-//             fs.rmSync(value.name);
-//         }
-//     });
-// });
