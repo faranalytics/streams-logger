@@ -1,7 +1,8 @@
 import Config from "./commons/config.js";
 import { Node } from "@farar/nodes";
 import { LogContext, LogContextOptions } from "./commons/log_context.js";
-import { Logger, root } from "./loggers/logger.js";
+import { Logger } from "./loggers/logger.js";
+import { BaseLogger, root } from "./loggers/base_logger.js";
 import { SyslogLevel, SyslogLevelT } from "./commons/syslog.js";
 import { Formatter } from "./formatters/formatter.js";
 import { ConsoleHandler } from "./handlers/console_handler.js";
@@ -15,6 +16,7 @@ export {
   LogContext,
   LogContextOptions,
   Logger,
+  BaseLogger,
   SyslogLevel,
   SyslogLevelT,
   Formatter,
