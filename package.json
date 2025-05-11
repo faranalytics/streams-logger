@@ -1,47 +1,47 @@
 {
-    "name": "streams-logger",
-    "version": "1.8.0",
-    "description": "",
-    "main": "./dist/index.js",
-    "scripts": {
-        "clean": "rm -rf ./dist/*",
-        "build": "tsc --build .",
-        "clean:build": "npm run clean && npm run build",
-        "watch": "tsc --watch",
-        "test": "npm update && npm run clean:build && npm update --prefix ./tests/test && npm run clean:build --prefix ./tests/test && npm start --prefix ./tests/test"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/faranalytics/streams-logger.git"
-    },
-    "author": "FAR",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/faranalytics/streams-logger/issues"
-    },
-    "homepage": "https://github.com/faranalytics/streams-logger#readme",
-    "engines": {
-        "npm": ">=10.8.2",
-        "node": ">=18.20.8"
-    },
-    "dependencies": {
-        "@farar/nodes": "^1.0.0"
-    },
-    "devDependencies": {
-        "@stylistic/eslint-plugin-ts": "^4.2.0",
-        "@types/node": "^20.11.28",
-        "typescript": "^5.7.2",
-        "typescript-eslint": "^8.29.0"
-    },
-    "keywords": [
-        "bunyan",
-        "logger",
-        "logging",
-        "logs",
-        "pino",
-        "stream",
-        "streams",
-        "streams-logger",
-        "winston"
-    ]
+  "name": "streams-logger",
+  "version": "1.8.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "clean": "rm -rf ./dist/*",
+    "build": "tsc --build .",
+    "clean:build": "npm run clean && npm run build",
+    "watch": "tsc --watch",
+    "test": "npm update && npm run clean:build && npm update --prefix ./tests/test && npm run clean:build --prefix ./tests/test && npm start --prefix ./tests/test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/faranalytics/streams-logger.git"
+  },
+  "author": "FAR",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/faranalytics/streams-logger/issues"
+  },
+  "homepage": "https://github.com/faranalytics/streams-logger#readme",
+  "engines": {
+    "npm": ">=10.8.2",
+    "node": ">=18.20.8"
+  },
+  "dependencies": {
+    "@farar/nodes": "^1.0.0"
+  },
+  "devDependencies": {
+    "@stylistic/eslint-plugin-ts": "^4.2.0",
+    "@types/node": "^20.11.28",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.29.0"
+  },
+  "keywords": [
+    "bunyan",
+    "logger",
+    "logging",
+    "logs",
+    "pino",
+    "stream",
+    "streams",
+    "streams-logger",
+    "winston"
+  ]
 }
