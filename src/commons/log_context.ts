@@ -74,9 +74,10 @@ export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT,
 
   public parseStackTrace = (depth?: number): void => {
     if (this.stack) {
+      // console.log(this.stack);
       const regex = (depth ?
         RegExp(`^${"[^\\n]*\\n".repeat(depth)}\\s+at (?<func>[^\\s]+)?.*?(?<url>(?:file://|/)(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)`, "is") :
-        /^[^\n]*\n[^\n]*\n\s+at (?<func>[^\s]+)?.*?(?<url>(?:file:\/\/|\/)(?<path>[^:]+)):(?<line>\d+):(?<col>\d+)/
+        /^[^\n]*\n[^\n]*\n\s+at (?:(?<func>[a-zA-Z_$][a-zA-Z0-9_$<>.]+)(?=.*?file:\/\/))?.*?(?<url>(?:file:\/\/|\/)(?<path>[^:]+)):(?<line>\d+):(?<col>\d+)/
       );
       const match = this.stack.match(regex);
       const groups = match?.groups;
