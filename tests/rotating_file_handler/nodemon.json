@@ -7,11 +7,11 @@
   "verbose": true,
   "watch": [
     "./src/**/*",
-    "../dist/**/*"
+    "../../dist/**/*"
   ],
   "env": {
     "NODE_ENV": "development"
   },
   "ext": "ts,json",
-  "exec": "clear && npm run build && node --expose-gc ."
+  "exec": "clear && npm run clean:build && node --expose-gc ."
 }
