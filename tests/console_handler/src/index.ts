@@ -24,12 +24,18 @@ const log = logger.connect(
 );
 
 function sayHello() {
-  for (let i = 0; i < 1e1; i++) {
+  for (let i = 0; i < 1e0; i++) {
     log.debug("Hello, World!");
   }
 }
 
 setInterval(sayHello, 1000);
+
+log.debug("Hello, World!");
+
+(function sayHello() {
+  log.debug("Hello, World!");
+})();
 
 // process.once('exit', () => {
 //     fs.readdirSync('.', { withFileTypes: true }).forEach((value: fs.Dirent) => {
