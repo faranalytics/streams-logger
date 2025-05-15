@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Formatter, ConsoleHandler, SyslogLevel } from "streams-logger";
 import { SpreadLogger } from "./spread_logger.js";
 
