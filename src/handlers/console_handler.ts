@@ -7,7 +7,7 @@ import { Config } from "../index.js";
 
 export const $level = Symbol("option");
 
-export class ConsoleHandlerTransform<MessageT> extends stream.Transform {
+export class ConsoleHandlerWritable<MessageT> extends stream.Writable {
 
   public [$level]: SyslogLevel;
 
@@ -19,33 +19,39 @@ export class ConsoleHandlerTransform<MessageT> extends stream.Transform {
     });
 
     this[$level] = options.level ?? SyslogLevel.WARN;
-
-    this.pipe(process.stdout);
   }
 
-  public _transform(logContext: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback): void {
+  public _write(logContext: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: (error?: Error | null) => void): void {
     void (async () => {
       try {
         if (process.stdout.closed) {
           callback(process.stdout.errored ?? new Error("The `Writable` closed."));
           return;
         }
+        
         if (SyslogLevel[logContext.level] > this[$level]) {
           callback();
           return;
         }
+
         const message: string | Buffer = (
           (typeof logContext.message == "string" || logContext.message instanceof Buffer) ? logContext.message :
             JSON.stringify(logContext.message)
         );
+
         if (SyslogLevel[logContext.level] > SyslogLevel.ERROR) {
-          callback(null, message);
-          return;
+          if (!process.stdout.write(message)) {
+            await once(process.stdout, "drain");
+            callback();
+            return;
+          }
         }
-        if (!process.stderr.write(message)) {
-          await once(process.stderr, "drain");
-          callback();
-          return;
+        else {
+          if (!process.stderr.write(message)) {
+            await once(process.stderr, "drain");
+            callback();
+            return;
+          }
         }
         callback();
       }
@@ -63,10 +69,10 @@ export interface ConsoleHandlerOptions {
   level?: SyslogLevel;
 }
 
-export class ConsoleHandler<MessageT = string> extends Node<LogContext<MessageT, SyslogLevelT>, never, ConsoleHandlerTransform<MessageT>> {
+export class ConsoleHandler<MessageT = string> extends Node<LogContext<MessageT, SyslogLevelT>, never, ConsoleHandlerWritable<MessageT>> {
 
   constructor(options: ConsoleHandlerOptions, streamOptions?: stream.WritableOptions) {
-    super(new ConsoleHandlerTransform<MessageT>(options, streamOptions));
+    super(new ConsoleHandlerWritable<MessageT>(options, streamOptions));
   }
 
   public setLevel = (level: SyslogLevel): void => {
