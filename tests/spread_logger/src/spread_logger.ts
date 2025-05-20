@@ -2,6 +2,13 @@ import { BaseLogger, SyslogLevel, $log } from "streams-logger";
 
 export class SpreadLogger<MessageT extends unknown[]> extends BaseLogger<MessageT> {
   public _label?: string;
+  public _defaultLevel: SyslogLevel = SyslogLevel.DEBUG;
+
+  public log = (...messages: MessageT): void => {
+    if (this.level >= this._defaultLevel) {
+      this[$log](messages, this._label ?? "", this._defaultLevel);
+    }
+  };
 
   public debug = (...messages: MessageT): void => {
     if (this.level >= SyslogLevel.DEBUG) {
@@ -53,6 +60,10 @@ export class SpreadLogger<MessageT extends unknown[]> extends BaseLogger<Message
 
   public setLevel = (level: SyslogLevel): void => {
     this.level = level;
+  };
+
+  public setDefaultLevel = (level: SyslogLevel): void => {
+    this._defaultLevel = level;
   };
 
   public setLabel = (label: string): void => {
