@@ -8,6 +8,8 @@ import { SyslogLevel, SyslogLevelT } from "../commons/syslog.js";
 import { KeysUppercase } from "../commons/types.js";
 import { QueueSizeLimitExceededError } from "../commons/errors.js";
 
+export const $log = Symbol("log");
+
 export interface BaseLoggerOptions<MessageT> {
   level?: SyslogLevel;
   name?: string;
@@ -44,7 +46,7 @@ export abstract class BaseLogger<MessageT = string> extends Node<LogContext<Mess
     }
   }
 
-  protected log(message: MessageT, label: string | undefined, level: SyslogLevel): void {
+  protected [$log](message: MessageT, label: string | undefined, level: SyslogLevel): void {
     try {
       const logContext = new LogContext<MessageT, SyslogLevelT>({
         message,
@@ -57,8 +59,7 @@ export abstract class BaseLogger<MessageT = string> extends Node<LogContext<Mess
         hostname: os.hostname()
       });
       if (this._captureStackTrace) {
-        // eslint-disable-next-line @typescript-eslint/unbound-method
-        Error.captureStackTrace(logContext, this.log);
+        Error.captureStackTrace(logContext, this[$log]);
         logContext.parseStackTrace();
       }
       super._write(logContext).catch((err: unknown) => { Config.errorHandler(err instanceof Error ? err : new Error()); });
@@ -83,49 +84,49 @@ export class Logger<MessageT = string> extends BaseLogger<MessageT> {
 
   public debug = (message: MessageT, label?: string): void => {
     if (this.level >= SyslogLevel.DEBUG) {
-      this.log(message, label, SyslogLevel.DEBUG);
+      this[$log](message, label, SyslogLevel.DEBUG);
     }
   };
 
   public info = (message: MessageT, label?: string): void => {
     if (this.level >= SyslogLevel.INFO) {
-      this.log(message, label, SyslogLevel.INFO);
+      this[$log](message, label, SyslogLevel.INFO);
     }
   };
 
   public notice = (message: MessageT, label?: string): void => {
     if (this.level >= SyslogLevel.NOTICE) {
-      this.log(message, label, SyslogLevel.NOTICE);
+      this[$log](message, label, SyslogLevel.NOTICE);
     }
   };
 
   public warn = (message: MessageT, label?: string): void => {
     if (this.level >= SyslogLevel.WARN) {
-      this.log(message, label, SyslogLevel.WARN);
+      this[$log](message, label, SyslogLevel.WARN);
     }
   };
 
   public error = (message: MessageT, label?: string): void => {
     if (this.level >= SyslogLevel.ERROR) {
-      this.log(message, label, SyslogLevel.ERROR);
+      this[$log](message, label, SyslogLevel.ERROR);
     }
   };
 
   public crit = (message: MessageT, label?: string): void => {
     if (this.level >= SyslogLevel.CRIT) {
-      this.log(message, label, SyslogLevel.CRIT);
+      this[$log](message, label, SyslogLevel.CRIT);
     }
   };
 
   public alert = (message: MessageT, label?: string): void => {
     if (this.level >= SyslogLevel.ALERT) {
-      this.log(message, label, SyslogLevel.ALERT);
+      this[$log](message, label, SyslogLevel.ALERT);
     }
   };
 
   public emerg = (message: MessageT, label?: string): void => {
     if (this.level >= SyslogLevel.EMERG) {
-      this.log(message, label, SyslogLevel.EMERG);
+      this[$log](message, label, SyslogLevel.EMERG);
     }
   };
 
