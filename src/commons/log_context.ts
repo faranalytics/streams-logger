@@ -23,7 +23,6 @@ export interface LogContextOptions<MessageT = string, LevelT = SyslogLevelT> {
   threadid?: number;
   metadata?: unknown;
   label?: string;
-  regex?: string;
 }
 
 export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT, LevelT> {
