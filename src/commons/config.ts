@@ -38,7 +38,7 @@ class Config {
     };
   };
 
-  public getReadableOptions = (objectMode = true): stream.WritableOptions => {
+  public getReadableOptions = (objectMode = true): stream.ReadableOptions => {
     return {
       highWaterMark: objectMode ? this._highWaterMarkObjectMode : this.highWaterMark
     };
