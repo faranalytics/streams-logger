@@ -6,7 +6,7 @@ export interface LogContextOptions<MessageT = string, LevelT = SyslogLevelT> {
   message: MessageT;
   name?: string;
   level: KeysUppercase<LevelT>;
-  stack?: string;
+  capture?: Error;
   func?: string;
   url?: string;
   line?: string;
@@ -44,7 +44,7 @@ export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT,
   public pid?: number;
   public hostname?: string;
   public threadid?: number;
-  public stack?: string;
+  public capture: Error;
   public metadata?: unknown;
   public label?: string;
 
@@ -52,7 +52,7 @@ export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT,
     this.message = options.message;
     this.name = options.name;
     this.level = options.level;
-    this.stack = options.stack;
+    this.capture = options.capture ?? new Error();
     this.func = options.func;
     this.url = options.url;
     this.line = options.line;
@@ -72,13 +72,12 @@ export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT,
   }
 
   public parseStackTrace = (depth?: number): void => {
-    if (this.stack) {
-      // console.log(this.stack);
+    if (this.capture.stack) {
       const regex = (depth ?
         RegExp(`^${"[^\\n]*\\n".repeat(depth)}\\s+at (?<func>[^\\s]+)?.*?(?<url>(?:file://|/)(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)`, "is") :
         /^[^\n]*\n[^\n]*\n\s+at (?:(?<func>[a-zA-Z_$][a-zA-Z0-9_$<>.]+)(?=.*?file:\/\/))?.*?(?<url>(?:file:\/\/|\/)(?<path>[^:]+)):(?<line>\d+):(?<col>\d+)/
       );
-      const match = this.stack.match(regex);
+      const match = this.capture.stack.match(regex);
       const groups = match?.groups;
       if (groups) {
         this.func = groups.func;

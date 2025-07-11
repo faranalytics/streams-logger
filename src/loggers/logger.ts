@@ -59,7 +59,7 @@ export abstract class BaseLogger<MessageT = string> extends Node<LogContext<Mess
         hostname: os.hostname()
       });
       if (this._captureStackTrace) {
-        Error.captureStackTrace(logContext, this[$log]);
+        Error.captureStackTrace(logContext.capture, this[$log]);
         logContext.parseStackTrace();
       }
       super._write(logContext).catch((err: unknown) => { Config.errorHandler(err instanceof Error ? err : new Error()); });
