@@ -165,7 +165,7 @@ _Streams_ provides a rich selection of contextual information with each logging 
 | `pathdir`  | The directory part of the module path.                                                                                                                                             | `captureStackTrace=true` |
 | `pathext`  | The extension of the module.                                                                                                                                                       | `captureStackTrace=true` |
 | `pathname` | The name of the module.                                                                                                                                                            | `captureStackTrace=true` |
-| `pathroot` | The root of the module.                                                                                                                                                            | `captureStackTrace=true` |
+| `pathroot` | The root of the path.                                                                                                                                                            | `captureStackTrace=true` |
 | `pid`      | The process identifier.                                                                                                                                                            |                          |
 | `stack`    | The complete stack trace.                                                                                                                                                          | `captureStackTrace=true` |
 | `threadid` | The thread identifier.                                                                                                                                                             |                          |
@@ -227,7 +227,7 @@ The _Streams_ API provides commonly used logging facilities (i.e., the [Logger](
 - options `<LoggerOptions>`
   - level `<SyslogLevel>` The syslog logger level. **Default: `SyslogLevel.WARN`**
   - name `<string>` An optional name for the `Logger`.
-  - parent `<Logger>` An optional parent `Logger`. Set this to `null` in order to disconnect from the root `Logger`.**Default: `streams-logger.root`**
+  - parent `<Logger>` An optional parent `Logger`. Set this to `null` in order to disconnect from the root `Logger`. **Default: `streams-logger.root`**
   - queueSizeLimit `<number>` Optionally specify a limit on the number of log messages that may queue while waiting for a stream to drain. See [Backpressure](#backpressure).
   - captureStackTrace `<boolean>` Optionally specify if stack trace capturing is enabled. This setting will override the default. **Default: `Config.captureStackTrace`**
   - captureISOTime `<boolean>` Optionally specify if capturing ISO time is enabled. This setting will override the default. **Default: `Config.captureISOTime`**
@@ -369,7 +369,7 @@ Returns: `<Filter<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, Syslo
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
 - options `<ConsoleHandlerOptions>`
   - level `<SyslogLevel>` An optional log level. **Default: `SyslogLevel.WARN`**
-- streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream. You can use `TransformOptions` to set a `highWaterMark` on the `ConsoleHandler`.
+- streamOptions `<stream.WritableOptions>` Optional options to be passed to the stream. You can use `WritableOptions` to set a `highWaterMark` on the `ConsoleHandler`.
 
 Use a `ConsoleHandler` in order to stream your messages to the console.
 
@@ -391,7 +391,7 @@ Set the log level. Must be one of `SyslogLevel`.
   - rotationLimit `<number>` An optional number of log rotations. **Default: `0`**
   - maxSize `<number>` The size of the log file in bytes that will initiate a rotation. **Default: `1e6`**
   - encoding `<BufferEncoding>` An optional encoding. **Default: `utf-8`**
-  - mode `<number>` An optional mode. **Deafult: `0o666`**
+  - mode `<number>` An optional mode. **Default: `0o666`**
   - level `<SyslogLevel>` An optional log level. **Default: `SyslogLevel.WARN`**
   - flags `<string>` An optional file system flag. **Default: `a`**
 - streamOptions `<stream.WritableOptions>` Optional options to be passed to the stream. You can use `WritableOptions` to set a `highWaterMark` on the `RotatingFileHandler`.
@@ -448,10 +448,10 @@ Set the log level. Must be one of `SyslogLevel`.
 
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
 - `<LevelT>` The type of the Level enum. **Default: `<SyslogLevelT>`**
-- options `<LoggerOptions>`
+- options `<LogContextOptions>`
   - message `<MessageT>` The logged message.
   - name `<string>` The name of the `Logger`.
-  - level `<KeysUppercase<LevelT>` An uppercase string representing the log level.
+  - level `<KeysUppercase<LevelT>>` An uppercase string representing the log level.
   - stack `<string>` An optional stack trace.
 
 A `LogContext` is instantiated each time a message is logged at (or below) the level set on the `Logger`. It contains information about the process and environment at the time of the logging call. All _Streams_ Nodes take a `LogContext` as an input and emit a `LogContext` as an output.
@@ -535,12 +535,12 @@ _public_ **logContext.pathroot**
 
 _public_ **logContext.pid**
 
-- `<string>`
+- `<number>`
   The process identifier.
 
 _public_ **logContext.threadid**
 
-- `<string>`
+- `<number>`
   The thread identifier.
 
 _public_ **logContext.parseStackTrace(depth)**
@@ -549,7 +549,7 @@ _public_ **logContext.parseStackTrace(depth)**
 
 Returns `<void>`
 
-If the `stack` property has been set, parse the stack trace.
+If the `LogContext.capture.stack` property has been set, parse the stack trace.
 
 ### The _Streams_ Config settings object
 
@@ -685,7 +685,7 @@ _Streams_ is built on the type-safe [Nodes](https://github.com/faranalytics/node
 
 For example, the somewhat contrived `LogContextToBuffer` implementation transforms the `message` contained in a `LogContext` to a `Buffer`; the graph pipeline streams the message to `process.stdout`.
 
-> **NB** In this example, `writableObjectMode` is set to `true` and `readableObjectMode` is set to `false`; hence, the Node.js stream implementation will handle the input as a `object` and the output as an `Buffer`. It's important that `writableObjectMode` and `readableObjectMode` accurately reflect the input and output types of your Node.
+> **NB** In this example, `writableObjectMode` is set to `true` and `readableObjectMode` is set to `false`; hence, the Node.js stream implementation will handle the input as an `object` and the output as a `Buffer`. It's important that `writableObjectMode` and `readableObjectMode` accurately reflect the input and output types of your Node.
 
 #### Implement the `index.ts` module.
 
@@ -793,7 +793,7 @@ const logger = new Logger({ captureStackTrace: false });
 
 ### Disconnect from root
 
-You can optionally disconnect your `Logger` from the root `Logger` or a specified antecedent. This will prevent message propagation to the root logger, which will provide cost savings and isolation. You can either set the `parent` parameter to `null` in the constructor of the `Logger` or explicitely disconnect from the root `Logger` using the `disconnect` method of the `Logger` instance. In this example the `Logger` instance is disconnected from the _Streams_ root logger after instantiation.
+You can optionally disconnect your `Logger` from the root `Logger` or a specified antecedent. This will prevent message propagation to the root logger, which will provide cost savings and isolation. You can either set the `parent` parameter to `null` in the constructor of the `Logger` or explicitly disconnect from the root `Logger` using the `disconnect` method of the `Logger` instance. In this example the `Logger` instance is disconnected from the _Streams_ root logger after instantiation.
 
 ```ts
 import * as streams from 'streams-logger';
