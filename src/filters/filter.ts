@@ -27,10 +27,9 @@ export class Filter<MessageT = string> extends Node<LogContext<MessageT, SyslogL
               }
             }
             catch (err) {
-              if (err instanceof Error) {
-                callback(err);
-                Config.errorHandler(err);
-              }
+              const error = err instanceof Error ? err : new Error(String(err));
+              callback(error);
+              Config.errorHandler(error);
             }
           })();
         }

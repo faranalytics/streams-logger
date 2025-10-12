@@ -13,8 +13,10 @@ export interface SocketHandlerOptions {
   level?: SyslogLevel;
 }
 
-export class SocketHandler<MessageT = string> extends Node<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>> {
-
+export class SocketHandler<MessageT = string> extends Node<
+  LogContext<MessageT, SyslogLevelT>,
+  LogContext<MessageT, SyslogLevelT>
+> {
   public level: SyslogLevel;
 
   protected _space?: string | number;
@@ -24,45 +26,52 @@ export class SocketHandler<MessageT = string> extends Node<LogContext<MessageT, 
   protected _ingressQueue: Buffer;
   protected _messageSize: number | null;
 
-  constructor({ socket, reviver, replacer, space, level = SyslogLevel.WARN }: SocketHandlerOptions, streamOptions?: stream.DuplexOptions) {
-    super(new stream.Duplex({
-      ...streamOptions, ...{
-        writableObjectMode: true,
-        readableObjectMode: true,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        read: (size: number) => {
-          this._push();
-        },
-        write: (logContext: LogContext<MessageT, SyslogLevelT>, _encoding: BufferEncoding, callback: stream.TransformCallback) => {
-          try {
-            if (this._socket.closed) {
-              callback(this._socket.errored ?? new Error("The `Socket` closed."));
-              return;
-            }
-            if (SyslogLevel[logContext.level] <= this.level) {
-              const data = this.serializeMessage(logContext);
-              const size = Buffer.alloc(6, 0);
-              size.writeUIntBE(data.length + 6, 0, 6);
-              const buf = Buffer.concat([size, data]);
-              if (!this._socket.write(buf)) {
-                this._socket.once("drain", callback);
+  constructor(
+    { socket, reviver, replacer, space, level = SyslogLevel.WARN }: SocketHandlerOptions,
+    streamOptions?: stream.DuplexOptions
+  ) {
+    super(
+      new stream.Duplex({
+        ...streamOptions,
+        ...{
+          writableObjectMode: true,
+          readableObjectMode: true,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          read: (size: number) => {
+            this._push();
+          },
+          write: (
+            logContext: LogContext<MessageT, SyslogLevelT>,
+            _encoding: BufferEncoding,
+            callback: stream.TransformCallback
+          ) => {
+            try {
+              if (this._socket.closed) {
+                callback(this._socket.errored ?? new Error("The `Socket` closed."));
+                return;
               }
-              else {
+              if (SyslogLevel[logContext.level] <= this.level) {
+                const data = this.serializeMessage(logContext);
+                const size = Buffer.alloc(6, 0);
+                size.writeUIntBE(data.length + 6, 0, 6);
+                const buf = Buffer.concat([size, data]);
+                if (!this._socket.write(buf)) {
+                  this._socket.once("drain", callback);
+                } else {
+                  callback();
+                }
+              } else {
                 callback();
               }
-            } else {
-              callback();
+            } catch (err) {
+              const error = err instanceof Error ? err : new Error(String(err));
+              callback(error);
+              Config.errorHandler(error);
             }
-          }
-          catch (err) {
-            if (err instanceof Error) {
-              callback(err);
-              Config.errorHandler(err);
-            }
-          }
-        }
-      }
-    }));
+          },
+        },
+      })
+    );
     this._push = this._push.bind(this);
     this.level = level;
     this._reviver = reviver;
@@ -79,9 +88,10 @@ export class SocketHandler<MessageT = string> extends Node<LogContext<MessageT, 
   protected _push() {
     if (this._ingressQueue.length > 6) {
       this._messageSize = this._ingressQueue.readUintBE(0, 6);
-    }
-    else {
-      this._socket.once("data", () => { this._push(); });
+    } else {
+      this._socket.once("data", () => {
+        this._push();
+      });
       return;
     }
     if (this._ingressQueue.length >= this._messageSize) {
@@ -91,9 +101,10 @@ export class SocketHandler<MessageT = string> extends Node<LogContext<MessageT, 
       if (this._stream instanceof stream.Readable) {
         this._stream.push(message);
       }
-    }
-    else {
-      this._socket.once("data", () => { this._push(); });
+    } else {
+      this._socket.once("data", () => {
+        this._push();
+      });
     }
   }
 
@@ -102,7 +113,7 @@ export class SocketHandler<MessageT = string> extends Node<LogContext<MessageT, 
   }
 
   protected deserializeMessage(data: Buffer): LogContext<MessageT, SyslogLevelT> {
-    return new LogContext((JSON.parse(data.toString("utf-8"), this._reviver) as LogContext<MessageT, SyslogLevelT>));
+    return new LogContext(JSON.parse(data.toString("utf-8"), this._reviver) as LogContext<MessageT, SyslogLevelT>);
   }
 
   public setLevel = (level: SyslogLevel): void => {

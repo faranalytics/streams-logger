@@ -19,22 +19,30 @@ export interface BaseLoggerOptions<MessageT> {
   captureISOTime?: boolean;
 }
 
-export abstract class BaseLogger<MessageT = string> extends Node<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>> {
-
+export abstract class BaseLogger<MessageT = string> extends Node<
+  LogContext<MessageT, SyslogLevelT>,
+  LogContext<MessageT, SyslogLevelT>
+> {
   public level: SyslogLevel;
   protected _name?: string;
   protected _captureStackTrace: boolean;
   protected _captureISOTime: boolean;
   protected _queueSizeLimit?: number;
 
-  constructor({ name, level, queueSizeLimit, parent, captureStackTrace, captureISOTime }: BaseLoggerOptions<MessageT>, streamOptions?: stream.TransformOptions) {
-    super(new stream.PassThrough({
-      ...Config.getDuplexOptions(true, true),
-      ...streamOptions, ...{
-        readableObjectMode: true,
-        writableObjectMode: true
-      }
-    }));
+  constructor(
+    { name, level, queueSizeLimit, parent, captureStackTrace, captureISOTime }: BaseLoggerOptions<MessageT>,
+    streamOptions?: stream.TransformOptions
+  ) {
+    super(
+      new stream.PassThrough({
+        ...Config.getDuplexOptions(true, true),
+        ...streamOptions,
+        ...{
+          readableObjectMode: true,
+          writableObjectMode: true,
+        },
+      })
+    );
 
     this.level = level ?? SyslogLevel.WARN;
     this._name = name;
@@ -56,32 +64,30 @@ export abstract class BaseLogger<MessageT = string> extends Node<LogContext<Mess
         label: label,
         threadid: threads.threadId,
         pid: process.pid,
-        hostname: os.hostname()
+        hostname: os.hostname(),
       });
       if (this._captureStackTrace) {
         Error.captureStackTrace(logContext.capture, this[$log]);
         logContext.parseStackTrace();
       }
-      super._write(logContext).catch((err: unknown) => { Config.errorHandler(err instanceof Error ? err : new Error()); });
+      super._write(logContext).catch((err: unknown) => {
+        Config.errorHandler(err instanceof Error ? err : new Error());
+      });
       if (this._queueSizeLimit && this._size > this._queueSizeLimit) {
         throw new QueueSizeLimitExceededError(`The queue size limit, ${this._queueSizeLimit.toString()}, is exceeded.`);
       }
-    }
-    catch (err) {
+    } catch (err) {
       if (err instanceof QueueSizeLimitExceededError) {
         throw err;
-      }
-      else {
-        if (err instanceof Error) {
-          Config.errorHandler(err);
-        }
+      } else {
+        const error = err instanceof Error ? err : new Error(String(err));
+        Config.errorHandler(error);
       }
     }
-  };
+  }
 }
 
 export class Logger<MessageT = string> extends BaseLogger<MessageT> {
-
   public debug = (message: MessageT, label?: string): void => {
     if (this.level >= SyslogLevel.DEBUG) {
       this[$log](message, label, SyslogLevel.DEBUG);
