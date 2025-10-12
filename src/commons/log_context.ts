@@ -26,7 +26,6 @@ export interface LogContextOptions<MessageT = string, LevelT = SyslogLevelT> {
 }
 
 export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT, LevelT> {
-
   public message: MessageT;
   public name?: string;
   public level: KeysUppercase<LevelT>;
@@ -73,10 +72,14 @@ export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT,
 
   public parseStackTrace = (depth?: number): void => {
     if (this.capture.stack) {
-      const regex = (depth ?
-        RegExp(`^${"[^\\n]*\\n".repeat(depth)}\\s+at (?<func>[^\\s]+)?.*?(?<url>(?:file://|/)(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)`, "is") :
-        /^[^\n]*\n[^\n]*\n\s+at (?:(?<func>[a-zA-Z_$][a-zA-Z0-9_$<>.]+)(?=.*?file:\/\/))?.*?(?<url>(?:file:\/\/|\/)(?<path>[^:]+)):(?<line>\d+):(?<col>\d+)/
-      );
+      const regex = depth
+        ? RegExp(
+          `^${"[^\\n]*\\n".repeat(
+            depth
+          )}\\s+at (?<func>[^\\s]+)?.*?(?<url>(?:file://|/)(?<path>[^:]+)):(?<line>\\d+):(?<col>\\d+)`,
+          "is"
+        )
+        : /^[^\n]*\n[^\n]*\n\s+at (?:(?<func>[a-zA-Z_$][a-zA-Z0-9_$<>.]+)(?=.*?file:\/\/))?.*?(?<url>(?:file:\/\/|\/)(?<path>[^:]+)):(?<line>\d+):(?<col>\d+)/;
       const match = this.capture.stack.match(regex);
       const groups = match?.groups;
       if (groups) {
@@ -94,4 +97,29 @@ export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT,
       }
     }
   };
+
+  public toObject(): LogContextOptions<MessageT, LevelT> {
+    return {
+      message: this.message,
+      name: this.name,
+      level: this.level,
+      capture: this.capture,
+      func: this.func,
+      url: this.url,
+      line: this.line,
+      col: this.col,
+      isotime: this.isotime,
+      pathname: this.pathname,
+      path: this.path,
+      pathdir: this.pathdir,
+      pathroot: this.pathroot,
+      pathbase: this.pathbase,
+      pathext: this.pathext,
+      pid: this.pid,
+      hostname: this.hostname,
+      threadid: this.threadid,
+      metadata: this.metadata,
+      label: this.label,
+    };
+  }
 }
