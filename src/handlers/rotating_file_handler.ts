@@ -1,4 +1,3 @@
-/* eslint-disable @stylistic/ts/indent */
 import * as pth from "node:path";
 import * as fs from "node:fs";
 import * as fsp from "node:fs/promises";
@@ -86,29 +85,27 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
     encoding: BufferEncoding,
     callback: stream.TransformCallback
   ): void {
-    void (async () => {
-      try {
-        if (this[$writeStream].closed) {
-          callback(this[$writeStream].errored ?? new Error("The `WriteStream` closed."));
-          return;
-        }
-        const message: Buffer =
-          logContext.message instanceof Buffer
-            ? logContext.message
-            : typeof logContext.message == "string"
-              ? Buffer.from(logContext.message, this[$encoding])
-              : Buffer.from(JSON.stringify(logContext.message), this[$encoding]);
-        if (this[$size] + message.length > this[$maxSize]) {
-          await this[$rotate]();
-        }
-        this[$size] = this[$size] + message.length;
-        callback(null, message);
-      } catch (err) {
-        const error = err instanceof Error ? err : new Error(String(err));
-        callback(error);
-        Config.errorHandler(error);
+    (async () => {
+      if (this[$writeStream].closed) {
+        callback(this[$writeStream].errored ?? new Error("The `WriteStream` closed."));
+        return;
       }
-    })();
+      const message: Buffer =
+        logContext.message instanceof Buffer
+          ? logContext.message
+          : typeof logContext.message == "string"
+            ? Buffer.from(logContext.message, this[$encoding])
+            : Buffer.from(JSON.stringify(logContext.message), this[$encoding]);
+      if (this[$size] + message.length > this[$maxSize]) {
+        await this[$rotate]();
+      }
+      this[$size] = this[$size] + message.length;
+      callback(null, message);
+    })().catch((err: unknown) => {
+      const error = err instanceof Error ? err : new Error(String(err));
+      callback(error);
+      Config.errorHandler(error);
+    });
   }
 
   protected async [$rotate]() {

@@ -17,21 +17,18 @@ export class Filter<MessageT = string> extends Node<LogContext<MessageT, SyslogL
         writableObjectMode: true,
         readableObjectMode: true,
         transform: (logContext: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback): void => {
-          void (async () => {
-            try {
-              if (await filter(logContext)) {
-                callback(null, logContext);
-              }
-              else {
-                callback();
-              }
+          (async () => {
+            if (await filter(logContext)) {
+              callback(null, logContext);
             }
-            catch (err) {
-              const error = err instanceof Error ? err : new Error(String(err));
-              callback(error);
-              Config.errorHandler(error);
+            else {
+              callback();
             }
-          })();
+          })().catch((err: unknown) => {
+            const error = err instanceof Error ? err : new Error(String(err));
+            callback(error);
+            Config.errorHandler(error);
+          });
         }
       }
     }));

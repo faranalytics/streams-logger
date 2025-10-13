@@ -25,20 +25,18 @@ export class Formatter<MessageInT = string, MessageOutT = string> extends Node<
             encoding: BufferEncoding,
             callback: stream.TransformCallback
           ) => {
-            void (async () => {
-              try {
-                const message = await format(logContext);
-                const logContextOut = new LogContext<MessageOutT, SyslogLevelT>({
-                  ...logContext.toObject(),
-                  ...{ message: message },
-                });
-                callback(null, logContextOut);
-              } catch (err) {
-                const error = err instanceof Error ? err : new Error(String(err));
-                callback(error);
-                Config.errorHandler(error);
-              }
-            })();
+            (async () => {
+              const message = await format(logContext);
+              const logContextOut = new LogContext<MessageOutT, SyslogLevelT>({
+                ...logContext.toObject(),
+                ...{ message: message },
+              });
+              callback(null, logContextOut);
+            })().catch((err: unknown) => {
+              const error = err instanceof Error ? err : new Error(String(err));
+              callback(error);
+              Config.errorHandler(error);
+            });
           },
         },
       })

@@ -25,43 +25,41 @@ export class ConsoleHandlerWritable<MessageT> extends stream.Writable {
     encoding: BufferEncoding,
     callback: (error?: Error | null) => void
   ): void {
-    void (async () => {
-      try {
-        if (process.stdout.closed) {
-          callback(process.stdout.errored ?? new Error("The `Writable` closed."));
-          return;
-        }
+    (async () => {
+      if (process.stdout.closed) {
+        callback(process.stdout.errored ?? new Error("The `Writable` closed."));
+        return;
+      }
 
-        if (SyslogLevel[logContext.level] > this[$level]) {
+      if (SyslogLevel[logContext.level] > this[$level]) {
+        callback();
+        return;
+      }
+
+      const message: string | Buffer =
+        typeof logContext.message == "string" || logContext.message instanceof Buffer
+          ? logContext.message
+          : JSON.stringify(logContext.message);
+
+      if (SyslogLevel[logContext.level] > SyslogLevel.ERROR) {
+        if (!process.stdout.write(message)) {
+          await once(process.stdout, "drain");
           callback();
           return;
         }
-
-        const message: string | Buffer =
-          typeof logContext.message == "string" || logContext.message instanceof Buffer
-            ? logContext.message
-            : JSON.stringify(logContext.message);
-
-        if (SyslogLevel[logContext.level] > SyslogLevel.ERROR) {
-          if (!process.stdout.write(message)) {
-            await once(process.stdout, "drain");
-            callback();
-            return;
-          }
-        } else {
-          if (!process.stderr.write(message)) {
-            await once(process.stderr, "drain");
-            callback();
-            return;
-          }
+      } else {
+        if (!process.stderr.write(message)) {
+          await once(process.stderr, "drain");
+          callback();
+          return;
         }
-        callback();
-      } catch (err) {
-        const error = err instanceof Error ? err : new Error(String(err));
-        callback(error);
-        Config.errorHandler(error);
       }
-    })();
+      callback();
+    })().catch((err: unknown) => {
+      const error = err instanceof Error ? err : new Error(String(err));
+      callback(error);
+      Config.errorHandler(error);
+    });
   }
 }
 
