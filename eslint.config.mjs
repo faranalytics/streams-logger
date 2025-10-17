@@ -1,43 +1,36 @@
-import eslint from "@eslint/js";
-import tseslint from "typescript-eslint";
-import stylisticTs from "@stylistic/eslint-plugin-ts";
-import parserTs from "@typescript-eslint/parser";
+// @ts-check
 
-export default tseslint.config(
+import eslint from "@eslint/js";
+import { defineConfig } from "eslint/config";
+import tseslint from "typescript-eslint";
+import stylistic from "@stylistic/eslint-plugin";
+import globals from "globals";
+
+export default defineConfig([
   eslint.configs.recommended,
   tseslint.configs.strictTypeChecked,
-  tseslint.configs.recommendedTypeChecked,
   tseslint.configs.stylisticTypeChecked,
+  { ignores: ["**/dist"] },
   {
     languageOptions: {
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
+      parserOptions: { project: ["./tsconfig.json", "./tsconfig.eslint.json"] },
+      globals: { ...globals.node },
     },
-  },
-  {
-    ignores: ["**/dist/**"],
   },
   {
     plugins: {
-      "@stylistic/ts": stylisticTs
+      "@stylistic": stylistic,
     },
-    languageOptions: {
-      parser: parserTs,
-    }
   },
   {
+    files: ["**/*.ts"],
     rules: {
-      "quotes": ["error", "double", { avoidEscape: true, allowTemplateLiterals: true }],
-      "@typescript-eslint/await-thenable": ["error"],
-      "@typescript-eslint/no-floating-promises": ["error"],
-      "@stylistic/ts/indent": ["error", 2],
-      "@stylistic/ts/semi": ["error", "always"],
-    }
+      quotes: ["error", "double", { avoidEscape: true, allowTemplateLiterals: true }],
+      "@stylistic/semi": ["error", "always"],
+    },
   },
   {
-    files: ["**/*.js", "**/*.mjs"],
-    extends: [tseslint.configs.disableTypeChecked],
+    files: ["**/*.js"],
+    rules: { "@typescript-eslint/no-require-imports": ["off"] },
   },
-);
+]);
