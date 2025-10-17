@@ -64,13 +64,7 @@ In this hypothetical example you will log "Hello, World!" to the console and to 
 Import the Logger, Formatter, ConsoleHandler and RotatingFileHandler, and SyslogLevel enum.
 
 ```ts
-import {
-  Logger,
-  Formatter,
-  ConsoleHandler,
-  RotatingFileHandler,
-  SyslogLevel,
-} from "streams-logger";
+import { Logger, Formatter, ConsoleHandler, RotatingFileHandler, SyslogLevel } from "streams-logger";
 ```
 
 Create an instance of a Logger, Formatter, ConsoleHandler and RotatingFileHandler.
@@ -99,9 +93,7 @@ Connect the Logger to the Formatter and connect the Formatter to the ConsoleHand
 _Streams_ uses a graph-like API pattern in order to construct a network of log Nodes. Each component in a network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, _is a_ [Node](https://github.com/faranalytics/nodes).
 
 ```ts
-const log = logger.connect(
-  formatter.connect(consoleHandler, rotatingFileHandler)
-);
+const log = logger.connect(formatter.connect(consoleHandler, rotatingFileHandler));
 ```
 
 Log "Hello, World!" to the console and to the file `./message.log`.
@@ -165,7 +157,7 @@ _Streams_ provides a rich selection of contextual information with each logging 
 | `pathdir`  | The directory part of the module path.                                                                                                                                             | `captureStackTrace=true` |
 | `pathext`  | The extension of the module.                                                                                                                                                       | `captureStackTrace=true` |
 | `pathname` | The name of the module.                                                                                                                                                            | `captureStackTrace=true` |
-| `pathroot` | The root of the path.                                                                                                                                                            | `captureStackTrace=true` |
+| `pathroot` | The root of the path.                                                                                                                                                              | `captureStackTrace=true` |
 | `pid`      | The process identifier.                                                                                                                                                            |                          |
 | `stack`    | The complete stack trace.                                                                                                                                                          | `captureStackTrace=true` |
 | `threadid` | The thread identifier.                                                                                                                                                             |                          |
@@ -620,9 +612,7 @@ interface Message {
 const logger = new Logger<Message>({ level: SyslogLevel.DEBUG });
 const formatter = new Formatter<Message, string>({
   format: ({ isotime, message, level, func, line, col }) => {
-    return `${isotime}:${level}:${func}:${line}:${col}:${JSON.stringify(
-      message
-    )}\n`;
+    return `${isotime}:${level}:${func}:${line}:${col}:${JSON.stringify(message)}\n`;
   },
 });
 const consoleHandler = new ConsoleHandler<string>({ level: SyslogLevel.DEBUG });
@@ -693,10 +683,7 @@ For example, the somewhat contrived `LogContextToBuffer` implementation transfor
 import * as stream from "node:stream";
 import { Logger, Node, Config, LogContext, SyslogLevelT } from "streams-logger";
 
-export class LogContextToBuffer extends Node<
-  LogContext<string, SyslogLevelT>,
-  Buffer
-> {
+export class LogContextToBuffer extends Node<LogContext<string, SyslogLevelT>, Buffer> {
   public encoding: NodeJS.BufferEncoding = "utf-8";
 
   constructor(streamOptions?: stream.TransformOptions) {
