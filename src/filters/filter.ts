@@ -5,32 +5,40 @@ import { SyslogLevelT } from "../commons/syslog.js";
 import { Config } from "../index.js";
 
 export interface FilterOptions<MessageT> {
-  filter: (logContext: LogContext<MessageT, SyslogLevelT>) => Promise<boolean> | boolean
+  filter: (logContext: LogContext<MessageT, SyslogLevelT>) => Promise<boolean> | boolean;
 }
 
-export class Filter<MessageT = string> extends Node<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, SyslogLevelT>> {
-
+export class Filter<MessageT = string> extends Node<
+  LogContext<MessageT, SyslogLevelT>,
+  LogContext<MessageT, SyslogLevelT>
+> {
   constructor({ filter }: FilterOptions<MessageT>, streamOptions?: stream.TransformOptions) {
-    super(new stream.Transform({
-      ...Config.getDuplexOptions(true, true),
-      ...streamOptions, ...{
-        writableObjectMode: true,
-        readableObjectMode: true,
-        transform: (logContext: LogContext<MessageT, SyslogLevelT>, encoding: BufferEncoding, callback: stream.TransformCallback): void => {
-          (async () => {
-            if (await filter(logContext)) {
-              callback(null, logContext);
-            }
-            else {
-              callback();
-            }
-          })().catch((err: unknown) => {
-            const error = err instanceof Error ? err : new Error(String(err));
-            callback(error);
-            Config.errorHandler(error);
-          });
-        }
-      }
-    }));
+    super(
+      new stream.Transform({
+        ...Config.getDuplexOptions(true, true),
+        ...streamOptions,
+        ...{
+          writableObjectMode: true,
+          readableObjectMode: true,
+          transform: (
+            logContext: LogContext<MessageT, SyslogLevelT>,
+            encoding: BufferEncoding,
+            callback: stream.TransformCallback
+          ): void => {
+            (async () => {
+              if (await filter(logContext)) {
+                callback(null, logContext);
+              } else {
+                callback();
+              }
+            })().catch((err: unknown) => {
+              const error = err instanceof Error ? err : new Error(String(err));
+              callback(error);
+              Config.errorHandler(error);
+            });
+          },
+        },
+      })
+    );
   }
 }

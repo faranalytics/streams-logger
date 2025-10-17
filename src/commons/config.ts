@@ -3,7 +3,6 @@ import * as stream from "node:stream";
 export type ErrorHandler = (err: Error, ...params: unknown[]) => void;
 
 class Config {
-
   protected _highWaterMark?: number;
   protected _highWaterMarkObjectMode?: number;
   public captureStackTrace: boolean;
@@ -34,20 +33,20 @@ class Config {
 
   public getWritableOptions = (objectMode = true): stream.WritableOptions => {
     return {
-      highWaterMark: objectMode ? this._highWaterMarkObjectMode : this.highWaterMark
+      highWaterMark: objectMode ? this._highWaterMarkObjectMode : this.highWaterMark,
     };
   };
 
   public getReadableOptions = (objectMode = true): stream.ReadableOptions => {
     return {
-      highWaterMark: objectMode ? this._highWaterMarkObjectMode : this.highWaterMark
+      highWaterMark: objectMode ? this._highWaterMarkObjectMode : this.highWaterMark,
     };
   };
 
   public getDuplexOptions = (writableObjectMode = true, readableObjectMode = true): stream.DuplexOptions => {
     return {
       writableHighWaterMark: writableObjectMode ? this._highWaterMarkObjectMode : this.highWaterMark,
-      readableHighWaterMark: readableObjectMode ? this._highWaterMarkObjectMode : this.highWaterMark
+      readableHighWaterMark: readableObjectMode ? this._highWaterMarkObjectMode : this.highWaterMark,
     };
   };
 }
