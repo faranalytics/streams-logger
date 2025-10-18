@@ -50,7 +50,7 @@ export class SocketHandler<MessageT = string> extends Node<
                 return;
               }
               if (SyslogLevel[logContext.level] <= this.level) {
-                const data = this.serializeMessage(logContext);
+                const data = this._serializeMessage(logContext);
                 const size = Buffer.alloc(6, 0);
                 size.writeUIntBE(data.length + 6, 0, 6);
                 const buf = Buffer.concat([size, data]);
@@ -96,7 +96,7 @@ export class SocketHandler<MessageT = string> extends Node<
     if (this._ingressQueue.length >= this._messageSize) {
       const buf = this._ingressQueue.subarray(6, this._messageSize);
       this._ingressQueue = this._ingressQueue.subarray(this._messageSize, this._ingressQueue.length);
-      const message = this.deserializeMessage(buf);
+      const message = this._deserializeMessage(buf);
       if (this._stream instanceof stream.Readable) {
         this._stream.push(message);
       }
@@ -107,11 +107,11 @@ export class SocketHandler<MessageT = string> extends Node<
     }
   }
 
-  protected serializeMessage(message: LogContext<MessageT, SyslogLevelT>): Buffer {
+  protected _serializeMessage(message: LogContext<MessageT, SyslogLevelT>): Buffer {
     return Buffer.from(JSON.stringify(message, this._replacer, this._space), "utf-8");
   }
 
-  protected deserializeMessage(data: Buffer): LogContext<MessageT, SyslogLevelT> {
+  protected _deserializeMessage(data: Buffer): LogContext<MessageT, SyslogLevelT> {
     return new LogContext(JSON.parse(data.toString("utf-8"), this._reviver) as LogContext<MessageT, SyslogLevelT>);
   }
 
