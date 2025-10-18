@@ -36,8 +36,7 @@ export class SocketHandler<MessageT = string> extends Node<
         ...{
           writableObjectMode: true,
           readableObjectMode: true,
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          read: (size: number) => {
+          read: () => {
             this._push();
           },
           write: (
