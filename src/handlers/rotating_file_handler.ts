@@ -137,7 +137,9 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
           }
         } catch (err) {
           const error = err instanceof Error ? err : new Error(String(err));
-          Config.errorHandler(error);
+          if ("code" in error && error.code != "ENOENT") {
+            Config.errorHandler(error);
+          }
         }
       }
     }
@@ -149,8 +151,8 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
       autoClose: true,
       flags: "w",
     });
-    this.pipe(this[$writeStream]);
     await once(this[$writeStream], "ready");
+    this.pipe(this[$writeStream]);
     this.uncork();
     this[$size] = 0;
   }
