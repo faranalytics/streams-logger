@@ -71,7 +71,6 @@ export class SocketHandler<MessageT = string> extends Node<
         },
       })
     );
-    this._push = this._push.bind(this);
     this.level = level;
     this._reviver = reviver;
     this._replacer = replacer;
@@ -84,7 +83,7 @@ export class SocketHandler<MessageT = string> extends Node<
     });
   }
 
-  protected _push() {
+  protected _push =(): void => {
     if (this._ingressQueue.length > 6) {
       this._messageSize = this._ingressQueue.readUintBE(0, 6);
     } else {
@@ -105,15 +104,15 @@ export class SocketHandler<MessageT = string> extends Node<
         this._push();
       });
     }
-  }
+  };
 
-  protected _serializeMessage(message: LogContext<MessageT, SyslogLevelT>): Buffer {
+  protected _serializeMessage = (message: LogContext<MessageT, SyslogLevelT>): Buffer => {
     return Buffer.from(JSON.stringify(message, this._replacer, this._space), "utf-8");
-  }
+  };
 
-  protected _deserializeMessage(data: Buffer): LogContext<MessageT, SyslogLevelT> {
+  protected _deserializeMessage = (data: Buffer): LogContext<MessageT, SyslogLevelT> => {
     return new LogContext(JSON.parse(data.toString("utf-8"), this._reviver) as LogContext<MessageT, SyslogLevelT>);
-  }
+  };
 
   public setLevel = (level: SyslogLevel): void => {
     this.level = level;
