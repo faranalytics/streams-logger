@@ -71,7 +71,7 @@ export abstract class BaseLogger<MessageT = string> extends Node<
         logContext.parseStackTrace();
       }
       super._write(logContext).catch((err: unknown) => {
-        Config.errorHandler(err instanceof Error ? err : new Error());
+        Config.errorHandler(err instanceof Error ? err : new Error(String(err)));
       });
       if (this._queueSizeLimit && this._size > this._queueSizeLimit) {
         throw new QueueSizeLimitExceededError(`The queue size limit, ${this._queueSizeLimit.toString()}, is exceeded.`);
