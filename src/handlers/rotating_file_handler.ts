@@ -85,21 +85,29 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
     encoding: BufferEncoding,
     callback: stream.TransformCallback
   ): void {
+    if (SyslogLevel[logContext.level] > this[$level]) {
+      callback();
+      return;
+    }
+    if (this[$writeStream].closed) {
+      callback(this[$writeStream].errored ?? new Error("The `WriteStream` closed."));
+      return;
+    }
+    const message: Buffer =
+      logContext.message instanceof Buffer
+        ? logContext.message
+        : typeof logContext.message == "string"
+        ? Buffer.from(logContext.message, this[$encoding])
+        : Buffer.from(JSON.stringify(logContext.message), this[$encoding]);
     (async () => {
-      if (this[$writeStream].closed) {
-        callback(this[$writeStream].errored ?? new Error("The `WriteStream` closed."));
-        return;
-      }
-      const message: Buffer =
-        logContext.message instanceof Buffer
-          ? logContext.message
-          : typeof logContext.message == "string"
-          ? Buffer.from(logContext.message, this[$encoding])
-          : Buffer.from(JSON.stringify(logContext.message), this[$encoding]);
       if (this[$size] + message.length > this[$maxSize]) {
         await this[$rotate]();
       }
       this[$size] = this[$size] + message.length;
+      if (this[$writeStream].closed) {
+        callback(this[$writeStream].errored ?? new Error("The `WriteStream` closed."));
+        return;
+      }
       callback(null, message);
     })().catch((err: unknown) => {
       const error = err instanceof Error ? err : new Error(String(err));
@@ -111,6 +119,7 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
   protected async [$rotate]() {
     this.unpipe(this[$writeStream]);
     this[$writeStream].close();
+    await once(this[$writeStream], "close");
     if (this[$rotationLimit] === 0) {
       await fsp.rm(this[$path]);
     } else {
@@ -126,9 +135,9 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
           if (stats.isFile()) {
             await fsp.rename(path, `${this[$path]}.${(i + 1).toString()}`);
           }
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) {
-          /* flow-control */
+          const error = err instanceof Error ? err : new Error(String(err));
+          Config.errorHandler(error);
         }
       }
     }
@@ -141,11 +150,8 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
       flags: "w",
     });
     this.pipe(this[$writeStream]);
-    once(this[$writeStream], "ready")
-      .then(() => {
-        this.uncork();
-      })
-      .catch(Config.errorHandler);
+    await once(this[$writeStream], "ready");
+    this.uncork();
     this[$size] = 0;
   }
 }
