@@ -8,6 +8,7 @@
     "build": "tsc --build .",
     "clean:build": "npm run clean && npm run build",
     "watch": "tsc --watch",
+    "format": "npx prettier --write .",
     "test": "npm update && npm run clean:build && npm update --prefix ./test && npm run clean:build --prefix ./test && npm start --prefix ./test"
   },
   "repository": {

@@ -83,7 +83,7 @@ export class SocketHandler<MessageT = string> extends Node<
     });
   }
 
-  protected _push =(): void => {
+  protected _push = (): void => {
     if (this._ingressQueue.length > 6) {
       this._messageSize = this._ingressQueue.readUintBE(0, 6);
     } else {

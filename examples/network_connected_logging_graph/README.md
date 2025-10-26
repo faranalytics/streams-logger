@@ -58,13 +58,7 @@ Once the server is listening for connections, a connection is made with the logg
 import * as net from "node:net";
 import { once } from "node:events";
 import { Worker } from "node:worker_threads";
-import {
-  Logger,
-  Formatter,
-  ConsoleHandler,
-  SocketHandler,
-  SyslogLevel,
-} from "streams-logger";
+import { Logger, Formatter, ConsoleHandler, SocketHandler, SyslogLevel } from "streams-logger";
 
 const worker = new Worker("./dist/logging_server.js");
 
@@ -83,9 +77,7 @@ const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 // 1. Connect the logger to the fomatter.
 // 2. Connect the fommater to the consoleHandler and the socketHandler.
 // 3. Connect the socketHandler to the consoleHandler.
-const log = logger.connect(
-  formatter.connect(consoleHandler, socketHandler.connect(consoleHandler))
-);
+const log = logger.connect(formatter.connect(consoleHandler, socketHandler.connect(consoleHandler)));
 
 (function sayHello() {
   log.warn("Hello, World!");

@@ -18,18 +18,11 @@ In this example you will use _Streams_ in order to log "Hello, World!" to a file
 ### Implement the `index.ts` module
 
 ```ts
-import {
-  Logger,
-  Formatter,
-  ConsoleHandler,
-  SyslogLevel,
-  RotatingFileHandler,
-} from "streams-logger";
+import { Logger, Formatter, ConsoleHandler, SyslogLevel, RotatingFileHandler } from "streams-logger";
 
 const logger = new Logger({ name: "hello-logger", level: SyslogLevel.DEBUG });
 const consoleFormatter = new Formatter({
-  format: ({ isotime, message, name, level }) =>
-    `${name}:${isotime}:${level}:${message}\n`,
+  format: ({ isotime, message, name, level }) => `${name}:${isotime}:${level}:${message}\n`,
 });
 const fileFortmatter = new Formatter({
   format: ({ isotime, message, name, level, func, url, line, col }) =>
@@ -42,10 +35,7 @@ const rotatingFileHandler = new RotatingFileHandler({
 });
 const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 
-const log = logger.connect(
-  consoleFormatter.connect(consoleHandler),
-  fileFortmatter.connect(rotatingFileHandler)
-);
+const log = logger.connect(consoleFormatter.connect(consoleHandler), fileFortmatter.connect(rotatingFileHandler));
 
 function sayHello() {
   log.info("Hello, World!");

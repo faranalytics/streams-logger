@@ -6,7 +6,7 @@ import { SyslogLevel, SyslogLevelT } from "./commons/syslog.js";
 import { Formatter, FormatterOptions } from "./formatters/formatter.js";
 import { ConsoleHandler, ConsoleHandlerOptions } from "./handlers/console_handler.js";
 import { RotatingFileHandler, RotatingFileHandlerOptions } from "./handlers/rotating_file_handler.js";
-import { Filter, FilterOptions} from "./filters/filter.js";
+import { Filter, FilterOptions } from "./filters/filter.js";
 import { SocketHandler, SocketHandlerOptions } from "./handlers/socket_handler.js";
 
 export {
@@ -30,5 +30,5 @@ export {
   Filter,
   FilterOptions,
   root,
-  $log
+  $log,
 };

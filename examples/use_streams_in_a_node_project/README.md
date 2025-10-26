@@ -9,20 +9,12 @@ In the other examples, _Streams_ is demonstrated in TypeScript projects. However
 ### Implement the `index.ts` module
 
 ```ts
-const {
-  Logger,
-  Formatter,
-  ConsoleHandler,
-  SyslogLevel,
-  RotatingFileHandler,
-} = require("streams-logger");
+const { Logger, Formatter, ConsoleHandler, SyslogLevel, RotatingFileHandler } = require("streams-logger");
 
 const logger = new Logger({ name: "hello-logger", level: SyslogLevel.DEBUG });
 const formatter = new Formatter({
   format: ({ isotime, message, name, level, func, line, col }) =>
-    `${name}:${isotime}:${level}:${func}:${line}:${col}:${JSON.stringify(
-      message
-    )}\n`,
+    `${name}:${isotime}:${level}:${func}:${line}:${col}:${JSON.stringify(message)}\n`,
 });
 
 const rotatingFileHandler = new RotatingFileHandler({
@@ -32,9 +24,7 @@ const rotatingFileHandler = new RotatingFileHandler({
 });
 const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 
-const log = logger.connect(
-  formatter.connect(consoleHandler, rotatingFileHandler)
-);
+const log = logger.connect(formatter.connect(consoleHandler, rotatingFileHandler));
 
 function sayHello() {
   log.warn("Hello, World!");

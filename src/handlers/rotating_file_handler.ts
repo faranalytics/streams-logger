@@ -97,8 +97,8 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
       logContext.message instanceof Buffer
         ? logContext.message
         : typeof logContext.message == "string"
-        ? Buffer.from(logContext.message, this[$encoding])
-        : Buffer.from(JSON.stringify(logContext.message), this[$encoding]);
+          ? Buffer.from(logContext.message, this[$encoding])
+          : Buffer.from(JSON.stringify(logContext.message), this[$encoding]);
     (async () => {
       if (this[$size] + message.length > this[$maxSize]) {
         await this[$rotate]();
